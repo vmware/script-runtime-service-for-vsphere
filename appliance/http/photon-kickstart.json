@@ -1,0 +1,17 @@
+{
+    "hostname": "srs-appliance",
+    "password":
+        {
+            "crypted": false,
+            "text": "Srsa!23"
+        },
+    "disk": "/dev/sda",
+    "packagelist_file": "packages_minimal.json",
+    "postinstall": [
+                    "#!/bin/sh",
+                    "sed -i 's/PermitRootLogin no/PermitRootLogin yes/g' /etc/ssh/sshd_config",
+                    "sed -i 's/MaxAuthTries.*/MaxAuthTries 10/g' /etc/ssh/sshd_config",
+                    "systemctl restart sshd.service",
+                    "chage -I -1 -m 0 -M 99999 -E -1 root"
+                    ]
+}

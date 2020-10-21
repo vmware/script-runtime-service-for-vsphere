@@ -1,0 +1,60 @@
+    <ProductSection ovf:required="true">
+    <Info>Information about the installed software</Info>
+      <Product>Script Runtime Service Appliance</Product>
+      <Vendor>VMware</Vendor>
+      <Version>{{VERSION}}</Version>
+      <ProductUrl>https://code.vmware.com/web/tool/1.0.0/vmware-srsa</ProductUrl>
+      <VendorUrl>https://vmware.com/</VendorUrl>
+      <Category>Networking</Category>
+        <Property ovf:key="guestinfo.hostname" ovf:type="string" ovf:userConfigurable="true">
+            <Label>Hostname</Label>
+            <Description>Hostname of system</Description>
+        </Property>
+        <Property ovf:key="guestinfo.ipaddress" ovf:type="string" ovf:userConfigurable="true">
+            <Label>IP Address</Label>
+            <Description>IP Address of the system</Description>
+        </Property>
+        <Property ovf:key="guestinfo.netmask" ovf:type="string" ovf:userConfigurable="true">
+            <Label>Netmask Prefix</Label>
+            <Description>CIDR notation (e.g. 24 for 255.255.255.0, 28 for 255.255.255.240)</Description>
+        </Property>
+        <Property ovf:key="guestinfo.gateway" ovf:type="string" ovf:userConfigurable="true">
+            <Label>Gateway</Label>
+            <Description>Gateway of the system</Description>
+        </Property>
+        <Property ovf:key="guestinfo.dns" ovf:type="string" ovf:userConfigurable="true">
+            <Label>DNS</Label>
+            <Description>DNS Server</Description>
+        </Property>
+        <Property ovf:key="guestinfo.domain" ovf:type="string" ovf:userConfigurable="true">
+            <Label>DNS Domain</Label>
+            <Description>DNS Domain</Description>
+        </Property>
+        <Category>Credentials</Category>
+        <Property ovf:key="guestinfo.root_password" ovf:password="true" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
+            <Label>Root Password</Label>
+            <Description>Password to login in as root. Please use a secure password</Description>
+        </Property>
+        <Category>zDebug</Category>
+        <Property ovf:key="guestinfo.debug" ovf:type="boolean" ovf:userConfigurable="true" ovf:value="false">
+            <Label>Debugging</Label>
+            <Description>Enable Debugging</Description>
+        </Property>
+        <Category>ScriptExecutionService</Category>
+        <Property ovf:key="srs.vcaddress" ovf:type="string" ovf:userConfigurable="true" ovf:value="false">
+            <Label>VCAddress</Label>
+            <Description>VC address to which SRS will be registered</Description>
+        </Property>
+        <Property ovf:key="srs.vcuser" ovf:type="string" ovf:userConfigurable="true" ovf:value="false">
+            <Label>VCUser</Label>
+            <Description>VC Username with which SRS will be registered</Description>
+        </Property>
+        <Property ovf:key="srs.vcpassword" ovf:type="string" ovf:userConfigurable="true" ovf:value="false">
+            <Label>VCPassword</Label>
+            <Description>VC Password with which SRS will be registered</Description>
+        </Property>
+        <Property ovf:key="srs.vcthumbprint" ovf:type="string" ovf:userConfigurable="true" ovf:value="false">
+            <Label>VCThumbprint</Label>
+            <Description>VC Tls certificate thumbprint SRS installation will trust to perform SRS registration</Description>
+        </Property>
+    </ProductSection>
