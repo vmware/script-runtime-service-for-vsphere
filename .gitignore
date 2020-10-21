@@ -73,3 +73,4 @@ srs-appliance/files/srs-setup-docker-image.tar
 /test/integration/openapi-clients/dotnet/SrsClient/.vs
 /test/integration/openapi-clients/dotnet/SrsClient/SrsClient/bin
 /test/integration/openapi-clients/dotnet/SrsClient/SrsClient/obj
+/appliance/files/*.tar
