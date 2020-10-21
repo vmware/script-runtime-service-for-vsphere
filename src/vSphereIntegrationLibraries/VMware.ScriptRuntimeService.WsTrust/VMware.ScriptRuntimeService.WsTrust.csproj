@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AssemblyName>VMware.ScriptRuntimeService.WsTrust</AssemblyName>
+    <RootNamespace>VMware.ScriptRuntimeService.WsTrust</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.5.*" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="4.5.*" />
+  </ItemGroup>
+
+</Project>

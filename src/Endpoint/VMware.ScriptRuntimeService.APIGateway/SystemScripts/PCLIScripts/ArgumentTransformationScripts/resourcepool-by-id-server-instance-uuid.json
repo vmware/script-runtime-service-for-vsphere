@@ -1,0 +1,7 @@
+{
+  "id": "resourcepool-by-id-server-instance-uuid",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.ResourcePool",
+  "script_template": "Get-ResourcePool -Id <id> -Server ($global:DefaultVIServers | Where-Object {$_.InstanceUuid -eq <server_instance_uuid>})",
+  "placeholders": [ "id", "server_instance_uuid" ]
+}

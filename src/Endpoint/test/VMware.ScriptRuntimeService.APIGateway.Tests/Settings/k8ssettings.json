@@ -1,0 +1,13 @@
+{
+  "RunspaceProviderSettings": {
+    "K8sRunspaceImageName": "dmilov/dmilov-repo:simple-apnet",
+    "K8sClusterEndpoint": "http://10.23.82.59:8086",
+    "K8sRunspacePort": 5500
+  },
+  "ScriptExecutionStorageSettings": {
+    "HostScriptStorageDir": "/var/vmware/scriptruntimeservice/scriptsstore",
+    "ServiceScriptStorageDir": "script_executions",
+    "NumberOfScriptsPerUser": 30,
+    "NoOlderThanDays": 5
+  }
+}

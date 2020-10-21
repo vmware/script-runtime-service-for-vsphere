@@ -1,0 +1,7 @@
+{
+  "id": "folder-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.Folder",
+  "script_template": "Get-Folder -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

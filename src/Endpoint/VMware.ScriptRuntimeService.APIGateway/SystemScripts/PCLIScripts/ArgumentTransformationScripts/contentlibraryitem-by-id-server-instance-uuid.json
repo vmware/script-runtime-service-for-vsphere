@@ -1,0 +1,7 @@
+{
+  "id": "contentlibraryitem-by-id-server-instance-uuid",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.ViCore.Types.V1.ContentLibrary.ContentLibraryItem",
+  "script_template": "Get-ContentLibraryItem -Id <id> -Server ($global:DefaultVIServers | Where-Object {$_.InstanceUuid -eq <server_instance_uuid>})",
+  "placeholders": [ "id", "server_instance_uuid" ]
+}

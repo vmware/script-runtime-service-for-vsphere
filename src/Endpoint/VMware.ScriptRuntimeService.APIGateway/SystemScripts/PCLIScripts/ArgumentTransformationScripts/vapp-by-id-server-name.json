@@ -1,0 +1,7 @@
+{
+  "id": "vapp-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.VApp",
+  "script_template": "Get-VApp -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

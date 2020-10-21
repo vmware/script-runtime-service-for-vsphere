@@ -1,0 +1,7 @@
+{
+  "id": "vapp-by-id-server-instance-uuid",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.VApp",
+  "script_template": "Get-VApp -Id <id> -Server ($global:DefaultVIServers | Where-Object {$_.InstanceUuid -eq <server_instance_uuid>})",
+  "placeholders": [ "id", "server_instance_uuid" ]
+}

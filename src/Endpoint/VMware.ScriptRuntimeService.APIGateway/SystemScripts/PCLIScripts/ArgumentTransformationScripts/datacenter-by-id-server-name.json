@@ -1,0 +1,7 @@
+{
+  "id": "datacenter-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.Datacenter",
+  "script_template": "Get-Datacenter -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

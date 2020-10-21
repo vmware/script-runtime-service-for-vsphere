@@ -1,0 +1,7 @@
+{
+  "id": "vmhostprofile-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.ViCore.Types.V1.Host.Profile.VMHostProfile",
+  "script_template": "Get-VMHostProfile -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

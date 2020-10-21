@@ -1,0 +1,7 @@
+{
+  "id": "vmhost-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.VMHost",
+  "script_template": "Get-VMHost -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

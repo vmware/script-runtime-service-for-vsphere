@@ -1,0 +1,7 @@
+{
+  "id": "template-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.Template",
+  "script_template": "Get-Template -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

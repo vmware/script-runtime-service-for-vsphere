@@ -1,0 +1,7 @@
+{
+  "id": "vm-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.VirtualMachine",
+  "script_template": "Get-VM -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

@@ -1,0 +1,17 @@
+{
+  "RunspaceProviderSettings": {
+    "DockerApiEndpoint": "http://10.23.82.131:5555/v1.39",
+    "RunspaceContainerName": "pclirunspace",
+    "RunspaceContainerNetworkName": "docker_gwbridge",
+    "RunspaceContainerMemoryLimitMB": 512,
+    "MaxNumberOfRunspaces": 5,
+    "MaxRunspaceIdleTimeMinutes": 10,
+    "MaxRunspaceActiveTimeMinutes": 60
+  },
+  "ScriptExecutionStorageSettings": {
+    "HostScriptStorageDir": "/var/vmware/scriptruntimeservice/scriptsstore",
+    "ServiceScriptStorageDir": "script_executions",
+    "NumberOfScriptsPerUser": 30,
+    "NoOlderThanDays": 5
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "id": "datastore-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.ViCore.Types.V1.DatastoreManagement.Datastore",
+  "script_template": "Get-Datastore -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

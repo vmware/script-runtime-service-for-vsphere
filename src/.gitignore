@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/VMware.ScriptRuntimeService.Ls/bin
+/VMware.ScriptRuntimeService.Ls/obj
+/VMware.ScriptRuntimeService.Ls.Tests/bin
+/VMware.ScriptRuntimeService.Ls.Tests/obj
+/VMware.ScriptRuntimeService.Sts/bin
+/VMware.ScriptRuntimeService.Sts/obj
+/VMware.ScriptRuntimeService.Sts.Tests/bin
+/VMware.ScriptRuntimeService.Sts.Tests/obj
+/VMware.ScriptRuntimeService.WsTrust/bin
+/VMware.ScriptRuntimeService.WsTrust/obj
+/VMware.PSExecutionHost.Setup.Tests/bin
+/VMware.PSExecutionHost.Setup.Tests/obj

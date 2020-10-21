@@ -1,0 +1,7 @@
+{
+  "id": "vdportgroup-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Vds.Types.V1.VDPortgroup",
+  "script_template": "Get-VDPortgroup -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

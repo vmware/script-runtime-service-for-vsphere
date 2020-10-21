@@ -1,0 +1,7 @@
+{
+  "id": "date-by-string",
+  "script_runtime": "PowerCLI",
+  "result_type": "System.DateTime",
+  "script_template": "Get-Date -Date <value>",
+  "placeholders": [ "value" ]
+}
