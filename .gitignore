@@ -74,3 +74,7 @@ srs-appliance/files/srs-setup-docker-image.tar
 /test/integration/openapi-clients/dotnet/SrsClient/SrsClient/bin
 /test/integration/openapi-clients/dotnet/SrsClient/SrsClient/obj
 /appliance/files/*.tar
+/appliance/output-vmware-iso
+/appliance/packer_cache
+/src/Endpoint/VMware.ScriptRuntimeService.RunspaceClient/bin
+/src/Endpoint/VMware.ScriptRuntimeService.RunspaceClient/obj
