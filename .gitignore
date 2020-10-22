@@ -78,3 +78,9 @@ srs-appliance/files/srs-setup-docker-image.tar
 /appliance/packer_cache
 /src/Endpoint/VMware.ScriptRuntimeService.RunspaceClient/bin
 /src/Endpoint/VMware.ScriptRuntimeService.RunspaceClient/obj
+/test/api-integration-tests/tests/helpers/CertificateValidators/src/CertificateValidators/.vs/CertificateValidators
+/test/api-integration-tests/tests/helpers/CertificateValidators/src/CertificateValidators/CertificateValidators/bin
+/test/api-integration-tests/tests/helpers/CertificateValidators/src/CertificateValidators/CertificateValidators/obj
+/test/openapi-clients/dotnet/SrsClient/.vs
+/test/openapi-clients/dotnet/SrsClient/SrsClient/bin/Debug/netcoreapp3.1
+/test/openapi-clients/dotnet/SrsClient/SrsClient/obj
