@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ -e /root/ran_customization ]; then
+    exit
+else
+    /root/setup.sh &> /var/log/bootstrap.log
+fi

@@ -1,0 +1,7 @@
+{
+  "id": "datastorecluster-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.ViCore.Types.V1.DatastoreManagement.DatastoreCluster",
+  "script_template": "Get-DatastoreCluster -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

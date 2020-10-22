@@ -1,0 +1,7 @@
+{
+  "UseHttps": true,
+  "HostName": "10.23.92.141",
+  "Port": 5001,
+  "TlsCertificate": "certs/srs-tls.crt",
+  "SigningCertificate": "certs/srs-tls.crt"
+}

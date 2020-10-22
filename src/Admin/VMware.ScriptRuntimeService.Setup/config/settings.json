@@ -1,0 +1,20 @@
+{
+  "RunspaceProviderSettings": {
+    "LocalhostDebug": false,
+    "DockerApiEndpoint": "http://172.28.5.1:2375",
+    "K8sClusterEndpoint": null,
+    "K8sRunspaceImageName": null,
+    "K8sRunspacePort": 0,
+    "RunspaceContainerName": "pclirunspace",
+    "RunspaceContainerMemoryLimitMB": 512,
+    "RunspaceTrustedCertPersistentVolumeClaim": "trusted-certs-pvc",
+    "MaxNumberOfRunspaces": 5,
+    "MaxRunspaceIdleTimeMinutes": 10,
+    "MaxRunspaceActiveTimeMinutes": 60
+  },
+  "ScriptExecutionStorageSettings": {
+    "ServiceScriptStorageDir": "/app/service/scriptsstore",
+    "NumberOfScriptsPerUser": 30,
+    "NoOlderThanDays": 5
+  }
+}

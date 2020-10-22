@@ -1,0 +1,7 @@
+{
+  "id": "resourcepool-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.ResourcePool",
+  "script_template": "Get-ResourcePool -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

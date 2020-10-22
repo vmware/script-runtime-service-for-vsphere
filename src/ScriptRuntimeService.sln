@@ -1,0 +1,237 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.WsTrust", "vSphereIntegrationLibraries\VMware.ScriptRuntimeService.WsTrust\VMware.ScriptRuntimeService.WsTrust.csproj", "{DCE17398-B25E-4A65-B126-4253445C4A51}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Sts", "vSphereIntegrationLibraries\VMware.ScriptRuntimeService.Sts\VMware.ScriptRuntimeService.Sts.csproj", "{38E98943-3EB3-462B-9F50-B70732510534}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Sts.Tests", "vSphereIntegrationLibraries\test\VMware.ScriptRuntimeService.Sts.Tests\VMware.ScriptRuntimeService.Sts.Tests.csproj", "{B203A823-41BE-4139-BDE6-9A5B104B5CBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Ls", "vSphereIntegrationLibraries\VMware.ScriptRuntimeService.Ls\VMware.ScriptRuntimeService.Ls.csproj", "{6F4E7F3C-5C83-4153-A6B9-7E5572899AB1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Ls.Tests", "vSphereIntegrationLibraries\test\VMware.ScriptRuntimeService.Ls.Tests\VMware.ScriptRuntimeService.Ls.Tests.csproj", "{B23088C6-93C7-4F10-B0CA-C51E9C7DE558}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Setup", "Admin\VMware.ScriptRuntimeService.Setup\VMware.ScriptRuntimeService.Setup.csproj", "{48138593-4A32-4349-B457-F3B111EC0BB5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Setup.Tests", "Admin\test\VMware.ScriptRuntimeService.Setup.Tests\VMware.ScriptRuntimeService.Setup.Tests.csproj", "{90EBACA8-999B-4A3B-920B-F20A29C2FEF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Docker.Bindings", "RunspaceProviders\Docker\VMware.ScriptRuntimeService.Docker.Bindings\VMware.ScriptRuntimeService.Docker.Bindings.csproj", "{85CB019D-761A-4A9C-AEEB-2A6FBEB0A121}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Docker.Bindings.Tests", "RunspaceProviders\Docker\test\VMware.ScriptRuntimeService.Docker.Bindings.Tests\VMware.ScriptRuntimeService.Docker.Bindings.Tests.csproj", "{F02629DD-9EF2-42FF-9491-51D552F84718}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.DockerRunspaceProvider", "RunspaceProviders\Docker\VMware.ScriptRuntimeService.DockerRunspaceProvider\VMware.ScriptRuntimeService.DockerRunspaceProvider.csproj", "{91F3219A-CE3A-41FD-BC2B-BAA2228B40C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.DockerRunspaceProvider.Tests", "RunspaceProviders\Docker\test\VMware.ScriptRuntimeService.DockerRunspaceProvider.Tests\VMware.ScriptRuntimeService.DockerRunspaceProvider.Tests.csproj", "{A1B6DEE0-113A-45B7-B3D2-B574314B14C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.APIGateway", "Endpoint\VMware.ScriptRuntimeService.APIGateway\VMware.ScriptRuntimeService.APIGateway.csproj", "{B11DC8FA-F94A-44D0-9931-8E9D3F043CC0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.RunspaceEndpoint", "Runspace\VMware.ScriptRuntimeService.RunspaceEndpoint\VMware.ScriptRuntimeService.RunspaceEndpoint.csproj", "{F9CA7FBA-C275-440F-9ABC-B3C42CD0441F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Runspace.Types", "Runspace\VMware.ScriptRuntimeService.Runspace.Types\VMware.ScriptRuntimeService.Runspace.Types.csproj", "{00694592-01B1-4BB3-B889-2822EE19F4E1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.RunspaceClient", "Endpoint\VMware.ScriptRuntimeService.RunspaceClient\VMware.ScriptRuntimeService.RunspaceClient.csproj", "{1AEFD426-0E07-4AB6-8222-046B773B37F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.RunspaceClient.Tests", "Endpoint\test\VMware.ScriptRuntimeService.RunspaceClient.Tests\VMware.ScriptRuntimeService.RunspaceClient.Tests.csproj", "{86005DB7-FAA5-41CB-B87E-CA6AD2388675}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Runspace.PSScriptExecutionEngine", "Runspace\VMware.ScriptRuntimeService.Runspace.PSScriptExecutionEngine\VMware.ScriptRuntimeService.Runspace.PSScriptExecutionEngine.csproj", "{C6140D76-71F6-4432-924E-1688BE5707C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.Runspace.PSScriptExecutionEngine.Tests", "Runspace\test\VMware.ScriptRuntimeService.Runspace.PSScriptExecutionEngine.Tests\VMware.ScriptRuntimeService.Runspace.PSScriptExecutionEngine.Tests.csproj", "{7A440EE2-BC82-483C-81A3-F4B4597E5780}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.APIGateway.Tests", "Endpoint\test\VMware.ScriptRuntimeService.APIGateway.Tests\VMware.ScriptRuntimeService.APIGateway.Tests.csproj", "{BDAD0A2F-8598-4E01-BFC2-12BEFE7469AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.SsoAdmin", "vSphereIntegrationLibraries\VMware.ScriptRuntimeService.SsoAdmin\VMware.ScriptRuntimeService.SsoAdmin.csproj", "{082F2382-1D4B-42B0-B21F-CC57FE93D2DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.SsoAdmin.Tests", "vSphereIntegrationLibraries\test\VMware.ScriptRuntimeService.SsoAdmin.Tests\VMware.ScriptRuntimeService.SsoAdmin.Tests.csproj", "{782B061C-56BD-47BA-847C-192204346EF9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.K8sRunspaceProvider", "RunspaceProviders\Kubernetes\VMware.ScriptRuntimeService.K8sRunspaceProvider\VMware.ScriptRuntimeService.K8sRunspaceProvider.csproj", "{49721EF9-290D-4B52-B011-9FB8E8815209}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.K8sRunspaceProvider.Tests", "RunspaceProviders\Kubernetes\test\VMware.ScriptRuntimeService.K8sRunspaceProvider.Tests\VMware.ScriptRuntimeService.K8sRunspaceProvider.Tests.csproj", "{122D8C12-74E3-4CED-A41A-71AB47FF9B22}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Endpoint", "Endpoint", "{7539C1D8-7637-4318-9903-F5861DEBBB98}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{FB811064-64DA-4D06-A5A3-4D288137ACD8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Runspace", "Runspace", "{C767C3B3-94EA-40F7-A38F-1F4200CE8B6C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8F0F15BB-7E58-4CE6-A9B0-145255BDC857}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RunspaceProviders", "RunspaceProviders", "{2B2A9AE4-FF08-441D-9E61-3FE9CB2024F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{1E529859-13ED-4141-B6D5-9113626CEFBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kubernetes", "Kubernetes", "{875245BD-C48A-4EE5-A0C8-1278C3573688}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{FBC2163A-4B20-4ABB-A9D4-816EB5890502}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DD62D033-9090-495D-B849-C1CC15E1248C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vSphereIntegrationLibraries", "vSphereIntegrationLibraries", "{B3A427DB-A820-461F-8CBF-566D7DED21EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D8291926-5C71-4F88-9162-9A4999D3C528}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admin", "Admin", "{16F25C88-009D-4A29-A7F5-47C445AD4C50}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A128F85A-1BDE-443B-847C-563ECE4CA9B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.Http.Sso.Authentication", "vSphereIntegrationLibraries\VMware.Http.Sso.Authentication\VMware.Http.Sso.Authentication.csproj", "{52FF9529-70F3-42D5-B823-E93178F73EF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.Http.Sso.Authentication.Tests", "vSphereIntegrationLibraries\test\VMware.Http.Sso.Authentication.Tests\VMware.Http.Sso.Authentication.Tests.csproj", "{0E9887B9-A54D-47E1-94AB-552582AEF1F8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMware.ScriptRuntimeService.RunspaceProviders.Types", "RunspaceProviders\VMware.ScriptRuntimeService.RunspaceProviders.Types\VMware.ScriptRuntimeService.RunspaceProviders.Types.csproj", "{C556EC50-75CE-4F56-AC45-A408ED538BCC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DCE17398-B25E-4A65-B126-4253445C4A51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE17398-B25E-4A65-B126-4253445C4A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCE17398-B25E-4A65-B126-4253445C4A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE17398-B25E-4A65-B126-4253445C4A51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38E98943-3EB3-462B-9F50-B70732510534}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38E98943-3EB3-462B-9F50-B70732510534}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38E98943-3EB3-462B-9F50-B70732510534}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38E98943-3EB3-462B-9F50-B70732510534}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B203A823-41BE-4139-BDE6-9A5B104B5CBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B203A823-41BE-4139-BDE6-9A5B104B5CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B203A823-41BE-4139-BDE6-9A5B104B5CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B203A823-41BE-4139-BDE6-9A5B104B5CBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F4E7F3C-5C83-4153-A6B9-7E5572899AB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F4E7F3C-5C83-4153-A6B9-7E5572899AB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F4E7F3C-5C83-4153-A6B9-7E5572899AB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F4E7F3C-5C83-4153-A6B9-7E5572899AB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B23088C6-93C7-4F10-B0CA-C51E9C7DE558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B23088C6-93C7-4F10-B0CA-C51E9C7DE558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B23088C6-93C7-4F10-B0CA-C51E9C7DE558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B23088C6-93C7-4F10-B0CA-C51E9C7DE558}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48138593-4A32-4349-B457-F3B111EC0BB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48138593-4A32-4349-B457-F3B111EC0BB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48138593-4A32-4349-B457-F3B111EC0BB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48138593-4A32-4349-B457-F3B111EC0BB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90EBACA8-999B-4A3B-920B-F20A29C2FEF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90EBACA8-999B-4A3B-920B-F20A29C2FEF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90EBACA8-999B-4A3B-920B-F20A29C2FEF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90EBACA8-999B-4A3B-920B-F20A29C2FEF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85CB019D-761A-4A9C-AEEB-2A6FBEB0A121}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85CB019D-761A-4A9C-AEEB-2A6FBEB0A121}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85CB019D-761A-4A9C-AEEB-2A6FBEB0A121}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85CB019D-761A-4A9C-AEEB-2A6FBEB0A121}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F02629DD-9EF2-42FF-9491-51D552F84718}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F02629DD-9EF2-42FF-9491-51D552F84718}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F02629DD-9EF2-42FF-9491-51D552F84718}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F02629DD-9EF2-42FF-9491-51D552F84718}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91F3219A-CE3A-41FD-BC2B-BAA2228B40C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F3219A-CE3A-41FD-BC2B-BAA2228B40C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91F3219A-CE3A-41FD-BC2B-BAA2228B40C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F3219A-CE3A-41FD-BC2B-BAA2228B40C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B6DEE0-113A-45B7-B3D2-B574314B14C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B6DEE0-113A-45B7-B3D2-B574314B14C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B6DEE0-113A-45B7-B3D2-B574314B14C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B6DEE0-113A-45B7-B3D2-B574314B14C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B11DC8FA-F94A-44D0-9931-8E9D3F043CC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B11DC8FA-F94A-44D0-9931-8E9D3F043CC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B11DC8FA-F94A-44D0-9931-8E9D3F043CC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B11DC8FA-F94A-44D0-9931-8E9D3F043CC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9CA7FBA-C275-440F-9ABC-B3C42CD0441F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9CA7FBA-C275-440F-9ABC-B3C42CD0441F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9CA7FBA-C275-440F-9ABC-B3C42CD0441F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9CA7FBA-C275-440F-9ABC-B3C42CD0441F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00694592-01B1-4BB3-B889-2822EE19F4E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00694592-01B1-4BB3-B889-2822EE19F4E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00694592-01B1-4BB3-B889-2822EE19F4E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00694592-01B1-4BB3-B889-2822EE19F4E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AEFD426-0E07-4AB6-8222-046B773B37F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AEFD426-0E07-4AB6-8222-046B773B37F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AEFD426-0E07-4AB6-8222-046B773B37F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AEFD426-0E07-4AB6-8222-046B773B37F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86005DB7-FAA5-41CB-B87E-CA6AD2388675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86005DB7-FAA5-41CB-B87E-CA6AD2388675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86005DB7-FAA5-41CB-B87E-CA6AD2388675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86005DB7-FAA5-41CB-B87E-CA6AD2388675}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6140D76-71F6-4432-924E-1688BE5707C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6140D76-71F6-4432-924E-1688BE5707C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6140D76-71F6-4432-924E-1688BE5707C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6140D76-71F6-4432-924E-1688BE5707C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A440EE2-BC82-483C-81A3-F4B4597E5780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A440EE2-BC82-483C-81A3-F4B4597E5780}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A440EE2-BC82-483C-81A3-F4B4597E5780}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A440EE2-BC82-483C-81A3-F4B4597E5780}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDAD0A2F-8598-4E01-BFC2-12BEFE7469AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDAD0A2F-8598-4E01-BFC2-12BEFE7469AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDAD0A2F-8598-4E01-BFC2-12BEFE7469AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDAD0A2F-8598-4E01-BFC2-12BEFE7469AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{082F2382-1D4B-42B0-B21F-CC57FE93D2DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{082F2382-1D4B-42B0-B21F-CC57FE93D2DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{082F2382-1D4B-42B0-B21F-CC57FE93D2DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{082F2382-1D4B-42B0-B21F-CC57FE93D2DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{782B061C-56BD-47BA-847C-192204346EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{782B061C-56BD-47BA-847C-192204346EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{782B061C-56BD-47BA-847C-192204346EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{782B061C-56BD-47BA-847C-192204346EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49721EF9-290D-4B52-B011-9FB8E8815209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49721EF9-290D-4B52-B011-9FB8E8815209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49721EF9-290D-4B52-B011-9FB8E8815209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49721EF9-290D-4B52-B011-9FB8E8815209}.Release|Any CPU.Build.0 = Release|Any CPU
+		{122D8C12-74E3-4CED-A41A-71AB47FF9B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{122D8C12-74E3-4CED-A41A-71AB47FF9B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{122D8C12-74E3-4CED-A41A-71AB47FF9B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{122D8C12-74E3-4CED-A41A-71AB47FF9B22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52FF9529-70F3-42D5-B823-E93178F73EF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52FF9529-70F3-42D5-B823-E93178F73EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52FF9529-70F3-42D5-B823-E93178F73EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52FF9529-70F3-42D5-B823-E93178F73EF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E9887B9-A54D-47E1-94AB-552582AEF1F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E9887B9-A54D-47E1-94AB-552582AEF1F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E9887B9-A54D-47E1-94AB-552582AEF1F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E9887B9-A54D-47E1-94AB-552582AEF1F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C556EC50-75CE-4F56-AC45-A408ED538BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C556EC50-75CE-4F56-AC45-A408ED538BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C556EC50-75CE-4F56-AC45-A408ED538BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C556EC50-75CE-4F56-AC45-A408ED538BCC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DCE17398-B25E-4A65-B126-4253445C4A51} = {B3A427DB-A820-461F-8CBF-566D7DED21EE}
+		{38E98943-3EB3-462B-9F50-B70732510534} = {B3A427DB-A820-461F-8CBF-566D7DED21EE}
+		{B203A823-41BE-4139-BDE6-9A5B104B5CBD} = {D8291926-5C71-4F88-9162-9A4999D3C528}
+		{6F4E7F3C-5C83-4153-A6B9-7E5572899AB1} = {B3A427DB-A820-461F-8CBF-566D7DED21EE}
+		{B23088C6-93C7-4F10-B0CA-C51E9C7DE558} = {D8291926-5C71-4F88-9162-9A4999D3C528}
+		{48138593-4A32-4349-B457-F3B111EC0BB5} = {16F25C88-009D-4A29-A7F5-47C445AD4C50}
+		{90EBACA8-999B-4A3B-920B-F20A29C2FEF0} = {A128F85A-1BDE-443B-847C-563ECE4CA9B2}
+		{85CB019D-761A-4A9C-AEEB-2A6FBEB0A121} = {1E529859-13ED-4141-B6D5-9113626CEFBD}
+		{F02629DD-9EF2-42FF-9491-51D552F84718} = {FBC2163A-4B20-4ABB-A9D4-816EB5890502}
+		{91F3219A-CE3A-41FD-BC2B-BAA2228B40C2} = {1E529859-13ED-4141-B6D5-9113626CEFBD}
+		{A1B6DEE0-113A-45B7-B3D2-B574314B14C3} = {FBC2163A-4B20-4ABB-A9D4-816EB5890502}
+		{B11DC8FA-F94A-44D0-9931-8E9D3F043CC0} = {7539C1D8-7637-4318-9903-F5861DEBBB98}
+		{F9CA7FBA-C275-440F-9ABC-B3C42CD0441F} = {C767C3B3-94EA-40F7-A38F-1F4200CE8B6C}
+		{00694592-01B1-4BB3-B889-2822EE19F4E1} = {C767C3B3-94EA-40F7-A38F-1F4200CE8B6C}
+		{1AEFD426-0E07-4AB6-8222-046B773B37F1} = {7539C1D8-7637-4318-9903-F5861DEBBB98}
+		{86005DB7-FAA5-41CB-B87E-CA6AD2388675} = {FB811064-64DA-4D06-A5A3-4D288137ACD8}
+		{C6140D76-71F6-4432-924E-1688BE5707C2} = {C767C3B3-94EA-40F7-A38F-1F4200CE8B6C}
+		{7A440EE2-BC82-483C-81A3-F4B4597E5780} = {8F0F15BB-7E58-4CE6-A9B0-145255BDC857}
+		{BDAD0A2F-8598-4E01-BFC2-12BEFE7469AA} = {FB811064-64DA-4D06-A5A3-4D288137ACD8}
+		{082F2382-1D4B-42B0-B21F-CC57FE93D2DE} = {B3A427DB-A820-461F-8CBF-566D7DED21EE}
+		{782B061C-56BD-47BA-847C-192204346EF9} = {D8291926-5C71-4F88-9162-9A4999D3C528}
+		{49721EF9-290D-4B52-B011-9FB8E8815209} = {875245BD-C48A-4EE5-A0C8-1278C3573688}
+		{122D8C12-74E3-4CED-A41A-71AB47FF9B22} = {DD62D033-9090-495D-B849-C1CC15E1248C}
+		{FB811064-64DA-4D06-A5A3-4D288137ACD8} = {7539C1D8-7637-4318-9903-F5861DEBBB98}
+		{8F0F15BB-7E58-4CE6-A9B0-145255BDC857} = {C767C3B3-94EA-40F7-A38F-1F4200CE8B6C}
+		{1E529859-13ED-4141-B6D5-9113626CEFBD} = {2B2A9AE4-FF08-441D-9E61-3FE9CB2024F5}
+		{875245BD-C48A-4EE5-A0C8-1278C3573688} = {2B2A9AE4-FF08-441D-9E61-3FE9CB2024F5}
+		{FBC2163A-4B20-4ABB-A9D4-816EB5890502} = {1E529859-13ED-4141-B6D5-9113626CEFBD}
+		{DD62D033-9090-495D-B849-C1CC15E1248C} = {875245BD-C48A-4EE5-A0C8-1278C3573688}
+		{D8291926-5C71-4F88-9162-9A4999D3C528} = {B3A427DB-A820-461F-8CBF-566D7DED21EE}
+		{A128F85A-1BDE-443B-847C-563ECE4CA9B2} = {16F25C88-009D-4A29-A7F5-47C445AD4C50}
+		{52FF9529-70F3-42D5-B823-E93178F73EF0} = {B3A427DB-A820-461F-8CBF-566D7DED21EE}
+		{0E9887B9-A54D-47E1-94AB-552582AEF1F8} = {D8291926-5C71-4F88-9162-9A4999D3C528}
+		{C556EC50-75CE-4F56-AC45-A408ED538BCC} = {2B2A9AE4-FF08-441D-9E61-3FE9CB2024F5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7CED3298-AD02-4789-8013-1D524A3F0B9E}
+	EndGlobalSection
+EndGlobal

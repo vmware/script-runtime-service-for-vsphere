@@ -1,0 +1,130 @@
+<saml2:Assertion xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="_e185e5cd-ddc5-4227-9b7d-4f80dec24893" IssueInstant="2020-01-20T13:23:55.999Z" Version="2.0">
+  <saml2:Issuer Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">https://10.23.81.191/websso/SAML2/Metadata/vsphere.local</saml2:Issuer>
+  <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:SignedInfo>
+      <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+      <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512" />
+      <ds:Reference URI="#_e185e5cd-ddc5-4227-9b7d-4f80dec24893">
+        <ds:Transforms>
+          <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+          <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="xsd xsi" />
+          </ds:Transform>
+        </ds:Transforms>
+        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+        <ds:DigestValue>
+          JgD9UcmZlmj5e/Ed+b658CnZM2nVme3kIfQegMksTqRphQu1acMQ9ywebe+j/0jICbTTlXy0iJyA
+          y0y2267cyQ==
+        </ds:DigestValue>
+      </ds:Reference>
+    </ds:SignedInfo>
+    <ds:SignatureValue>
+      BPzuOoXswgjvEg4yimh1CPWCKjlciiFhzlzBqFFbZ2AwePDZmtvHItBrO31lEjMzbFuA+Ht367an
+      gg652UmIgQOpMci7jOXvuRogvHrrvp/kO3g9b7f/HM08b+zs6XiWQ6aQvrHgO/E0xTEX4iqEh2oM
+      i01uS+wsN6LgrmOWCQ43klPJLyLVYiPuPtFwUiMQrkNyYZkGrM08mq+B+iGeDEnnupJccboNNpP2
+      IuTsr2lHnRChpuFmZQaKIwX+FuQ2Sk8QpQovRdF75o8/hfuDZP/7OhrNRt9NMfM1hvjkkWPeDFyl
+      sOCIGpX0cBq8azJJcKgqXFtLYPZhxLX/uvMZVQ==
+    </ds:SignatureValue>
+    <ds:KeyInfo>
+      <ds:X509Data>
+        <ds:X509Certificate>
+          MIIDzDCCArSgAwIBAgIJAPZrg8geTQj5MA0GCSqGSIb3DQEBCwUAMIGQMQswCQYDVQQDDAJDQTEX
+          MBUGCgmSJomT8ixkARkWB3ZzcGhlcmUxFTATBgoJkiaJk/IsZAEZFgVsb2NhbDELMAkGA1UEBhMC
+          VVMxEzARBgNVBAgMCkNhbGlmb3JuaWExEjAQBgNVBAoMCWxvY2FsaG9zdDEbMBkGA1UECwwSVk13
+          YXJlIEVuZ2luZWVyaW5nMB4XDTE5MTIxMDExNTYxNVoXDTI5MTIwNDEyMDUwNFowGDEWMBQGA1UE
+          AwwNc3Nvc2VydmVyU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKroomXQ6uEi
+          3/Vs2KOZFLDJUBLQfLNVNR5JGCuyPgQKzUhTR/MjYaCFxzc65QL/nRFrTXfjhhIfxxy5sh5T6n0N
+          aDjVsN2ENJxO2+NtKjPW1/NGwOTnQk4rmaM/GJVRuxydtdr5e9qMJvADTrnXxFL8fAlY1L8uVQJZ
+          u+aT847vgzC6fTB8llWM6W0Igx2e7wYsDDUM2vP8I1Ru4owi5fLzLYQGu3DsL6keIf2hcWUVMk/I
+          MfJ2zyRtv03i3YP6CA1HxSGf5U8HcldxcKP0yJ/kY+1LUtVic8mTDnOh/JpRbJ/7GwOCufi/I19k
+          tfTKh/XCcFdvhTb7a7zmsnqTAnsCAwEAAaOBnzCBnDALBgNVHQ8EBAMCBeAwDwYDVR0RBAgwBocE
+          ChdRvzAdBgNVHQ4EFgQU+IVKzHbV+zuQYL0H3JULN4hjM84wHwYDVR0jBBgwFoAU3iHA0Lk0Xfx6
+          S70YIkrl2dTaWBEwPAYIKwYBBQUHAQEEMDAuMCwGCCsGAQUFBzAChiBodHRwczovLzEwLjIzLjgx
+          LjE5MS9hZmQvdmVjcy9jYTANBgkqhkiG9w0BAQsFAAOCAQEAdB9h6GrpdOw0RpVpna/tJQL3/Nx9
+          fccQCaDb2OSseD8qb4miXqm0JLZTBD1MRx6I7yBCJtEZNWXm6lXC7D73kFPAZd0u0ekseCvj5pVc
+          g0ZmdoV0MKxQ6gpOU5A9dbbSPqjMJ9/YyO/bHspZcs2wBs2rWniDeSVz+M0jR6xp6Bigs2h3LcFi
+          KjkcrQ2yI0Lp7S2w00fEeNX5CP0SCkUf/pdNAoYC/n0Tp2RXarVaM58JpBgZywosjEkoqreIlYLk
+          F8WTj3Mk1JVRx2gV77OKgTZCVZYN/qqhtQPw9/LqP9/4iYx+JvNUBo6M3t5dPsAOA0zpLYsqJzUe
+          Tump10I7Yw==
+        </ds:X509Certificate>
+        <ds:X509Certificate>
+          MIIECzCCAvOgAwIBAgIJAMrg9vd4+PO0MA0GCSqGSIb3DQEBCwUAMIGQMQswCQYDVQQDDAJDQTEX
+          MBUGCgmSJomT8ixkARkWB3ZzcGhlcmUxFTATBgoJkiaJk/IsZAEZFgVsb2NhbDELMAkGA1UEBhMC
+          VVMxEzARBgNVBAgMCkNhbGlmb3JuaWExEjAQBgNVBAoMCWxvY2FsaG9zdDEbMBkGA1UECwwSVk13
+          YXJlIEVuZ2luZWVyaW5nMB4XDTE5MTIwNzEyMDUwNFoXDTI5MTIwNDEyMDUwNFowgZAxCzAJBgNV
+          BAMMAkNBMRcwFQYKCZImiZPyLGQBGRYHdnNwaGVyZTEVMBMGCgmSJomT8ixkARkWBWxvY2FsMQsw
+          CQYDVQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTESMBAGA1UECgwJbG9jYWxob3N0MRswGQYD
+          VQQLDBJWTXdhcmUgRW5naW5lZXJpbmcwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDz
+          iolEbJu4WcKYqJ4Hk/drErTHzsNHZLA5jY4a1fpubb0CshBkwIO1ngIgp8+8TBdoHGwsydzEgTdM
+          o+/hKIVpMrTFJK+PHBd4YVwhivbl+ABtmbhuTXmY+5S2gPMLs1amyaYYEj/MaruiJ5H6ATqctNt2
+          sNw+uUVqOvwnaSqmgvq5ll+gu920o2kipoFT+P0KLn8pmHIysPp/zBUnTJoG5A/c2by94Q54ar5V
+          mlFrb8SFv5kfq6iA/LzfQK0WoUA3QvlwMdZzw9UQFhL9Ctx5m2vxL6pgciYJGKW2JBPpNTkls7sf
+          MFeTYiVFwH0kLdWqSR0AE9tS+xWVekaUFfGpAgMBAAGjZjBkMB0GA1UdDgQWBBTeIcDQuTRd/HpL
+          vRgiSuXZ1NpYETAfBgNVHREEGDAWgQ5lbWFpbEBhY21lLmNvbYcEfwAAATAOBgNVHQ8BAf8EBAMC
+          AQYwEgYDVR0TAQH/BAgwBgEB/wIBADANBgkqhkiG9w0BAQsFAAOCAQEAT9hmDuIoxDfn5yuYbB9Y
+          zxeVZKgdptjogtiOubTHrm1kBa3G9tTzLCOfCJ3cUrX9/TCjXbrGSU+Pdlrzjhl0BsQ3iRIpv4z8
+          zjWXj5axVu/tMC77zmbirn3rByk70cbR5X/oTZ799Vx+c51AyyXmQQuClb0XIO5e9Xi0/FWzq6h2
+          FVATXwRdHc4yoneFsgxEOJ1RZyD1QMBFuIrPpuuY94pNAhIB9T1QcpL9PeClo0dgYyIEHQvC5qbX
+          FatIs3Tm5QDgy/zt95fG3ElnJnsopG79nm9RILPGjA07hgcNAWLEbQ0pRkyq0rJn5Vp9+feuXmxK
+          O1l7Ym2OAC6irISwNA==
+        </ds:X509Certificate>
+      </ds:X509Data>
+    </ds:KeyInfo>
+  </ds:Signature>
+  <saml2:Subject>
+    <saml2:NameID Format="http://schemas.xmlsoap.org/claims/UPN">Administrator@VSPHERE.LOCAL</saml2:NameID>
+    <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:holder-of-key">
+      <saml2:SubjectConfirmationData xsi:type="saml2:KeyInfoConfirmationDataType">
+        <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+          <ds:X509Data>
+            <ds:X509Certificate>
+              MIIDGDCCAgCgAwIBAgIQGOa59rMK/aZJkKXWNhc9UzANBgkqhkiG9w0BAQsFADAUMRIwEAYDVQQD
+              DAlsb2NhbGhvc3QwHhcNMjAwMTE1MTMyNDIyWhcNMjEwMTE1MTM0NDIyWjAUMRIwEAYDVQQDDAls
+              b2NhbGhvc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDey77xmdw7gBhcYTd48Y3c
+              Y5jzusQlnfsEArRx5VIgRKNOa9leQUhX+tu+CAcE/HGfDlnZEcaVUg/hmK+u7nkTOmWfdT5879fY
+              gJtSkSH+wg9/uK7wAIAy2KW0aVF2zXr34bTE+V0u2DZ3mbnMnHHLks6tbgYTWUBTHbulPcLlKCGG
+              cR+R38mj+S6hCC0Qoek8dBknobwwbZhDdFpsJ0FUmiY1SvLUbIG/SmdEAczRvFuyzOa7myLO+Hy2
+              onOgFdqR9VDw+nyMUIV/WE1PID0nXKZZcwol5N0VEnfk5ivosZrd2CaxPu8mm1fsrFS+72vRDMrl
+              o7i3zZQ+P+LcYElRAgMBAAGjZjBkMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcD
+              AgYIKwYBBQUHAwEwFAYDVR0RBA0wC4IJbG9jYWxob3N0MB0GA1UdDgQWBBTYl65QjGqKDcEBTxcl
+              fAakaH8EJjANBgkqhkiG9w0BAQsFAAOCAQEAn+4zOobiJPCpM2hvYhtQ/xlfCs8t49jsRN7maJL7
+              lNc2ZdXDJjtN2LrZIihxqmhg12BmfmrLuHyD0ij0olTfQO7okw5vVGEL+hduQQz6V1R1DWfR5JrM
+              ysOkgDgBgZ9TgV/K1/RQDa4kpF5WBU4rKpBkQMLAHQwIxO3cg+YmSVV4CvieqkGswE7tQb/B5Ofw
+              HwO0O761a8z8gJPpv9Cbmpic+axOd03aheZThZTxyKFi9gcrGb++WjdAyAd8l2v/wmHqnD83kBsO
+              EOuzad7yBOYPj6fZ6LZAEVAZ/JFPaXTel0hXHgVBHc7GKFuidHvzp6qArsTL4TIJY5TCRBGQ8Q==
+            </ds:X509Certificate>
+          </ds:X509Data>
+        </ds:KeyInfo>
+      </saml2:SubjectConfirmationData>
+    </saml2:SubjectConfirmation>
+  </saml2:Subject>
+  <saml2:Conditions NotBefore="2020-01-20T13:23:55.999Z" NotOnOrAfter="2020-02-19T13:23:55.999Z">
+    <saml2:ProxyRestriction Count="0" />
+    <saml2:Condition xmlns:rsa="http://www.rsa.com/names/2009/12/std-ext/SAML2.0" Count="10" xsi:type="rsa:RenewRestrictionType" />
+  </saml2:Conditions>
+  <saml2:AuthnStatement AuthnInstant="2020-01-20T13:23:55.997Z">
+    <saml2:AuthnContext>
+      <saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>
+    </saml2:AuthnContext>
+  </saml2:AuthnStatement>
+  <saml2:AttributeStatement>
+    <saml2:Attribute FriendlyName="Groups" Name="http://rsa.com/schemas/attr-names/2009/01/GroupIdentity" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+      <saml2:AttributeValue xsi:type="xsd:string">vsphere.local\Users</saml2:AttributeValue>
+      <saml2:AttributeValue xsi:type="xsd:string">vsphere.local\Administrators</saml2:AttributeValue>
+      <saml2:AttributeValue xsi:type="xsd:string">vsphere.local\CAAdmins</saml2:AttributeValue>
+      <saml2:AttributeValue xsi:type="xsd:string">vsphere.local\SystemConfiguration.BashShellAdministrators</saml2:AttributeValue>
+      <saml2:AttributeValue xsi:type="xsd:string">vsphere.local\SystemConfiguration.Administrators</saml2:AttributeValue>
+      <saml2:AttributeValue xsi:type="xsd:string">vsphere.local\LicenseService.Administrators</saml2:AttributeValue>
+      <saml2:AttributeValue xsi:type="xsd:string">vsphere.local\Everyone</saml2:AttributeValue>
+    </saml2:Attribute>
+    <saml2:Attribute FriendlyName="Subject Type" Name="http://vmware.com/schemas/attr-names/2011/07/isSolution" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+      <saml2:AttributeValue xsi:type="xsd:string">false</saml2:AttributeValue>
+    </saml2:Attribute>
+    <saml2:Attribute FriendlyName="givenName" Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+      <saml2:AttributeValue xsi:type="xsd:string">Administrator</saml2:AttributeValue>
+    </saml2:Attribute>
+    <saml2:Attribute FriendlyName="surname" Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+      <saml2:AttributeValue xsi:type="xsd:string">vsphere.local</saml2:AttributeValue>
+    </saml2:Attribute>
+  </saml2:AttributeStatement>
+</saml2:Assertion>

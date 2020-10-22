@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SesClient": {
+      "commandName": "Project",
+      "commandLineArgs": "https://10.23.81.39 administrator@vsphere.local Admin!23 Get-Folder"
+    }
+  }
+}

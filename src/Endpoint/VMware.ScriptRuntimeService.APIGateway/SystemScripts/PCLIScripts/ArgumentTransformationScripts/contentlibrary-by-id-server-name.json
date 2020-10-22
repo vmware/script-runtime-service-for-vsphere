@@ -1,0 +1,7 @@
+{
+  "id": "contentlibrary-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.ViCore.Types.V1.ContentLibrary.ContentLibrary",
+  "script_template": "Get-ContentLibrary -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

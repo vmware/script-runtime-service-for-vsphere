@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "VMware.ScriptRuntimeService.Setup": {
+      "commandName": "Project",
+      "commandLineArgs": "--k8ssettings C:\\git-repos\\k8s-experiments\\k8ssettings.json",
+      "environmentVariables": {
+        "TARGET_VC_USER": "administrator@vsphere.local",
+        "TARGET_VC_PASSWORD": "Admin!23",
+        "TARGET_VC_SERVER": "10.23.80.118",
+        "SERVICE_SIGNING_CERTIFICATE_PATH": "C:\\git-repos\\cpbu-psexecutionhost\\test\\install\\certs\\sign.pfx",
+        "TARGET_VC_INSECURE": "True",
+        "SERVICE_TLS_CERTIFICATE_PATH": "C:\\git-repos\\cpbu-psexecutionhost\\test\\install\\certs\\tls.pfx",
+        "TARGET_VC_THUMBPRINT": "71B11CA6E4861C86F74F33F802AA43F6C9E62F56",
+        "SERVICE_HOSTNAME": "srs.eng.vmware.com"
+      }
+    }
+  }
+}

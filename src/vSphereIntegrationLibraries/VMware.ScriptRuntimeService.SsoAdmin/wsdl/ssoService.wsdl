@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+   Copyright 2005-2017 VMware, Inc.  All rights reserved.
+-->
+<definitions targetNamespace="urn:ssoService"
+   xmlns="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:interface="urn:sso"
+>
+   <import location="sso.wsdl" namespace="urn:sso" />
+   <service name="SsoService">
+      <port binding="interface:SsoBinding" name="SsoPort">
+         <soap:address location="http://localhost:8080/sso-adminserver/sdk" />
+      </port>
+   </service>
+</definitions>

@@ -1,0 +1,7 @@
+{
+  "id": "network-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.ViCore.Types.V1.Network.Network",
+  "script_template": "Get-VirtualNetwork -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

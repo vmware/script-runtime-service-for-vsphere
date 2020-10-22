@@ -1,0 +1,7 @@
+{
+  "id": "vdswitch-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VVMware.VimAutomation.Vds.Types.V1.VDSwitch",
+  "script_template": "Get-VDSwitch -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

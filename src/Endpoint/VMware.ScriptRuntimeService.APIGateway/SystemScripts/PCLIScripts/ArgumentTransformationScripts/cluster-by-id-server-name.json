@@ -1,0 +1,7 @@
+{
+  "id": "cluster-by-id-server-name",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Types.Cluster",
+  "script_template": "Get-Cluster -Id <id> -Server <server>",
+  "placeholders": [ "id", "server" ]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "vdportgroup-by-id-server-instance-uuid",
+  "script_runtime": "PowerCLI",
+  "result_type": "VMware.VimAutomation.Vds.Types.V1.VDPortgroup",
+  "script_template": "Get-VDPortgroup -Id <id> -Server ($global:DefaultVIServers | Where-Object {$_.InstanceUuid -eq <server_instance_uuid>})",
+  "placeholders": [ "id", "server_instance_uuid" ]
+}

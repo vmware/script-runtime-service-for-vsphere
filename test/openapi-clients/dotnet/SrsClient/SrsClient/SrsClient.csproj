@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="IO.Swagger">
+      <HintPath>..\lib\IO.Swagger.dll</HintPath>
+    </Reference>
+    <Reference Include="JsonSubTypes">
+      <HintPath>..\lib\JsonSubTypes.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\lib\RestSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

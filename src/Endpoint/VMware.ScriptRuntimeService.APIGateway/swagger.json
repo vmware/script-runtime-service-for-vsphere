@@ -1,0 +1,1476 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Script Runtime Service for vSphere",
+    "description": "# Script Runtime Service API\r\n\r\nScript Runtime Service for vSphere (SRS) allows running PowerShell and PowerCLI scripts. SRS is a VC add-on that is deployed separately from VCSA. SRS can be accessed via REST API that allows you to create PowerShell instances and run PowerShell and PowerCLI scripts within. No Connect-VIServer is required to run PowerCLI against VC(s) SRS is registered to.\r\n\r\n## Authetication\r\n\r\nSRS uses VC SSO as Identity and Authentication Server. Two types of authentication are supported. SIGN and Basic. SIGN authentication is purposed for Service-To-Service access to SRS resources. For convenience of the end-users SRS supports basic authentication passing username and password which are used to acquire SAML HoK token for SRS solution. When basic is used SRS exchanges the username and password for SAML HoK token from the SSO server. SRS uses the SAML token to Connect PowerCLI to VC services in further operations. \r\nOn successful authentication SRS returns API Key which is required to authorize further SRS API calls.",
+    "version": "1.0",
+    "x-vmw-vapi-codegenconfig": {
+      "package-name": "com.vmware.srs"
+    }
+  },
+  "paths": {
+    "/api/about": {
+      "get": {
+        "tags": [
+          "about"
+        ],
+        "summary": "Retrieves about information for the product",
+        "description": "### Retrieve about information\r\n### Returns\r\n**about** resource with information for the product.",
+        "operationId": "get.about",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/About"
+                }
+              }
+            }
+          }
+        },
+        "x-vmw-vapi-servicename": "about",
+        "x-vmw-vapi-methodname": "get",
+        "x-vmw-doc-operation": "get.about"
+      },
+      "x-vmw-doc-resource": "About",
+      "x-vmw-doc-domain": "about"
+    },
+    "/api/argument-scripts/templates": {
+      "get": {
+        "tags": [
+          "argumentscripts"
+        ],
+        "summary": "List available argument script templates",
+        "description": "### LList available argument script templates\r\nArgument script templates are scripts with placeholders. When placeholders are replaced by values script can be executed in a given script runtime.\r\nArgument script templates are designed to help to convert simple type values to objects of types that can only be produced in a given script runtime. Those object can be used as arguments to scripts' parameters.\r\n\r\nThis operation retrieves the available argument script templates.",
+        "operationId": "list.argument.scripts.templates",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArgumentScriptTemplate"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "argument_scripts",
+        "x-vmw-vapi-methodname": "list_templates",
+        "x-vmw-doc-operation": "list.argument.scripts.templates"
+      },
+      "x-vmw-doc-resource": "ArgumentScript",
+      "x-vmw-doc-domain": "argumentscripts"
+    },
+    "/api/argument-scripts/templates/{id}": {
+      "get": {
+        "tags": [
+          "argumentscripts"
+        ],
+        "summary": "Retrieves argument script template by given unique template identifier",
+        "description": "### Retrieves argument script template by given unique template identifier\r\nThis operation returns argument script template for the specified template id.",
+        "operationId": "get.argument.scripts.template",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Id of the argument script template",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The Id of the argument script template",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArgumentScriptTemplate"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "argument_scripts",
+        "x-vmw-vapi-methodname": "get_template",
+        "x-vmw-doc-operation": "get.argument.scripts.template"
+      },
+      "x-vmw-doc-resource": "ArgumentScript",
+      "x-vmw-doc-domain": "argumentscripts"
+    },
+    "/api/argument-scripts/script": {
+      "post": {
+        "tags": [
+          "argumentscripts"
+        ],
+        "summary": "Creates scripts for a given script template id and placeholder values",
+        "description": "### Creates scripts for a given script template id and placeholder values\r\nReplaces the placeholders in a given argument transformation script template with given values on the placeholder_value_list field\r\nThe result script can be provided to a **script execution** parameter that expects specific script runtime type\r\n\r\n### Example\r\nIf the template argument transformation script is\r\n\r\nGet-VM -Id <vm-id> -Server <server>\r\n\r\nThe result of this operation with given Id 'vm-1' and Server 'server-1' would be\r\n\r\nGet-VM -Id 'vm-1' -Server 'server-1'",
+        "operationId": "create.argument.scripts.script",
+        "requestBody": {
+          "description": "The argument script create request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArgumentScript"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArgumentScript"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "argument_scripts",
+        "x-vmw-vapi-methodname": "create_script",
+        "x-vmw-doc-operation": "create.argument.scripts.script"
+      },
+      "x-vmw-doc-resource": "ArgumentScript",
+      "x-vmw-doc-domain": "argumentscripts"
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Exchanges client credentials or SIGN token for SRS access key",
+        "description": "Uses VCenter SSO as Identity and Authentication Server.\r\nTwo types of authentication are supported SIGN and Basic.\r\nWhen Basic authentication is used service exchanges username and password for SAML from VCenter SSO.\r\nWhen SIGN authentication is used service exchanges the SSO SAML token from the SIGN token for another SAML token on behalf of the user from VCenter SSO.\r\nOn successful authentication with SSO the service issues **X-SRS-API-KEY** token are returns it the response headers. **X-SRS-API-KEY** token is used to authorize access to service resources. \r\nThe service associates **X-SRS-API-KEY** token to acquired from SSO SAML token. The associated SSO SAML token is used to authorize PowerCLI to VCenter services.",
+        "operationId": "login",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "basicAuth": [ ]
+          },
+          {
+            "signAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "authentication",
+        "x-vmw-vapi-methodname": "login",
+        "x-vmw-doc-operation": "login"
+      },
+      "x-vmw-doc-resource": "session",
+      "x-vmw-doc-domain": "authentication"
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Revokes SRS access key",
+        "description": "The service revokes **X-SRS-API-KEY** and deletes all non-active **runspace** resources associated with it.\r\nActive runspaces will be deletely immediately after the completion of the scripts they run.",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "authentication",
+        "x-vmw-vapi-methodname": "logout",
+        "x-vmw-doc-operation": "logout"
+      },
+      "x-vmw-doc-resource": "session",
+      "x-vmw-doc-domain": "authentication"
+    },
+    "/api/runspaces": {
+      "post": {
+        "tags": [
+          "runspaces"
+        ],
+        "summary": "Starts a runspace creation",
+        "description": "### Create a runspace\r\nRunspace creation and preparation time depends on requested runspace details.\r\nIf connection to VCenter Servers is requested the operation is going to create a PowerShell instance, load and connect a PowerCLI module to the VCenter.\r\n### Returns\r\nWhen request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource that is in creation state initially.",
+        "operationId": "create.runspace",
+        "requestBody": {
+          "description": "Desired runspace resource.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Runspace"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Runspace"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "runspaces",
+        "x-vmw-vapi-methodname": "create",
+        "x-vmw-doc-operation": "create.runspace"
+      },
+      "get": {
+        "tags": [
+          "runspaces"
+        ],
+        "summary": "List all runspaces",
+        "description": "### List all runspaces\r\n### Returns\r\nReturns a list of your runspaces.",
+        "operationId": "list.runspaces",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Runspace"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "runspaces",
+        "x-vmw-vapi-methodname": "list",
+        "x-vmw-doc-operation": "list.runspaces"
+      },
+      "x-vmw-doc-resource": "Runspace",
+      "x-vmw-doc-domain": "runspaces"
+    },
+    "/api/runspaces/{id}": {
+      "get": {
+        "tags": [
+          "runspaces"
+        ],
+        "summary": "Retrieve a runspace",
+        "description": "### Retrieve a runspace\r\nRetrieves the details of a runspace. One only needs to supply the unique runspace identifier that was returned on runspace creation to retrieve runspace details.\r\n### Returns\r\nReturns a **runspace** resource instance if a valid identifier was provided.\r\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.",
+        "operationId": "get.runspace",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Runspace"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "runspaces",
+        "x-vmw-vapi-methodname": "get",
+        "x-vmw-doc-operation": "get.runspace"
+      },
+      "delete": {
+        "tags": [
+          "runspaces"
+        ],
+        "summary": "Deletes a runspace",
+        "description": "### Deletes a runspace\r\nDeletes the PowerShell instance that is prepresented by this **runspace** resource.\r\nRunning script in the PowerShell won't prevent the operation.\r\n### Returns\r\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.",
+        "operationId": "delete.runspace",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "runspaces",
+        "x-vmw-vapi-methodname": "delete",
+        "x-vmw-doc-operation": "delete.runspace"
+      },
+      "x-vmw-doc-resource": "Runspace",
+      "x-vmw-doc-domain": "runspaces"
+    },
+    "/api/script-executions/{id}/output": {
+      "get": {
+        "tags": [
+          "scriptexecutions"
+        ],
+        "summary": "Retrieves output objects produced by a script execution.",
+        "description": "### Retrieves output objects produced by a script execution ###\r\nOutput object could be in different format depending on the requested output object format on **script execution** request.\r\nText and json are currently supported.\r\nWhen text is requested the objects that are produces ad an output by the script execution are formatted in table, the same way Format-Table formats the objects in PowerShell. Each item in the list of string represents single line of formatted output.\r\nWhen output is formatted in json custom json formatting is used to serialize the objects produced by the script execution. The json object contain type name and full name of the interfaces the object implements. This is suitable if you want to present the objects in some context.",
+        "operationId": "get.script.execution.output",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier of the script execution",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Unique identifier of the script execution",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "script_executions",
+        "x-vmw-vapi-methodname": "get_output",
+        "x-vmw-doc-operation": "get.script.execution.output"
+      },
+      "x-vmw-doc-resource": "ScriptExecution",
+      "x-vmw-doc-domain": "scriptexecutions"
+    },
+    "/api/script-executions/{id}/streams/{stream-type}": {
+      "get": {
+        "tags": [
+          "scriptexecutions"
+        ],
+        "summary": "Retrieves list of stream records received during script execution.",
+        "description": "### Retrieves list of stream records received during script execution\r\nDuring execution of a script the script execution engine collects streams that are produced by the script execution.\r\nThere are five types of stream: information, error, warning, debug, verbose.",
+        "operationId": "get.script.execution.stream",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier of the script execution",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Unique identifier of the script execution",
+              "nullable": true
+            }
+          },
+          {
+            "name": "stream-type",
+            "in": "path",
+            "description": "Type of the stream for which records to be rterieved",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/StreamType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StreamRecord"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "script_executions",
+        "x-vmw-vapi-methodname": "get_stream",
+        "x-vmw-doc-operation": "get.script.execution.stream"
+      },
+      "x-vmw-doc-resource": "StreamRecord",
+      "x-vmw-doc-domain": "scriptexecutions"
+    },
+    "/api/script-executions": {
+      "post": {
+        "tags": [
+          "scriptexecutions"
+        ],
+        "summary": "Creates a script execution",
+        "description": "### Create a script execution\r\n**Script execution** represents asynchronous execution of a script in a specified **runspace**\r\nWhen created **script execution** starts running in the **runspace**. To monitor the script execution\r\nprogress polling of the resource by its identifier should be used.\r\n### Retruns\r\nWhen request is accepted **202 Accepted** with **Location** header is returned in the response that leads you to the **script execution** resource that is in running state initially.\r\nWhen script execution is requested with non existing runspace  **404 Not Found** is returned.",
+        "operationId": "create.script.execution",
+        "requestBody": {
+          "description": "Desired script execution resource.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScriptExecution"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScriptExecution"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "script_executions",
+        "x-vmw-vapi-methodname": "create",
+        "x-vmw-doc-operation": "create.script.execution"
+      },
+      "get": {
+        "tags": [
+          "scriptexecutions"
+        ],
+        "summary": "List all script executions",
+        "description": "### List all script executions      \r\n### Returns\r\nReturns a list of your script executions.",
+        "operationId": "list.script.executions",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScriptExecution"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "script_executions",
+        "x-vmw-vapi-methodname": "list",
+        "x-vmw-doc-operation": "list.script.executions"
+      },
+      "x-vmw-doc-resource": "ScriptExecution",
+      "x-vmw-doc-domain": "scriptexecutions"
+    },
+    "/api/script-executions/{id}/cancel": {
+      "post": {
+        "tags": [
+          "scriptexecutions"
+        ],
+        "summary": "Cancels a script execution",
+        "description": "### Cancel a script execution\r\nThis operation is equivalent of pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be cancelled.\r\nThe state of the **script execution** will become cancelled after this operation. The operation is asynchronous. Cancel request\r\nis sent to the runtime.\r\n\r\n### Returns\r\nThe operation doesn't return value. **200 Ok** will be returned if the request is successful.",
+        "operationId": "cancel.script.execution",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the script execution",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The id of the script execution",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "script_executions",
+        "x-vmw-vapi-methodname": "cancel",
+        "x-vmw-doc-operation": "cancel.script.execution"
+      },
+      "x-vmw-doc-resource": "ScriptExecution",
+      "x-vmw-doc-domain": "scriptexecutions"
+    },
+    "/api/script-executions/{id}": {
+      "get": {
+        "tags": [
+          "scriptexecutions"
+        ],
+        "summary": "Retrieve a script execution",
+        "description": "### Retrieve a script execution\r\nRetrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on script execution creation.      \r\n### Returns\r\nReturns a **script execution** resource instance if a valid identifier was provided.\r\nWhen requesting the Id of a script execution that doesn't exist **404 NotFound** is returned.",
+        "operationId": "get.script.execution",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScriptExecution"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [ ]
+          }
+        ],
+        "x-vmw-vapi-servicename": "script_executions",
+        "x-vmw-vapi-methodname": "get",
+        "x-vmw-doc-operation": "get.script.execution"
+      },
+      "x-vmw-doc-resource": "ScriptExecution",
+      "x-vmw-doc-domain": "scriptexecutions"
+    }
+  },
+  "components": {
+    "schemas": {
+      "About": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the product.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "vendor": {
+            "type": "string",
+            "description": "Vendor name.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the product.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "api_version": {
+            "type": "string",
+            "description": "Version of the API.",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "About object allows you to read information for the product."
+      },
+      "ArgumentScriptTemplate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the object.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "script_runtime": {
+            "type": "string",
+            "description": "ScriptRuntime on which this script can be executed.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "result_type": {
+            "type": "string",
+            "description": "Type name of the object that is produced by the script template.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "script_template": {
+            "type": "string",
+            "description": "The script template.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "placeholders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The script template placeholders that has to be replaced by strings to produce a valid script.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "ArgumentScriptTemplate object represents a script with placeholders. If placeholders are replaced by values script can be executed.\r\nThe purpose of the script is to produce an object of type valid for a given script runtime. The result type of the script is usually\r\ninput type for other scripts. The ArgumentScriptTemplate scripts are designed to help to convert simple type values to \r\nobjects of types that can only be produced in a given script runtime."
+      },
+      "PlaceholderValue": {
+        "required": [
+          "placeholder_name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "placeholder_name": {
+            "type": "string",
+            "description": "Name of the placeholder in the script template which will be replaced on creation of an argument script."
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Value that will be used to replace the placeholder on creation of an argument script."
+          }
+        },
+        "additionalProperties": false,
+        "description": "PlaceholderValue object represents single value for a placeholder in template script."
+      },
+      "PlaceholderValueList": {
+        "required": [
+          "values"
+        ],
+        "type": "object",
+        "properties": {
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlaceholderValue"
+            },
+            "description": "List of script placeholder values."
+          }
+        },
+        "additionalProperties": false,
+        "description": "PlaceholderValueList object represents list of argument script placeholder values."
+      },
+      "ArgumentScript": {
+        "required": [
+          "template_id",
+          "template_placeholder_value_list"
+        ],
+        "type": "object",
+        "properties": {
+          "template_id": {
+            "type": "string",
+            "description": "Unique identifier for the argument template script."
+          },
+          "template_placeholder_value_list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlaceholderValueList"
+            },
+            "description": "Placeholder value list which are used to create script from script template.\r\n\r\nSingle template_placeholder_value_list produces script by the given template replacing placeholder with the given values.\r\nMultiple items for template_placeholder_value_list produce a script of scripts which can produce an array of objects. Each template_placeholder_value_list item is used to produce script from template. Scripts are then combined in a multi-line script where each line produces result object."
+          },
+          "script": {
+            "type": "string",
+            "description": "Script result produced by the service based on given template_id and template_placeholder_parameters",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "ArgumentScript object represents a script produced from given script template and placeholder values."
+      },
+      "ErrorDetails": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Code of the internal service error. It is useful when error is reported to service maintainers.",
+            "format": "int32"
+          },
+          "error_message": {
+            "type": "string",
+            "description": "Error message.",
+            "nullable": true
+          },
+          "details": {
+            "type": "string",
+            "description": "Details of the error.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "ErrorDetails object gives information for an API error.",
+        "readOnly": true
+      },
+      "RunspaceState": {
+        "enum": [
+          "ready",
+          "active",
+          "creating",
+          "error"
+        ],
+        "type": "string",
+        "description": "RunspaceState defines possible runspace states.",
+        "readOnly": true
+      },
+      "Runspace": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the runspace. It is optional to give a name of the runspace on create request. If name was not specified on runspace creation the field has null value.",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the object.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "state": {
+            "$ref": "#/components/schemas/RunspaceState"
+          },
+          "error_details": {
+            "$ref": "#/components/schemas/ErrorDetails"
+          },
+          "run_vc_connection_script": {
+            "type": "boolean",
+            "description": "Boolean that indicates whether PowerCLI connection has to be initialized when a Runspace creation is requested.\r\n\r\nIt is optional to request VCenter Servers connection to be initialized on create request.\r\nIf true is specified PowerCLI Connect-VIServer cmdlet will be called in the create PowerShell instance.\r\nConnect-VIServer uses the authorized user's SSO SAML token to connect to VCenter servers.\r\nConnection to all linked VCetner servers will be established. When requested the runspace creation will be slower\r\nwith the time needed for PowerCLI modules loading and Connect-VIServer execution time. _vc_connection_script_state\r\nfield will hold state of the script completion. In case errors have occured during connect script execution\r\n_vc_connection_script_error_records will be populated.\r\n\r\nDefault value is false."
+          },
+          "vc_connection_script_id": {
+            "type": "string",
+            "description": "Id of vc connection script if it was requested on runspace create request.\r\nYou can use this id to retrieve all the details of the script execution.\r\nThe script could fail and the details about the script failure would be available in scriptexecutions API.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "creation_time": {
+            "type": "string",
+            "description": "Time at which the object was created. String representing time in format ISO 8601.",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Runspace object allows you to create and delete isolated PowerShell instance for your script executions.\r\nThe API allows you to create, read, and delete runspaces."
+      },
+      "StreamType": {
+        "enum": [
+          "information",
+          "error",
+          "warning",
+          "debug",
+          "verbose"
+        ],
+        "type": "string",
+        "description": "StreamType defines script execution data stream types."
+      },
+      "StreamRecord": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message of the stream records.",
+            "nullable": true
+          },
+          "time": {
+            "type": "string",
+            "description": "Time the message was received by the script execution engine. String representing time in format ISO 8601.",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false,
+        "description": "StreamRecord object represents a single record of script stream."
+      },
+      "OutputObjectsFormat": {
+        "enum": [
+          "text",
+          "json"
+        ],
+        "type": "string"
+      },
+      "ScriptExecutionState": {
+        "enum": [
+          "success",
+          "error",
+          "running",
+          "canceled"
+        ],
+        "type": "string",
+        "description": "ScriptExecutionState defines possible script execution states.",
+        "readOnly": true
+      },
+      "ScriptExecution": {
+        "required": [
+          "runspace_id",
+          "script"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the object.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "runspace_id": {
+            "type": "string",
+            "description": "Unique identifier of the runspace where script execution is performed."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the script execution. It is optional to give a name of the script execution on create request. If name was not specified on script execution creation the field has null value.",
+            "nullable": true
+          },
+          "script": {
+            "type": "string",
+            "description": "Content of the script."
+          },
+          "script_parameters": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/BooleanArrayScriptParameter"
+                },
+                {
+                  "$ref": "#/components/schemas/BooleanScriptParameter"
+                },
+                {
+                  "$ref": "#/components/schemas/IntegerArrayScriptParameter"
+                },
+                {
+                  "$ref": "#/components/schemas/IntegerScriptParameter"
+                },
+                {
+                  "$ref": "#/components/schemas/NumberArrayScriptParameter"
+                },
+                {
+                  "$ref": "#/components/schemas/NumberScriptParameter"
+                },
+                {
+                  "$ref": "#/components/schemas/StringArrayScriptParameter"
+                },
+                {
+                  "$ref": "#/components/schemas/StringScriptParameter"
+                }
+              ]
+            },
+            "description": "List of arguments that will be passed to the script.\r\nIf script content defines parameters argument can be provided.\r\nThe parameter names defined in the script content should match the names specified in this list.",
+            "nullable": true
+          },
+          "output_objects_format": {
+            "$ref": "#/components/schemas/OutputObjectsFormat"
+          },
+          "state": {
+            "$ref": "#/components/schemas/ScriptExecutionState"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for the current script execution state. In most of the cases reason field will be empty. In case\r\nof an error or cancellation reason will contain information about the reason that caused script execution to\r\nbecome in this state.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "start_time": {
+            "type": "string",
+            "description": "Time at which the script execution was started. String representing time in format ISO 8601.",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "end_time": {
+            "type": "string",
+            "description": "Time at which the script execution was finished. String representing time in format ISO 8601.",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Script Execution object allows you to run a script in a runspace.\r\nThe API allows you to create, cancel, and retrieve script executions."
+      },
+      "BooleanArrayScriptParameter": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+          },
+          "script": {
+            "type": "string",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "nullable": true
+          }
+        }
+      },
+      "BooleanScriptParameter": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+          },
+          "script": {
+            "type": "string",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "nullable": true
+          }
+        }
+      },
+      "IntegerArrayScriptParameter": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+          },
+          "script": {
+            "type": "string",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "nullable": true
+          }
+        }
+      },
+      "IntegerScriptParameter": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+          },
+          "script": {
+            "type": "string",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "nullable": true
+          }
+        }
+      },
+      "NumberArrayScriptParameter": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+          },
+          "script": {
+            "type": "string",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "nullable": true
+          }
+        }
+      },
+      "NumberScriptParameter": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+          },
+          "script": {
+            "type": "string",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "nullable": true
+          }
+        }
+      },
+      "StringArrayScriptParameter": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+          },
+          "script": {
+            "type": "string",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "nullable": true
+          }
+        }
+      },
+      "StringScriptParameter": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+          },
+          "script": {
+            "type": "string",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "nullable": true
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "name": "X-SRS-API-KEY",
+        "in": "header"
+      },
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "signAuth": {
+        "type": "http",
+        "scheme": "SIGN"
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": [ ]
+    },
+    {
+      "basicAuth": [ ]
+    },
+    {
+      "signAuth": [ ]
+    }
+  ]
+}

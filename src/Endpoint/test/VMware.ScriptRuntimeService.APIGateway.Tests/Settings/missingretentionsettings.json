@@ -1,0 +1,10 @@
+{
+  "RunspaceProviderSettings": {
+    "DockerApiEndpoint": "http://10.23.82.131:5555/v1.39",
+    "RunspaceContainerName": "pclirunspace",
+    "RunspaceContainerNetworkName": "docker_gwbridge"
+  },
+  "ScriptExecutionStorageSettings": {
+    "ServiceScriptStorageDir": "script_executions"
+  }
+}
