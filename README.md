@@ -14,7 +14,7 @@ Script Runtime Service for vSphere (SRS) enables vSphere users and services (cli
 ![SRS Overview](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/SRSOverview.jpg?raw=true)
 
 ## Build & Run
-Script Runtime Service is a kubernetes application but since it is vSphere add-on service you can build and package it in a Photon OS OVF virtual machine from source code. OVF has custom properties that take care to register SRS to desired VCenter Server on first boot. Thus, you can have SRS deployed and configured with simple ovf deploy without having k8s cluster.
+Script Runtime Service is a kubernetes application but since it is vSphere add-on service you can build and package it in a Photon OS OVF virtual machine from source code. OVF has custom properties that take care to register SRS to desired vCenter Server on first boot. Thus, you can have SRS deployed and configured with simple ovf deploy.
 
 ### Prerequisites
 
