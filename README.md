@@ -28,7 +28,7 @@ Script Runtime Service is a kubernetes application but since it is vSphere add-o
 * [Packer](https://www.packer.io/docs/install)
 
 
-### Build & Run
+### How to build and run SRS
 
 > `packer` builds the OVA on a remote ESXi host via the [`vmware-iso`](https://www.packer.io/docs/builders/vmware-iso.html) builder. This builder requires the SSH service running on the ESXi host, as well as `GuestIPHack` enabled via the command below.
 ```bash
@@ -61,7 +61,7 @@ esxcli system settings advanced set -o /Net/GuestIPHack -i 1
 
 ## Documentation
 
-## Try SRS API
+## SRS API
 API definition is available on `https://<SRS Address>/swagger`<br/>
 
 ### 1 Authetication
