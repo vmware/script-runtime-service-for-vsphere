@@ -256,6 +256,6 @@ signed as described on that page. Your signature certifies that you wrote the pa
 as an open-source patch. For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
-Script Runtime Service for vSphere is distributed under the Apache 2.0.
+Script Runtime Service for vSphere is distributed under the [Apache 2.0](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/LICENSE.txt).
 
-For more details, please refer to the Apache 2.0 License File.
+For more details, please refer to the [Apache 2.0 License File](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/LICENSE.txt).
