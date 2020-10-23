@@ -30,7 +30,7 @@ Script Runtime Service is a kubernetes application but since it is vSphere add-o
 
 ### How to build and run SRS
 
-> `packer` builds the OVA on a remote ESXi host via the [`vmware-iso`](https://www.packer.io/docs/builders/vmware-iso.html) builder. This builder requires the SSH service running on the ESXi host, as well as `GuestIPHack` enabled via the command below.
+> `packer` builds the OVF on a remote ESXi host via the [`vmware-iso`](https://www.packer.io/docs/builders/vmware-iso.html) builder. This builder requires the SSH service running on the ESXi host, as well as `GuestIPHack` enabled via the command below.
 ```bash
 esxcli system settings advanced set -o /Net/GuestIPHack -i 1
 ```
@@ -47,7 +47,7 @@ esxcli system settings advanced set -o /Net/GuestIPHack -i 1
 }
 ```
 
-**Note:** If you need to change the initial root password on the SRS appliance, take a look at `photon-version.json` and `http/photon-kickstart.json`. When the OVA is produced, there is no default password, so this does not really matter other than for debugging purposes.
+**Note:** If you need to change the initial root password on the SRS appliance, take a look at `photon-version.json` and `http/photon-kickstart.json`. When the OVF is produced, there is no default password, so this does not really matter other than for debugging purposes.
 
 2. Start the build by running the [build.sh script](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/build.sh)  which builds Script Runtime Service containers and then calls `packer` and the respective build files
 
