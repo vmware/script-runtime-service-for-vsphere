@@ -1,5 +1,12 @@
 #!/bin/bash -x
+
+# **************************************************************************$
+#  Copyright 2020 VMware, Inc.$
+#  SPDX-License-Identifier: Apache-2.0$
+# **************************************************************************
+
 PCLI_SOURCE_DIR=$1
+
 if [ -z "$PCLI_SOURCE_DIR" ];then
 	echo -e "\e[31mERROR: Specify source PowerCLI Modules directory as first argument of this script.\e[0m"
 	echo "Usage: build.sh ~/PowerCLIMoudles"

@@ -1,4 +1,8 @@
-﻿using IO.Swagger.Api;
+﻿// **************************************************************************
+//  Copyright 2020 VMware, Inc.
+//  SPDX-License-Identifier: Apache-2.0
+// **************************************************************************
+using IO.Swagger.Api;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
 using System;
