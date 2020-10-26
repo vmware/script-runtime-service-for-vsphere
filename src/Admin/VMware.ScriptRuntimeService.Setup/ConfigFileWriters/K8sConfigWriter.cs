@@ -24,9 +24,11 @@ namespace VMware.ScriptRuntimeService.Setup.ConfigFileWriters
             k8sSettings?.AccessToken,
             k8sSettings?.Namespace);
          _logger = loggerFactory.CreateLogger(typeof(K8sConfigWriter).FullName);
+         _logger.LogDebug("K8s ConfigFileWriter created");
       }
 
       public void WriteBinaryFile(string name, string filePath) {
+         _logger.LogInformation($"Writing binary file k8s opaque secret name: {name}, file: {filePath}");
          if (_k8sClient.CreateBinarySecret(name, filePath) == null) {
             var errorMessage = "_k8sClient.CreateBinarySecret didn't produce result";
             _logger.LogError(errorMessage);
@@ -35,6 +37,7 @@ namespace VMware.ScriptRuntimeService.Setup.ConfigFileWriters
       }
 
       public void WriteTlsCertificate(string name, string crtFilePath, string keyFilePath) {
+         _logger.LogInformation($"Writing k8s Tls secret name: {name}, certificateFilePath: {crtFilePath}");
          if (_k8sClient.CreateTlsSecret(name, crtFilePath, keyFilePath) == null) {
             var errorMessage = "_k8sClient.CreateTlsSecret didn't produce result";
             _logger.LogError(errorMessage);
@@ -42,7 +45,8 @@ namespace VMware.ScriptRuntimeService.Setup.ConfigFileWriters
          }         
       }
 
-      public void WriteTrustedCACertificates(IEnumerable<string> encodedCertificates) {         
+      public void WriteTrustedCACertificates(IEnumerable<string> encodedCertificates) {
+         _logger.LogInformation($"Writing k8s config map with Trusted CA certificates");
          var data = new Dictionary<string, string>();
          foreach (var encodedCert in encodedCertificates) {
             var cert = new X509Certificate2(Encoding.ASCII.GetBytes(encodedCert));
@@ -53,6 +57,7 @@ namespace VMware.ScriptRuntimeService.Setup.ConfigFileWriters
       }
 
       public void WriteSetupSettings(SetupServiceSettings setupServiceSettings) {
+         _logger.LogInformation($"Writing k8s config map with setup settings");
          _k8sClient.RecreateConfigMap("setup-settings", new Dictionary<string, string> {
             { "setupsettings.json", JsonConvert.SerializeObject(setupServiceSettings.Memento, Formatting.Indented) }      
          });
@@ -62,6 +67,7 @@ namespace VMware.ScriptRuntimeService.Setup.ConfigFileWriters
          const string configMapName = Constants.StsSettingsConfigMapName;
          const string configMapDataKey = Constants.StsSettingsConfigMapDataKey;
 
+         _logger.LogInformation($"Writing k8s config map with service settings");
          var settingsEditor = new SettingsEditor();
          settingsEditor.AddStsSettings(stsSettings);
          var settingsJson = settingsEditor.GetSettingsJsonContent();

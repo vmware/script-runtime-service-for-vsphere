@@ -1,0 +1,63 @@
+# Default values for Script Runtime Service for vSphere
+###################################
+# Script Runtime Service - Common Configs
+###################################
+srs:
+  ##
+  ## configs for the docker image of SRS Configuration Job
+  ##
+  setup_image:
+    repository: "harbor-stg-repo.vmware.com/script_runtime_service/srs-setup"
+    tag: "1.0"
+    ## values: Always or IfNotPresent
+    pullPolicy: IfNotPresent    
+  ##
+  ## configs for the docker image of PowerCLI Runtime
+  ##
+  pclirunspace_image:
+    repository: "harbor-stg-repo.vmware.com/script_runtime_service/pclirunspace"
+    tag: "12.1"
+    ## values: Always or IfNotPresent
+    pullPolicy: IfNotPresent    
+  ##
+  ## configs for the docker image of SRS API Gateway
+  ##
+  apigateway_image:
+    repository: "harbor-stg-repo.vmware.com/script_runtime_service/srs-apigateway"
+    tag: "1.0"
+    ## values: Always or IfNotPresent
+    pullPolicy: IfNotPresent    
+  ##
+  ## configs for the web service
+  ##
+  service:
+    ##
+    ## DNS name for the service, it is be used on initial install to generate
+    ## self-signed TLS certificate and also to configure ingress resource to
+    ## perform TLS termination for this hostname.
+    ## Script Runtime Service Administratora should
+    ## configure DNS record for the external ingress IP with this
+    ## hostname.
+    ##
+    hostname: srs.vmware.com
+  limits:
+    ##
+    ## Defines maximum number of runspaces that can be opened simulteniously
+    ##
+    max_number_runspaces: 5
+    ##
+    ## Defines maximum time in minutes which runspace can stay idle without running scripts.
+    ## When this time elapsed the runspace will be closed automatically by the service.
+    ##
+    max_runspace_idle_minutes: 5
+    ##
+    ## Defines maximum time in minutes which runspace can stay active running a script.
+    ## When this time elapsed the runspace will be closed automatically by the service.
+    ## This is for protecting service to run infinite scripts.
+    ##
+    max_runspace_active_minutes: 60
+    ##
+    ## Defines number of script output records per user to be persisted for the user.
+    ## Service deletes oldest records when this limit is reached.
+    ##
+    script_history_records_per_user: 30
