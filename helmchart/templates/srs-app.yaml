@@ -22,7 +22,7 @@ data:
       },
       "AllowedHosts": "*",
       "RunspaceProviderSettings": {
-        "K8sRunspaceImageName": {{ .Values.srs.pclirunspace_image.repository }}:{{ .Values.srs.pclirunspace_image.tag }},
+        "K8sRunspaceImageName": "{{ .Values.srs.pclirunspace_image.repository }}:{{ .Values.srs.pclirunspace_image.tag }}",
         "K8sRunspacePort": 5550,
         "K8sVerifyRunspaceApiIsAccessibleOnCreate": true,
         "RunspaceTrustedCertsConfigMapName": "trusted-ca-certs",
