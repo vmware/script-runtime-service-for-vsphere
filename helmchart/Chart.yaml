@@ -1,0 +1,11 @@
+apiVersion: v2
+name: srs
+description: A Helm chart for Script Runtime Service for vSphere
+type: application
+version: 1.0.0
+appVersion: 1.0.0
+maintainers:
+- email: dmilov@vmware.com
+  name: dmilov
+sources:
+- https://github.com/vmware/script-runtime-service-for-vsphere/

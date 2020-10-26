@@ -34,7 +34,7 @@ namespace VMware.ScriptRuntimeService.Setup {
          _arguments = arguments;
          _maxExecutionTime = maxExecutionTimeMs;
 
-         _logger.LogDebug("ShellCommandRunner constructler");
+         _logger.LogDebug("ShellCommandRunner constructor");
          _logger.LogDebug($"  Shell: {_shellFileName}");
          _logger.LogDebug($"  Arguments: {_arguments}");         
       }
