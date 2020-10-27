@@ -266,6 +266,16 @@ Java and C# example client appliactions based on automatic generate client-side 
 
 The script-runtime-service-for-vsphere project team welcomes contributions from the community. If you wish to contribute code and you have not signed our contributor license agreement (CLA), our bot will update the issue when you open a Pull Request. For any questions about the CLA process, please refer to our [FAQ](https://cla.vmware.com/faq). For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Join us on Slack
+
+The repo is in very early stage for contributors. A lot of documentation is pending to be created. Until it is done you can use the script-runtime-service-assist channel on VMware Code slack
+
+1. Join [VMware Code](https://code.vmware.com/web/code/join)
+2. Join the following channel:
+    ```
+    script-runtime-service-assist
+    ```
+
 ## License
 Script Runtime Service for vSphere is distributed under the [Apache 2.0](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/LICENSE.txt).
 
