@@ -22,7 +22,7 @@ data:
       },
       "AllowedHosts": "*",
       "RunspaceProviderSettings": {
-        "K8sRunspaceImageName": {{ .Values.srs.pclirunspace_image.repository }}:{{ .Values.srs.pclirunspace_image.tag }},
+        "K8sRunspaceImageName": "{{ .Values.srs.pclirunspace_image.repository }}:{{ .Values.srs.pclirunspace_image.tag }}",
         "K8sRunspacePort": 5550,
         "K8sVerifyRunspaceApiIsAccessibleOnCreate": true,
         "RunspaceTrustedCertsConfigMapName": "trusted-ca-certs",
@@ -184,7 +184,7 @@ spec:
     - {{ required "Specify SRS service hostname" .Values.srs.service.hostname  }}
     secretName: srs-tls
   rules:
-#  - host: {{ required "Specify SRS service hostname" .Values.srs.service.hostname  }}
+  - host: {{ required "Specify SRS service hostname" .Values.srs.service.hostname  }}
   - http:
       paths:
       - path: /

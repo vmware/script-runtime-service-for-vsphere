@@ -26,7 +26,7 @@ helm install ./srs/ --generate-name --set vc.address='<target vc address>' --set
 
 #### Example
 ```bash
-helm install ./srs/ --generate-name --set vc.address='10.23.80.118' --set vc.user='administrator@vsphere.local' --set vc.password='Admin!23' --set srs.service.hostname='srs.testdomain.com' vc.tls_thumbprint='71b11ca6e4861c86f74f33f802aa43f6c9e62f56'
+helm install ./srs/ --generate-name --set vc.address='10.23.80.118' --set vc.user='administrator@vsphere.local' --set vc.password='Admin!23' --set srs.service.hostname='srs.testdomain.com' --set vc.tls_thumbprint='71b11ca6e4861c86f74f33f802aa43f6c9e62f56'
 ```
 
 ## Uninstall
