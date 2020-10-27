@@ -14,7 +14,13 @@ Script Runtime Service for vSphere (SRS) enables vSphere users and services (cli
 ![SRS Overview](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/SRSOverview.jpg?raw=true)
 
 ## Build & Run
-Script Runtime Service is a kubernetes application but since it is vSphere add-on service you can build and package it in a Photon OS OVF virtual machine from source code. OVF has custom properties that take care to register SRS to desired vCenter Server on first boot. Thus, you can have SRS deployed and configured with simple ovf deploy.
+Script Runtime Service is a kubernetes application but since it is vSphere add-on service you can build and package it in a Photon OS OVF virtual machine from source code. Build uses Photon OS appliance templates from [William Lam](https://github.com/lamw) github repository [photon os appliance](https://github.com/lamw/photonos-appliance)  modified with custom properties that take care to register SRS to desired vCenter Server on first boot. Thus, you can have SRS deployed and configured with simple ovf deploy.
+
+Result appliance packages [Photon OS](https://vmware.github.io/photon/), [docker](https://docs.docker.com/engine/install/), [kind](https://kind.sigs.k8s.io/) kubernetes with  [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/), and the Script Runtime Service for vSphere K8s appliaction deployed in `script-runtime-service` namespace.<br/>
+
+If you login on the deployed result VM `kubectl` is availble to browse the kubernetes cluster.<br/>
+
+![SRS Appliance](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/appliance.jpg?raw=true)
 
 ### Prerequisites
 
@@ -57,18 +63,20 @@ esxcli system settings advanced set -o /Net/GuestIPHack -i 1
 
 3. Deploy SRS from OVF on vSphere with [deploy.ps1](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/appliance/deploy.ps1) PowerShell script which basically edits the OvfConfig settings by given parameters and deploys a VM from the OVA.
 
-4. Test SRS API is available on `https://<SRS VM IP>/swagger`
-
-## Documentation
+4. Test SRS API is available on `https://<SRS VM IP>/swagger`.
 
 ## SRS API
-API definition is available on `https://<SRS Address>/swagger`<br/>
+API definition is available on `https://<SRS Address>/swagger`. Swagger UI hosted here is the easiest way to try the API.<br/>
+
+![Swagger UI](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/SwaggerUI.JPG?raw=true)
 
 ### 1 Authetication
-SRS uses VC SSO as Identity and Authentication Server. Two types of authentication are supported. SIGN and Basic. SIGN authentication is purposed for service to service access to SRS resources. For convenience of the end-users SRS supports basic authentication passing username and password which are used only to acquire HoK Saml token for SRS solution. When basic is used SRS uses usename and password to present them to SSO server and exchange them for SAML token. SES uses the SAML token to Connect PowerCLI to VC services in further operations. <br/>
+SRS uses VC SSO as Identity and Authentication Server. Two types of authentication are supported. SIGN and Basic. SIGN authentication is purposed for service to service access to SRS resources. For convenience of the end-users SRS supports basic authentication passing username and password which are used only to acquire HoK Saml token for SRS solution. When basic is used SRS uses usename and password to present them to SSO server and exchange them for SAML token. SRS uses the SAML token to Connect PowerCLI to VC services in further operations. <br/>
 On successful authentication SRS issues its own Authorization token which MUST be used to authorize further SRS API calls.<br />
 
-`POST https://<SES IP>/api/auth/login`
+`POST https://<SRS IP>/api/auth/login`
+
+In Swagger UI use `Authorize` button to provide username and password for basic autentication, and then use the `Try it out` button of `/api/auth/login` to `Execute` login operation.
 
 Example basic authentication request:<br/>
 ```bash
@@ -86,7 +94,9 @@ strict-transport-security: max-age=15724800; includeSubDomains
 x-srs-api-key: b3133982-93ea-4f92-ba03-2e122c1e0fd8
 ```
 
-`x-srs-api-key` header contains the issued authorization token it shold be used for futher SES API calls<br/>
+`x-srs-api-key` header contains the issued authorization token it shold be used for futher SRS API calls<br/>
+
+In Swagger UI having the API KEY go `Authorize` to remove `basicAuth` and to provide `apiKeyAuth` with valude returned by `login` operation. After that you can try to create runspace and request script execution following guidelines below.<br/>
 
 ### 2 Create Runspace (PowerShell instance running in SRS)
 
@@ -248,9 +258,23 @@ curl -X GET "https://10.23.81.245/api/script-executions/c6927736-84db-4e53-8e72-
 ]
 ```
 
+## SRS API Client-side SDKs
+[Swagger Codegen](https://github.com/swagger-api/swagger-codegen) can be used to generate client side SDKs for different lnaguages.<br/>
+Java and C# example client appliactions based on automatic generate client-side SDKs are available in [OpenAPI Clients](https://github.com/vmware/script-runtime-service-for-vsphere/tree/master/test/openapi-clients).<br/>
+
 ## Contributing
 
 The script-runtime-service-for-vsphere project team welcomes contributions from the community. If you wish to contribute code and you have not signed our contributor license agreement (CLA), our bot will update the issue when you open a Pull Request. For any questions about the CLA process, please refer to our [FAQ](https://cla.vmware.com/faq). For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Join us on Slack
+
+The repo is in very early stage for contributors. A lot of documentation is pending to be created. Until it is done you can use the script-runtime-service-assist channel on VMware Code slack
+
+1. Join [VMware Code](https://code.vmware.com/web/code/join)
+2. Join the following channel:
+    ```
+    script-runtime-service-assist
+    ```
 
 ## License
 Script Runtime Service for vSphere is distributed under the [Apache 2.0](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/LICENSE.txt).
