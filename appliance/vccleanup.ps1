@@ -44,14 +44,15 @@ param(
    }
 
    Write-Host "Build '$libraryProjectFile'"
-   dotnet build $libraryProjectFile | Out-Null
+   $configuration = 'Debug'
+   dotnet build --configuration $configuration $libraryProjectFile | Out-Null
 
    # Return Path to build output
    [IO.Path]::Combine(
       $librariesSourcePath,
       $LibraryName,
       "bin",
-      "Debug",
+      $configuration,
       "netcoreapp3.0",
       "$LibraryName.dll")
 }
