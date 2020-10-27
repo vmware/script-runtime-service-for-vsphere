@@ -68,7 +68,7 @@ esxcli system settings advanced set -o /Net/GuestIPHack -i 1
 ## SRS API
 API definition is available on `https://<SRS Address>/swagger`. Swagger UI hosted here is the easiest way to try the API.<br/>
 
-![Swagger UI](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/SwaggerUI.jpg?raw=true)
+![Swagger UI](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/SwaggerUI.JPG?raw=true)
 
 ### 1 Authetication
 SRS uses VC SSO as Identity and Authentication Server. Two types of authentication are supported. SIGN and Basic. SIGN authentication is purposed for service to service access to SRS resources. For convenience of the end-users SRS supports basic authentication passing username and password which are used only to acquire HoK Saml token for SRS solution. When basic is used SRS uses usename and password to present them to SSO server and exchange them for SAML token. SRS uses the SAML token to Connect PowerCLI to VC services in further operations. <br/>
