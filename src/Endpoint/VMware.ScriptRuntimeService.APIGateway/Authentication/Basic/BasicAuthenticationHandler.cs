@@ -78,7 +78,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                };
                var identity = new ClaimsIdentity(claims, AuthenticationScheme);
                var principal = new ClaimsPrincipal(identity);
-               ;
+
                result = AuthenticateResult.Success(
                   new AuthenticationTicket(principal, AuthenticationScheme));
                
