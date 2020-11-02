@@ -49,9 +49,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Sign {
                _logger.Log(LogLevel.Debug, "Handle SIGN Authentication Start");
                // Authorization Header should conform https://wiki.eng.vmware.com/SSO/REST
                var authZValue = Request.Headers["Authorization"].FirstOrDefault();
-
-               _logger.Log(LogLevel.Debug, $"Authorization header value: {authZValue}");
-
+               
                // Service support multiple Authentication header, check 
                // this handler should handle current one
                if (!string.IsNullOrEmpty(authZValue) && authZValue.StartsWith(Constants.SignAuthenticationScheme)) {
