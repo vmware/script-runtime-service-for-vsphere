@@ -215,6 +215,44 @@ Describe "Runspaces API Tests" {
          $actual | Should -BeNullOrEmpty
       }
 
+      It 'Delete Runspace for connected runspace generates disconnect script execution' {
+
+         # Arrange
+         $connection = $script:sesUser1Connection
+
+         $runspace = Invoke-RestMethod `
+               -Method POST `
+               -Uri "$($connection.APIBasePath)/runspaces" `
+               -Headers $connection.Headers `
+               -Body (
+                  @{
+                     "run_vc_connection_script" = $true
+                  } `
+                  | ConvertTo-Json
+               ) `
+               -SkipCertificateCheck
+
+         Invoke-RestMethod `
+               -Method DELETE `
+               -Uri "$($connection.APIBasePath)/runspaces/$($runspace.Id)" `
+               -Headers $connection.Headers `
+               -SkipCertificateCheck
+
+         # Wait 1 second for disconnect script to be generated
+         Start-Sleep -Seconds 1
+
+         # Act
+         $actual = Invoke-RestMethod `
+               -Method GET `
+               -Uri "$($connection.APIBasePath)/script-executions" `
+               -Headers $connection.Headers `
+               -SkipCertificateCheck
+
+         # Assert
+         $actual | Where-Object {$_.Name -eq 'disconnectallservers'} | Should -Not -BeNull
+
+      }
+
       It 'Gets Runspace taht doesn`t exist' {
 
          # Arrange
