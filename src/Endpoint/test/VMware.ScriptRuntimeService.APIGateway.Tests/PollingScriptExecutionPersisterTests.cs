@@ -102,5 +102,43 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
          scriptExecutionWriterMock.Verify(x => x.WriteScriptExecution(runningNamedScriptExecution), Times.Exactly(2));
          scriptExecutionWriterMock.Verify(x => x.WriteScriptExecution(completeNamedScriptExecution), Times.Exactly(1));
       }
+
+      [Test]
+      public void StartInitializesRunningScriptWithNameAndId() {
+         // Arrange
+         ILogger logger = new Mock<ILogger>().Object;
+         var scriptId = "testScriptId";
+         var scriptName = "testScriptName";
+         var runspaceMock = new Mock<IRunspace>();         
+
+         var runningScriptExecutionResultMock = new Mock<IScriptExecutionResult>();
+         runningScriptExecutionResultMock.Setup(m => m.State).Returns(ScriptState.Running);
+         runningScriptExecutionResultMock.Setup(m => m.OutputObjectCollection).Returns(new OutputObjectCollection());
+
+         var completeScriptExecutionResultMock = new Mock<IScriptExecutionResult>();
+         completeScriptExecutionResultMock.Setup(m => m.State).Returns(ScriptState.Success);
+         completeScriptExecutionResultMock.Setup(m => m.OutputObjectCollection).Returns(new OutputObjectCollection());
+
+         runspaceMock.Setup(m => m.GetScript(scriptId)).Returns(() => {
+            return runningScriptExecutionResultMock.Object;          
+         });
+
+         var scriptExecutionWriterMock = new Mock<IScriptExecutionStoreProvider>();
+     
+         var runningNamedScriptExecution = new NamedScriptExecutionMock {
+            Name = scriptName,
+            Id = scriptId,
+            State = ScriptState.Running            
+         };
+         scriptExecutionWriterMock.Setup(m => m.WriteScriptExecution(runningNamedScriptExecution)).Verifiable();
+
+         var testObject = new PollingScriptExecutionPersister(logger);
+
+         // Act
+         testObject.Start(runspaceMock.Object, scriptId, scriptName, scriptExecutionWriterMock.Object);
+                
+         // Assert         
+         scriptExecutionWriterMock.Verify(x => x.WriteScriptExecution(runningNamedScriptExecution), Times.AtLeastOnce());
+      }
    }
 }

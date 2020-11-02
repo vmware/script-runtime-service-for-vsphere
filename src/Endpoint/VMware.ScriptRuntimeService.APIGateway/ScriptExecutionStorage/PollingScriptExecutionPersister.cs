@@ -25,6 +25,14 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
       public void Start(IRunspace runspaceClient, string scriptId, string scriptName, IScriptExecutionStoreProvider scriptExecutionWriter) {
          int maxGetLastScriptFailures = 3;
          int lastScriptFailures = 0;
+
+         // Initialize scriptExecutionWriter with running script execution with Id, Name, and State
+         scriptExecutionWriter.WriteScriptExecution(new NamedScriptExecution {
+            Name = scriptName,
+            Id = scriptId,
+            State = ScriptState.Running
+         });
+
          Task.Run(() => {
             IScriptExecutionResult scriptExecutionResult = null;
             do {
