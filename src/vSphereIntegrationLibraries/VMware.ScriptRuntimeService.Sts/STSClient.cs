@@ -140,7 +140,8 @@ namespace VMware.ScriptRuntimeService.Sts
             TokenType = "urn:oasis:names:tc:SAML:2.0:assertion",
             KeyType = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/Bearer",
             Lifetime = null,
-            DelegatableSpecified = false
+            Delegatable = true,
+            DelegatableSpecified = true
          };
 
          // Security Token Request Authorization Header
@@ -609,7 +610,8 @@ namespace VMware.ScriptRuntimeService.Sts
             TokenType = "urn:oasis:names:tc:SAML:2.0:assertion",
             KeyType = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/Bearer",
             Lifetime = null,
-            DelegatableSpecified = false
+            Delegatable = true,
+            DelegatableSpecified = true
          };
 
          // Security Token Request Authorization Header
