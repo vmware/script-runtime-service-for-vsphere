@@ -309,6 +309,9 @@
     <None Update="SystemScripts\PCLIScripts\ArgumentTransformationScripts\vm-by-id-server-name.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="SystemScripts\PCLIScripts\DisconnectAllServers.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="SystemScripts\PCLIScripts\ConnectByStringSamlToken.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
