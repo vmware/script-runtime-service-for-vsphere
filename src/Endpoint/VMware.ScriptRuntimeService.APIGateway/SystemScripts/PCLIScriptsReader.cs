@@ -27,6 +27,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.SystemScripts {
       #region Public Interface
       public static string ConnectByStringSamlToken => File.ReadAllText(GetFullPath("ConnectByStringSamlToken.ps1"));
 
+      public static string DisconnectAllServers => File.ReadAllText(GetFullPath("DisconnectAllServers.ps1"));
+
       public static IEnumerable<ArgumentScriptTemplate> ListArgumentTransformationScriptNames() {
          var scriptsDir = GetFullPath(ArgumentScriptsDirName);
          foreach (var filePath in Directory.GetFiles(scriptsDir)) {

@@ -271,8 +271,49 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                      runspaceId));
             }
 
+            var runspaceInfo = _runspaceProvider.Get(runspaceId);
+            var runspaceData = _userRunspaces.GetData(userId, runspaceId);
             _userRunspaces.RemoveData(userId, runspaceId);
-            _runspaceProvider.Kill(runspaceId);
+
+            if (runspaceData.RunVcConnectionScript) {
+               // Run Disconnect script to close VC server sessions first and then kill the runspace
+               Task.Run(() => {
+                  _logger.LogDebug("RunspaceProvider -> Run disconnect VI server ");
+                  try {
+                     var scriptExecutionRequest = new DataTypes.ScriptExecution {
+                        OutputObjectsFormat = OutputObjectsFormat.Json,
+                        Name = "disconnectallservers",
+                        Script = PCLIScriptsReader.DisconnectAllServers
+                     };
+
+                     _logger.LogDebug($"Start Disconnect All Servers script");
+                     var scriptResult = ScriptExecutionMediatorSingleton.
+                        Instance.
+                        ScriptExecutionMediator.
+                        StartScriptExecution(userId, runspaceInfo, scriptExecutionRequest).Result;                     
+
+                     _logger.LogDebug($"Wait Disconnect All Servers script to complete");
+                     while (scriptResult.State == ScriptState.Running) {
+                        var intermediateResult = ScriptExecutionMediatorSingleton.Instance.ScriptExecutionMediator.GetScriptExecution(
+                           userId,
+                           scriptResult.Id);
+                        if (intermediateResult != null) {
+                           scriptResult = intermediateResult;
+                        }
+                        Thread.Sleep(100);
+                     }
+                  } catch (RunspaceEndpointException runspaceEndointException) {
+                     _logger.LogError(runspaceEndointException, "Runspace endpoint exception while waiting connect VC script");                     
+                  } catch (Exception exc) {
+                     _logger.LogError(exc, "Wait Disconnect All Servers script failed");                     
+                  }
+
+                  _runspaceProvider.Kill(runspaceId);
+               });
+            } else {
+               _runspaceProvider.Kill(runspaceId);
+            }
+
             _runspacesStatsMonitor.Unregister(runspaceId);
             if (_userRunspaces.List(userId) == null) {
                _userRunspaces.RemoveUser(userId);
