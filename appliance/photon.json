@@ -96,6 +96,11 @@
       "type": "file",
       "source": "files/setup.sh",
       "destination": "/root/setup.sh"
+    },
+    {
+      "type": "file",
+      "source": "files/update-pclirunspace-image.sh",
+      "destination": "/root/update-pclirunspace-image.sh"
     }
   ],
   "post-processors": [
