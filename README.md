@@ -71,7 +71,7 @@ API definition is available on `https://<SRS Address>/swagger`. Swagger UI hoste
 ![Swagger UI](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/SwaggerUI.JPG?raw=true)
 
 ### 1 Authetication
-SRS uses VC SSO as Identity and Authentication Server. Two types of authentication are supported. SIGN and Basic. SIGN authentication is purposed for service to service access to SRS resources. For convenience of the end-users SRS supports basic authentication passing username and password which are used only to acquire HoK Saml token for SRS solution. When basic is used SRS uses usename and password to present them to SSO server and exchange them for SAML token. SRS uses the SAML token to Connect PowerCLI to VC services in further operations. <br/>
+SRS uses VC SSO as Identity and Authentication Server. Two types of authentication are supported. SIGN and Basic. SIGN authentication is purposed for service to service access to SRS resources. For the end-users SRS supports basic authentication passing username and password which are used only to acquire HoK Saml token for SRS solution. When basic is used SRS uses usename and password to present them to SSO server and exchange them for SAML token. SRS uses the SAML token to Connect PowerCLI to VC services in further operations. <br/>
 On successful authentication SRS issues its own Authorization token which MUST be used to authorize further SRS API calls.<br />
 
 `POST https://<SRS IP>/api/auth/login`
@@ -80,7 +80,7 @@ In Swagger UI use `Authorize` button to provide username and password for basic 
 
 Example basic authentication request:<br/>
 ```bash
-curl -X POST "https://10.23.81.245/api/auth/login" -H "accept: \*/\*" -H "Authorization: Basic YWRtaW5pc3RyYXRvckB2c3BoZXJlLmxvY2FsOkFkbWluITIz"
+curl -X POST "https://10.23.81.245/api/auth/login" -H "accept: \*/\*" -H "Authorization: Basic YWRt..."
 ```
 
 `Response:`
@@ -94,9 +94,9 @@ strict-transport-security: max-age=15724800; includeSubDomains
 x-srs-api-key: b3133982-93ea-4f92-ba03-2e122c1e0fd8
 ```
 
-`x-srs-api-key` header contains the issued authorization token it shold be used for futher SRS API calls<br/>
+`x-srs-api-key` header contains the issued authorization token it should be used to authorize further SRS API calls<br/>
 
-In Swagger UI having the API KEY go `Authorize` to remove `basicAuth` and to provide `apiKeyAuth` with valude returned by `login` operation. After that you can try to create runspace and request script execution following guidelines below.<br/>
+In Swagger UI having the API KEY go `Authorize` to remove `basicAuth` and to provide `apiKeyAuth` with the value returned by `login` operation. After that you can try to create runspace and request script execution following guidelines below.<br/>
 
 ### 2 Create Runspace (PowerShell instance running in SRS)
 
@@ -236,7 +236,7 @@ curl -X GET "https://10.23.81.245/api/script-executions/c6927736-84db-4e53-8e72-
 `Example:`
 
 ```bash
-curl -X GET "https://10.23.81.245/api/script-executions/c6927736-84db-4e53-8e72-e8d0c95dca2b/output?limit=20" -H "accept: application/json" -H "X-SRS-API-KEY: b3133982-93ea-4f92-ba03-2e122c1e0fd8"
+curl -X GET "https://10.23.81.245/api/script-executions/c6927736-84db-4e53-8e72-e8d0c95dca2b/output" -H "accept: application/json" -H "X-SRS-API-KEY: b3133982-93ea-4f92-ba03-2e122c1e0fd8"
 ```
 
 `Response:`
