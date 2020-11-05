@@ -1,9 +1,9 @@
 {
   "variables": {
     "photon_ovf_template": "photon.xml.template",
-    "ovftool_deploy_vcenter": "10.23.83.238",
-    "ovftool_deploy_vcenter_username": "administrator@vsphere.local",
-    "ovftool_deploy_vcenter_password": "ca$hc0w"
+    "ovftool_deploy_vcenter": "",
+    "ovftool_deploy_vcenter_username": "",
+    "ovftool_deploy_vcenter_password": ""
   },
   "builders": [
     {
