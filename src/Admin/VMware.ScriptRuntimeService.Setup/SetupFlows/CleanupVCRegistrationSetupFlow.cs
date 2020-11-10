@@ -62,7 +62,7 @@ namespace VMware.ScriptRuntimeService.Setup.SetupFlows
             string srsServiceId = null;
             string srsOwnerId = null;
             foreach (var service in registeredServices) {
-               if (service.serviceDescriptionResourceKey == "srs.ServiceDescritpion") {
+               if (service.ownerId?.StartsWith("srs-SolutionOwner-") ?? false) {
                   // SRS Service registration found
                   srsServiceId = service.serviceId;
                   srsOwnerId = service.ownerId;
