@@ -39,7 +39,7 @@ srs:
     ## configure DNS record for the external ingress IP with this
     ## hostname.
     ##
-    hostname: srs.vmware.com
+    hostname: srs.example.domain
   limits:
     ##
     ## Defines maximum number of runspaces that can be opened simulteniously
