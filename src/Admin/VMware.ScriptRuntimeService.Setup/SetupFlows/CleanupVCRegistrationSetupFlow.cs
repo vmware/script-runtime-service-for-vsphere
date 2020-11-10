@@ -27,7 +27,7 @@ namespace VMware.ScriptRuntimeService.Setup.SetupFlows
          if (loggerFactory == null) throw new ArgumentNullException(nameof(loggerFactory));
 
          _loggerFactory = loggerFactory;
-         _logger = loggerFactory.CreateLogger(typeof(UnregisterFromVCSetupFlow));
+         _logger = loggerFactory.CreateLogger(typeof(CleanupVCRegistrationSetupFlow));
       }
 
       public int Run(UserInput userInput) {
