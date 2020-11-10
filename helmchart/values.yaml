@@ -61,3 +61,15 @@ srs:
     ## Service deletes oldest records when this limit is reached.
     ##
     script_history_records_per_user: 30
+  ##
+  ## configs persistin script execution output on a persistent volume claim
+  ##
+  persistence:
+    ##
+    ## Storage class name for the Peristent Volume Claim to be created
+    ##
+    #storage_class_name: standard
+    ##
+    ## Size of the Persistent Volume
+    ##
+    #storage_size: 200Mi

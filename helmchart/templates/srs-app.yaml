@@ -96,6 +96,23 @@ subjects:
   name: srs-runspace-provider
   namespace: script-runtime-service
 ---
+{{ if and .Values.srs.persistence.storage_class_name .Values.srs.persistence.storage_size }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: srs-scriptexecutions-pvc
+  namespace: script-runtime-service
+  finalizers: []
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.srs.persistence.storage_class_name }}
+  resources:
+    requests:
+      storage: {{ .Values.srs.persistence.storage_size }}
+
+---
+{{ end  }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -135,6 +152,10 @@ spec:
             - name: sign-certificate
               mountPath: "/app/service/settings/certs"
               readOnly: true
+            {{ if and .Values.srs.persistence.storage_class_name .Values.srs.persistence.storage_size }}
+            - name: scriptexecutions-volume
+              mountPath: "/app/service/scriptsstore"
+            {{ end }}
           ports:
             - containerPort: 5050
               protocol: TCP
@@ -157,6 +178,11 @@ spec:
             items:
             - key: sts-settings.json
               path: sts-settings.json
+        {{ if and .Values.srs.persistence.storage_class_name .Values.srs.persistence.storage_size }}
+        - name: scriptexecutions-volume
+          persistentVolumeClaim:
+            claimName: srs-scriptexecutions-pvc
+        {{ end }}
 ---
 apiVersion: v1
 kind: Service
