@@ -2,6 +2,22 @@
 ###################################
 # Script Runtime Service - Common Configs
 ###################################
+##
+## VC parameters to which SRS is going to be registered
+##
+#vc:
+  ## VC IP or FQDN which SRS will be registered to
+  #address:
+  ## VC Administrator user wchih will perform the SRS regitration actions
+  #user:
+  ## VC Administrator password
+  #password:
+  ## Sha1 thumbprint of VC Tls certificate
+  #tls_thumbprint:
+
+##
+## SRS service configuration
+##
 srs:
   ##
   ## configs for the docker image of SRS Configuration Job
@@ -39,7 +55,7 @@ srs:
     ## configure DNS record for the external ingress IP with this
     ## hostname.
     ##
-    hostname: srs.example.domain
+    #hostname: srs.example.domain
   limits:
     ##
     ## Defines maximum number of runspaces that can be opened simulteniously
