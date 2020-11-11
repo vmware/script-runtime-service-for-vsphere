@@ -27,6 +27,9 @@ namespace VMware.ScriptRuntimeService.Setup.SetupFlows
             case SetupFlowType.UpdateTrustedCACertificates:
                result = new UpdateTrustedCACertificatesSetupFlow(loggerFactory);
                break;
+            case SetupFlowType.CleanupVCRegistration:
+               result = new CleanupVCRegistrationSetupFlow(loggerFactory);
+               break;
          }
          return result;
       }

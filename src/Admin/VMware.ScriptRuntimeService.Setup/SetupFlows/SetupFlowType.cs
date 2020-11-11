@@ -13,6 +13,7 @@ namespace VMware.ScriptRuntimeService.Setup.SetupFlows
       RegisterWithVC,
       UnregisterFromVC,
       UpdateTlsCertificate,
-      UpdateTrustedCACertificates
+      UpdateTrustedCACertificates,
+      CleanupVCRegistration
    }
 }

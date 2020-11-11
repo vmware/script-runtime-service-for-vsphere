@@ -44,17 +44,23 @@ namespace VMware.ScriptRuntimeService.APIGateway
          }
       }
 
-      public static IWebHostBuilder CreateWebHostBuilder(string[] args) {         
-         // Path.Combine("settings", "settings.json"));
+      public static IWebHostBuilder CreateWebHostBuilder(string[] args) {
          return WebHost.CreateDefaultBuilder(args)
                .UseKestrel()
                .UseStartup<Startup>()
                .ConfigureAppConfiguration((hostingContext, config) =>
                {
-                  config.AddContentBasedUpdateJsonFileConfiguration(
-                    Path.Combine(AssemblyDirectory, "settings", "settings.json"));
-                  config.AddContentBasedUpdateJsonFileConfiguration(
-                    Path.Combine(AssemblyDirectory, "settings", "sts-settings.json"));
+                  var settingsPath = Path.Combine(AssemblyDirectory, "settings", "settings.json");
+                  if (File.Exists(settingsPath)) {
+                     config.AddContentBasedUpdateJsonFileConfiguration(
+                        settingsPath);
+                  }
+
+                  var stsSettingsPath = Path.Combine(AssemblyDirectory, "settings", "sts-settings.json");
+                  if (File.Exists(stsSettingsPath)) {
+                     config.AddContentBasedUpdateJsonFileConfiguration(
+                        stsSettingsPath);
+                  }                  
                })
                .ConfigureLogging(logging => {
                   logging.ClearProviders();

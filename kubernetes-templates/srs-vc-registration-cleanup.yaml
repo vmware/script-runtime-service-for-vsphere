@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "srs-vc-registration-cleanup"
+spec:
+  template:
+    spec:
+      containers:
+      - image: "{{ .Values.srs.setup_image.repository }}:{{ .Values.srs.setup_image.tag }}"
+        name: srs-setup
+        imagePullPolicy: IfNotPresent
+        command: ["/app/service/setup"]
+        env:
+          - name: RUN
+            value: CleanupVCRegistration
+          - name: TARGET_VC_SERVER
+            value: "{{ required "Specify VC address to register Script Runtime Service for vSphere with" .Values.vc.address }}"
+          - name: TARGET_VC_USER
+            value: "{{ required "Specify VC user with administrator privileges to register Script Runtime Service for vSphere" .Values.vc.user }}"
+          - name: TARGET_VC_PASSWORD
+            value: "{{ required "Specify password for the VC user" .Values.vc.password }}"
+          - name: TARGET_VC_INSECURE
+            value: "True"
+      restartPolicy: Never

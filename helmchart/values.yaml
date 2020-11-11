@@ -2,6 +2,22 @@
 ###################################
 # Script Runtime Service - Common Configs
 ###################################
+##
+## VC parameters to which SRS is going to be registered
+##
+#vc:
+  ## VC IP or FQDN which SRS will be registered to
+  #address:
+  ## VC Administrator user wchih will perform the SRS regitration actions
+  #user:
+  ## VC Administrator password
+  #password:
+  ## Sha1 thumbprint of VC Tls certificate
+  #tls_thumbprint:
+
+##
+## SRS service configuration
+##
 srs:
   ##
   ## configs for the docker image of SRS Configuration Job
@@ -39,7 +55,7 @@ srs:
     ## configure DNS record for the external ingress IP with this
     ## hostname.
     ##
-    hostname: srs.vmware.com
+    #hostname: srs.example.domain
   limits:
     ##
     ## Defines maximum number of runspaces that can be opened simulteniously
@@ -61,3 +77,15 @@ srs:
     ## Service deletes oldest records when this limit is reached.
     ##
     script_history_records_per_user: 30
+  ##
+  ## configs persistin script execution output on a persistent volume claim
+  ##
+  persistence:
+    ##
+    ## Storage class name for the Peristent Volume Claim to be created
+    ##
+    #storage_class_name: standard
+    ##
+    ## Size of the Persistent Volume
+    ##
+    #storage_size: 200Mi
