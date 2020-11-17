@@ -204,6 +204,8 @@ kind: Ingress
 metadata:
   name: srs-ingress
   namespace: script-runtime-service
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
 spec:
   tls:
   - hosts:
@@ -211,7 +213,7 @@ spec:
     secretName: srs-tls
   rules:
   - host: {{ required "Specify SRS service hostname" .Values.srs.service.hostname  }}
-  - http:
+    http:
       paths:
       - path: /
         backend:

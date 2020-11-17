@@ -41,3 +41,37 @@ spec:
 
 ### Once job is completed you can the delete the the kubernetes resources created by the job with
 `kubect apply -f srs-vc-registration-cleanup.yaml`
+
+## srs-https-hostname-ingress.yaml
+When SRS is packaged in a OVF with the build procedure, the VM deployed from the OVF edits the `appliance/files/srs-app-template.yaml` Kubernetes file on first boot. This template defines the SRS ingress resource in a way the ingress controller doesn't rout by VM hostname but rahter by IP. The reason for that is to allow accessing the SRS service by IP. 
+
+If you set up a FQDN for the SRS IP address, the Ingress resource needs modification to configure traffic routing from the Ingress controller to the SRS Server API Gateway pod using the FQDN. This modification can be applied manually on the deployed resource, or it can be applied using the `srs-https-hostname-ingress.yaml` template.<br/>
+
+1. Edit the deployed Ingress resouce on the VM.
+ - Log in the SRS VM
+ - Run `kubectl edit ingress -n script-runtime-service`
+ - VIM editor is opened with the Ingress resource definition. Replace the following content
+ ```yaml
+ rules:
+  - host: < Your FQDN >
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: srs-apigateway
+          servicePort: 5050
+ ```
+ with 
+```yaml
+ rules:
+  - host: < Your FQDN >
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: srs-apigateway
+          servicePort: 5050
+ ```
+ 2. Use the  `srs-https-hostname-ingress.yaml` template
+  - Edit the template file replacing `${SRSA_HOSTNAME}` with the desired FQDN 
+  - Run `kubectl apply -f srs-https-hostname-ingress.yaml`
