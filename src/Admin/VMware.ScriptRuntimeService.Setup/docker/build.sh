@@ -39,8 +39,8 @@ mkdir $SERVICE_DESTINATION_DIR
 
 echo "INFO: dotnet publish $SERVICE_SRC_DIR"
 # The command below publishes all the dependencies in the output folder
-$DOTNET_COMMAND publish $SERVICE_SRC_DIR -c Release -f netcoreapp3.0 -o $SERVICE_DESTINATION_DIR
-$DOTNET_COMMAND build $SERVICE_SRC_DIR -c Release -f netcoreapp3.0 -r linux-x64 -o $SERVICE_DESTINATION_DIR
+$DOTNET_COMMAND publish $SERVICE_SRC_DIR -c Release -f netcoreapp3.1 -o $SERVICE_DESTINATION_DIR
+$DOTNET_COMMAND build $SERVICE_SRC_DIR -c Release -f netcoreapp3.1 -r linux-x64 -o $SERVICE_DESTINATION_DIR
 
 echo "INFO: Building $IMAGE_NAME image"
 cd $SCRIPT_DIR
