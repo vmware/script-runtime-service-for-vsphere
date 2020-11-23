@@ -89,3 +89,8 @@ srs:
     ## Size of the Persistent Volume
     ##
     #storage_size: 200Mi
+  ##
+  ## Indicates whether to configure TLS termination on the SRS Ingress resource or not.
+  ## If this values is set to false, TLS is not configured on the ingress resource. The traffic to the service depends on the configured Ingress Controller of the cluster
+  ##
+  configure_ingress_tls: true

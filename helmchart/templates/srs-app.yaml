@@ -207,6 +207,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.allow-http: "false"
 spec:
+  {{ if eq .Values.srs.configure_ingress_tls true }}
   tls:
   - hosts:
     - {{ required "Specify SRS service hostname" .Values.srs.service.hostname  }}
@@ -214,6 +215,10 @@ spec:
   rules:
   - host: {{ required "Specify SRS service hostname" .Values.srs.service.hostname  }}
     http:
+  {{ else }}
+  rules:
+  - http:
+  {{ end }}
       paths:
       - path: /
         backend:
