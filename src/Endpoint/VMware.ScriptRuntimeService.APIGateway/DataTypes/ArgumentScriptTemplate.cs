@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace VMware.ScriptRuntimeService.APIGateway.DataTypes {
    /// <summary>
-   /// ArgumentScriptTemplate object represents a script with placeholders. If placeholders are replaced by values script can be executed.
-   /// The purpose of the script is to produce an object of type valid for a given script runtime. The result type of the script is usually
-   /// input type for other scripts. The ArgumentScriptTemplate scripts are designed to help to convert simple type values to 
+   /// ArgumentScriptTemplate object represents a script with placeholders. If placeholders are replaced by values, the script can be executed.
+   /// The purpose of the script is to produce an object of a type valid for a given script runtime. The result type of the script is usually
+   /// input type for other scripts. The ArgumentScriptTemplate scripts help to convert simple type values to 
    /// objects of types that can only be produced in a given script runtime. 
    /// </summary>
    [DataContract(Name = "argument_script_template")]

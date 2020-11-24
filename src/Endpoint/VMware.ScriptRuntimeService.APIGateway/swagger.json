@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Script Runtime Service for vSphere",
-    "description": "# Script Runtime Service API\r\n\r\nScript Runtime Service for vSphere (SRS) allows running PowerShell and PowerCLI scripts. SRS is a VC add-on that is deployed separately from VCSA. SRS can be accessed via REST API that allows you to create PowerShell instances and run PowerShell and PowerCLI scripts within. No Connect-VIServer is required to run PowerCLI against VC(s) SRS is registered to.\r\n\r\n## Authetication\r\n\r\nSRS uses VC SSO as Identity and Authentication Server. Two types of authentication are supported. SIGN and Basic. SIGN authentication is purposed for Service-To-Service access to SRS resources. For convenience of the end-users SRS supports basic authentication passing username and password which are used to acquire SAML HoK token for SRS solution. When basic is used SRS exchanges the username and password for SAML HoK token from the SSO server. SRS uses the SAML token to Connect PowerCLI to VC services in further operations. \r\nOn successful authentication SRS returns API Key which is required to authorize further SRS API calls.",
+    "description": "# Script Runtime Service API\r\n\r\nScript Runtime Service for vSphere (SRS) allows running PowerShell and PowerCLI scripts. SRS is a VC add-on that is deployed separately from VCSA. SRS can be accessed via REST API that allows you to create PowerShell instances and run PowerShell and PowerCLI scripts within. No Connect-VIServer is required to run PowerCLI against VC(s) SRS is registered to.\r\n\r\n## Authetication\r\n\r\nSRS uses VC SSO as Identity and Authentication Server. Two types of authentication are supported. SIGN and Basic. SIGN authentication is purposed for Service-To-Service access to SRS resources. For the convenience of the end-users, SRS supports basic authentication passing username and password which are used to acquire SAML HoK token for SRS solution. When basic is used SRS exchanges the username and password for SAML HoK token from the SSO server. SRS uses the SAML token to Connect PowerCLI to VC services in further operations. \r\nOn successful authentication SRS returns API Key which is required to authorize further SRS API calls.",
     "version": "1.0",
     "x-vmw-vapi-codegenconfig": {
       "package-name": "com.vmware.srs"
@@ -42,7 +42,7 @@
           "argumentscripts"
         ],
         "summary": "List available argument script templates",
-        "description": "### LList available argument script templates\r\nArgument script templates are scripts with placeholders. When placeholders are replaced by values script can be executed in a given script runtime.\r\nArgument script templates are designed to help to convert simple type values to objects of types that can only be produced in a given script runtime. Those object can be used as arguments to scripts' parameters.\r\n\r\nThis operation retrieves the available argument script templates.",
+        "description": "### List available argument script templates\r\nArgument script templates are scripts with placeholders. When values replace the placeholders, the script can run in a given script runtime.\r\nArgument script templates help to convert simple type values to objects of types that can only be produced in a given script runtime. Those objects can be used as arguments to scripts' parameters.\r\n\r\nThis operation retrieves the available argument script templates.",
         "operationId": "list.argument.scripts.templates",
         "responses": {
           "200": {
@@ -122,7 +122,7 @@
           "argumentscripts"
         ],
         "summary": "Creates scripts for a given script template id and placeholder values",
-        "description": "### Creates scripts for a given script template id and placeholder values\r\nReplaces the placeholders in a given argument transformation script template with given values on the placeholder_value_list field\r\nThe result script can be provided to a **script execution** parameter that expects specific script runtime type\r\n\r\n### Example\r\nIf the template argument transformation script is\r\n\r\nGet-VM -Id <vm-id> -Server <server>\r\n\r\nThe result of this operation with given Id 'vm-1' and Server 'server-1' would be\r\n\r\nGet-VM -Id 'vm-1' -Server 'server-1'",
+        "description": "### Creates scripts for a given script template id and placeholder values\r\nReplaces the placeholders in a given argument transformation script template with given values on the placeholder_value_list field\r\nThe resulting script can be provided to a **script execution** parameter that expects a specific script runtime type\r\n\r\n### Example\r\nIf the template argument transformation script is\r\n\r\nGet-VM -Id <vm-id> -Server <server>\r\n\r\nThe result of this operation with given Id 'vm-1' and Server 'server-1' is\r\n\r\nGet-VM -Id 'vm-1' -Server 'server-1'",
         "operationId": "create.argument.scripts.script",
         "requestBody": {
           "description": "The argument script create request",
@@ -174,7 +174,7 @@
           "authentication"
         ],
         "summary": "Exchanges client credentials or SIGN token for SRS access key",
-        "description": "Uses VCenter SSO as Identity and Authentication Server.\r\nTwo types of authentication are supported SIGN and Basic.\r\nWhen Basic authentication is used service exchanges username and password for SAML from VCenter SSO.\r\nWhen SIGN authentication is used service exchanges the SSO SAML token from the SIGN token for another SAML token on behalf of the user from VCenter SSO.\r\nOn successful authentication with SSO the service issues **X-SRS-API-KEY** token are returns it the response headers. **X-SRS-API-KEY** token is used to authorize access to service resources. \r\nThe service associates **X-SRS-API-KEY** token to acquired from SSO SAML token. The associated SSO SAML token is used to authorize PowerCLI to VCenter services.",
+        "description": "Uses vCenter Server SSO as Identity and Authentication Server.\r\nTwo types of authentication are supported SIGN and Basic.\r\nWhen Basic authentication is used, the service exchanges username and password for SAML Token from the vCenter Server SSO.\r\nWhen SIGN authentication is used, the service exchanges the SSO SAML token from the SIGN token for another SAML token on behalf of the principal from the vCenter Server SSO.\r\nOn successful authentication with the SSO, the service returns **X-SRS-API-KEY** token in the response headers. **X-SRS-API-KEY** token authorizes access to the service resources. \r\nThe service associates **X-SRS-API-KEY** token to the acquired SSO SAML token. The associated SSO SAML token authenticates PowerCLI to the vCenter services.",
         "operationId": "login",
         "responses": {
           "200": {
@@ -222,7 +222,7 @@
           "authentication"
         ],
         "summary": "Revokes SRS access key",
-        "description": "The service revokes **X-SRS-API-KEY** and deletes all non-active **runspace** resources associated with it.\r\nActive runspaces will be deletely immediately after the completion of the scripts they run.",
+        "description": "The service revokes **X-SRS-API-KEY** and deletes all associated non-active **runspace** resources.\r\nActive runspaces are deleted immediately after the completion of the scripts they run.",
         "operationId": "logout",
         "responses": {
           "200": {
@@ -267,7 +267,7 @@
           "runspaces"
         ],
         "summary": "Starts a runspace creation",
-        "description": "### Create a runspace\r\nRunspace creation and preparation time depends on requested runspace details.\r\nIf connection to VCenter Servers is requested the operation is going to create a PowerShell instance, load and connect a PowerCLI module to the VCenter.\r\n### Returns\r\nWhen request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource that is in creation state initially.",
+        "description": "### Create a runspace\r\nRunspace creation and preparation time depends on the requested runspace details.\r\nIf a connection to the vCenter Servers is requested, the operation creates a PowerShell instance, loads PowerCLI modules, and connects PowerCLI to the vCenter Servers.\r\n### Returns\r\nWhen request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource. The **runspace** resource is in **creation** state initially.",
         "operationId": "create.runspace",
         "requestBody": {
           "description": "Desired runspace resource.",
@@ -390,7 +390,7 @@
           "runspaces"
         ],
         "summary": "Retrieve a runspace",
-        "description": "### Retrieve a runspace\r\nRetrieves the details of a runspace. One only needs to supply the unique runspace identifier that was returned on runspace creation to retrieve runspace details.\r\n### Returns\r\nReturns a **runspace** resource instance if a valid identifier was provided.\r\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.",
+        "description": "### Retrieve a runspace\r\nRetrieves the details of a runspace. One only needs to supply the unique runspace identifier returned on the runspace creation to retrieve runspace details.\r\n### Returns\r\nReturns a **runspace** resource instance if a valid identifier was provided.\r\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.",
         "operationId": "get.runspace",
         "parameters": [
           {
@@ -449,7 +449,7 @@
           "runspaces"
         ],
         "summary": "Deletes a runspace",
-        "description": "### Deletes a runspace\r\nDeletes the PowerShell instance that is prepresented by this **runspace** resource.\r\nRunning script in the PowerShell won't prevent the operation.\r\n### Returns\r\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.",
+        "description": "### Deletes a runspace\r\nDeletes the PowerShell instance that is prepresented by this **runspace** resource.\r\nRunning script in the PowerShell instance won't prevent the operation.\r\n### Returns\r\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.",
         "operationId": "delete.runspace",
         "parameters": [
           {
@@ -505,7 +505,7 @@
           "scriptexecutions"
         ],
         "summary": "Retrieves output objects produced by a script execution.",
-        "description": "### Retrieves output objects produced by a script execution ###\r\nOutput object could be in different format depending on the requested output object format on **script execution** request.\r\nText and json are currently supported.\r\nWhen text is requested the objects that are produces ad an output by the script execution are formatted in table, the same way Format-Table formats the objects in PowerShell. Each item in the list of string represents single line of formatted output.\r\nWhen output is formatted in json custom json formatting is used to serialize the objects produced by the script execution. The json object contain type name and full name of the interfaces the object implements. This is suitable if you want to present the objects in some context.",
+        "description": "### Retrieves output objects produced by a script execution ###\r\nOutput object could be in a different format depending on the requested output object format on **script execution** request.\r\nText and JSON are currently supported.\r\nWhen Text format is requested, the objects produced by the script execution are formatted in a table, the same way Format-Table formats the objects in PowerShell.\r\nWhen JSON format is requested, a custom json formatting is used to serialize the objects produced by the script execution. The JSON objects contain the type name and the full name of the implementing interfaces.",
         "operationId": "get.script.execution.output",
         "parameters": [
           {
@@ -583,7 +583,7 @@
           "scriptexecutions"
         ],
         "summary": "Retrieves list of stream records received during script execution.",
-        "description": "### Retrieves list of stream records received during script execution\r\nDuring execution of a script the script execution engine collects streams that are produced by the script execution.\r\nThere are five types of stream: information, error, warning, debug, verbose.",
+        "description": "### Retrieves list of stream records received during script execution\r\nDuring the execution of a script, the script execution engine collects streams that are produced by the script execution.\r\nThere are five stream types: information, error, warning, debug, verbose.",
         "operationId": "get.script.execution.stream",
         "parameters": [
           {
@@ -670,7 +670,7 @@
           "scriptexecutions"
         ],
         "summary": "Creates a script execution",
-        "description": "### Create a script execution\r\n**Script execution** represents asynchronous execution of a script in a specified **runspace**\r\nWhen created **script execution** starts running in the **runspace**. To monitor the script execution\r\nprogress polling of the resource by its identifier should be used.\r\n### Retruns\r\nWhen request is accepted **202 Accepted** with **Location** header is returned in the response that leads you to the **script execution** resource that is in running state initially.\r\nWhen script execution is requested with non existing runspace  **404 Not Found** is returned.",
+        "description": "### Create a script execution\r\n**Script execution** represents asynchronous execution of a script in a specified **runspace**\r\nWhen created **script execution** starts running in the **runspace**. To monitor the script execution\r\nprogress polling of the resource by its identifier should be used.\r\n### Retruns\r\nWhen the request is accepted **202 Accepted** with **Location** header is returned in the response that leads you to the **script execution** resource that is in running state initially.\r\nWhen script execution is requested with non-existing runspace  **404 Not Found** is returned.",
         "operationId": "create.script.execution",
         "requestBody": {
           "description": "Desired script execution resource.",
@@ -793,7 +793,7 @@
           "scriptexecutions"
         ],
         "summary": "Cancels a script execution",
-        "description": "### Cancel a script execution\r\nThis operation is equivalent of pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be cancelled.\r\nThe state of the **script execution** will become cancelled after this operation. The operation is asynchronous. Cancel request\r\nis sent to the runtime.\r\n\r\n### Returns\r\nThe operation doesn't return value. **200 Ok** will be returned if the request is successful.",
+        "description": "### Cancel a script execution\r\nThis operation is equivalent to pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be canceled.\r\nThe state of the **script execution** will become canceled after this operation. The operation is asynchronous. Cancel request\r\nis sent to the runtime.\r\n\r\n### Returns\r\nThe operation doesn't return value. **200 Ok** will be returned if the request is successful.",
         "operationId": "cancel.script.execution",
         "parameters": [
           {
@@ -991,7 +991,7 @@
           }
         },
         "additionalProperties": false,
-        "description": "ArgumentScriptTemplate object represents a script with placeholders. If placeholders are replaced by values script can be executed.\r\nThe purpose of the script is to produce an object of type valid for a given script runtime. The result type of the script is usually\r\ninput type for other scripts. The ArgumentScriptTemplate scripts are designed to help to convert simple type values to \r\nobjects of types that can only be produced in a given script runtime."
+        "description": "ArgumentScriptTemplate object represents a script with placeholders. If placeholders are replaced by values, the script can be executed.\r\nThe purpose of the script is to produce an object of a type valid for a given script runtime. The result type of the script is usually\r\ninput type for other scripts. The ArgumentScriptTemplate scripts help to convert simple type values to \r\nobjects of types that can only be produced in a given script runtime."
       },
       "PlaceholderValue": {
         "required": [
@@ -1002,18 +1002,18 @@
         "properties": {
           "placeholder_name": {
             "type": "string",
-            "description": "Name of the placeholder in the script template which will be replaced on creation of an argument script."
+            "description": "The name of the placeholder in the script template which will be replaced on the creation of an argument script."
           },
           "value": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Value that will be used to replace the placeholder on creation of an argument script."
+            "description": "Value that will be used to replace the placeholder on the creation of an argument script."
           }
         },
         "additionalProperties": false,
-        "description": "PlaceholderValue object represents single value for a placeholder in template script."
+        "description": "PlaceholderValue object represents a single value for a placeholder in template script."
       },
       "PlaceholderValueList": {
         "required": [
@@ -1058,7 +1058,7 @@
           }
         },
         "additionalProperties": false,
-        "description": "ArgumentScript object represents a script produced from given script template and placeholder values."
+        "description": "ArgumentScript object represents a script produced from a given script template and placeholder values."
       },
       "ErrorDetails": {
         "type": "object",
@@ -1116,17 +1116,17 @@
           },
           "run_vc_connection_script": {
             "type": "boolean",
-            "description": "Boolean that indicates whether PowerCLI connection has to be initialized when a Runspace creation is requested.\r\n\r\nIt is optional to request VCenter Servers connection to be initialized on create request.\r\nIf true is specified PowerCLI Connect-VIServer cmdlet will be called in the create PowerShell instance.\r\nConnect-VIServer uses the authorized user's SSO SAML token to connect to VCenter servers.\r\nConnection to all linked VCetner servers will be established. When requested the runspace creation will be slower\r\nwith the time needed for PowerCLI modules loading and Connect-VIServer execution time. _vc_connection_script_state\r\nfield will hold state of the script completion. In case errors have occured during connect script execution\r\n_vc_connection_script_error_records will be populated.\r\n\r\nDefault value is false."
+            "description": "Boolean that indicates whether PowerCLI connection has to be initialized when a Runspace creation is requested.\r\n\r\nIt is optional to request VCenter Servers connection to be initialized on create request.\r\nIf true is specified PowerCLI Connect-VIServer cmdlet will be called in the create PowerShell instance.\r\nConnect-VIServer uses the authorized user's SSO SAML token to connect to the vCenter Servers.\r\nConnection to all linked vCetner Servers will be established. When requested the runspace creation will be slower\r\nwith the time needed for PowerCLI modules loading and Connect-VIServer execution time. _vc_connection_script_state\r\nfield will hold state of the script completion. In case errors have occured during connect script execution\r\n_vc_connection_script_error_records will be populated.\r\n\r\nDefault value is false."
           },
           "vc_connection_script_id": {
             "type": "string",
-            "description": "Id of vc connection script if it was requested on runspace create request.\r\nYou can use this id to retrieve all the details of the script execution.\r\nThe script could fail and the details about the script failure would be available in scriptexecutions API.",
+            "description": "Id of the vc connection script if it was requested on the runspace create request.\r\nYou can use this id to retrieve all the details of the script execution.\r\nThe script could fail and the details about the script failure would be available in the scriptexecutions API.",
             "nullable": true,
             "readOnly": true
           },
           "creation_time": {
             "type": "string",
-            "description": "Time at which the object was created. String representing time in format ISO 8601.",
+            "description": "The time at which the object was created. String representing time in format ISO 8601.",
             "format": "date-time",
             "readOnly": true
           }
@@ -1199,7 +1199,7 @@
           },
           "name": {
             "type": "string",
-            "description": "Name of the script execution. It is optional to give a name of the script execution on create request. If name was not specified on script execution creation the field has null value.",
+            "description": "Name of the script execution. It is optional to give a name of the script execution on create request. If name was not specified on the script execution creation, the field has null value.",
             "nullable": true
           },
           "script": {
@@ -1267,7 +1267,7 @@
           }
         },
         "additionalProperties": false,
-        "description": "Script Execution object allows you to run a script in a runspace.\r\nThe API allows you to create, cancel, and retrieve script executions."
+        "description": "Script Execution resource allows you to run a script in a runspace.\r\nThe API allows you to create, cancel, and retrieve script executions."
       },
       "BooleanArrayScriptParameter": {
         "required": [

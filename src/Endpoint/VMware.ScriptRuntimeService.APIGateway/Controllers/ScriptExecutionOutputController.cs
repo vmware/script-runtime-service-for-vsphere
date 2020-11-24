@@ -27,10 +27,10 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </summary>
       /// <remarks>
       /// ### Retrieves output objects produced by a script execution ###
-      /// Output object could be in different format depending on the requested output object format on **script execution** request.
-      /// Text and json are currently supported.
-      /// When text is requested the objects that are produces ad an output by the script execution are formatted in table, the same way Format-Table formats the objects in PowerShell. Each item in the list of string represents single line of formatted output.
-      /// When output is formatted in json custom json formatting is used to serialize the objects produced by the script execution. The json object contain type name and full name of the interfaces the object implements. This is suitable if you want to present the objects in some context.      
+      /// Output object could be in a different format depending on the requested output object format on **script execution** request.
+      /// Text and JSON are currently supported.
+      /// When Text format is requested, the objects produced by the script execution are formatted in a table, the same way Format-Table formats the objects in PowerShell.
+      /// When JSON format is requested, a custom json formatting is used to serialize the objects produced by the script execution. The JSON objects contain the type name and the full name of the implementing interfaces.
       /// </remarks>
       /// <param name="id">Unique identifier of the script execution</param>      
       /// <returns></returns>

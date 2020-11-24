@@ -49,10 +49,10 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </summary>
       /// <remarks>
       /// ### Create a runspace
-      /// Runspace creation and preparation time depends on requested runspace details.
-      /// If connection to VCenter Servers is requested the operation is going to create a PowerShell instance, load and connect a PowerCLI module to the VCenter.
+      /// Runspace creation and preparation time depends on the requested runspace details.
+      /// If a connection to the vCenter Servers is requested, the operation creates a PowerShell instance, loads PowerCLI modules, and connects PowerCLI to the vCenter Servers.
       /// ### Returns
-      /// When request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource that is in creation state initially.
+      /// When request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource. The **runspace** resource is in **creation** state initially.
       /// </remarks>
       /// <param name="runspace">Desired runspace resource.</param>
       /// <returns>Runspace resource to monitor the requested runspace. Once runspace becomes in **ready** state you will be able to run scripts in it.</returns>
@@ -150,7 +150,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </summary>
       /// <remarks>
       /// ### Retrieve a runspace
-      /// Retrieves the details of a runspace. One only needs to supply the unique runspace identifier that was returned on runspace creation to retrieve runspace details.
+      /// Retrieves the details of a runspace. One only needs to supply the unique runspace identifier returned on the runspace creation to retrieve runspace details.
       /// ### Returns
       /// Returns a **runspace** resource instance if a valid identifier was provided.
       /// When requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.
@@ -190,7 +190,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <remarks>
       /// ### Deletes a runspace
       /// Deletes the PowerShell instance that is prepresented by this **runspace** resource.
-      /// Running script in the PowerShell won't prevent the operation.
+      /// Running script in the PowerShell instance won't prevent the operation.
       /// ### Returns
       /// When requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.
       /// </remarks>
