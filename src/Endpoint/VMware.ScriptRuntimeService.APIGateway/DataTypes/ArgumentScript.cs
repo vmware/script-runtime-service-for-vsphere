@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 
 namespace VMware.ScriptRuntimeService.APIGateway.DataTypes {
    /// <summary>
-   /// ArgumentScript object represents a script produced from given script template and placeholder values.
+   /// ArgumentScript object represents a script produced from a given script template and placeholder values.
    /// </summary>
    [DataContract(Name = "argument_script")]
    public class ArgumentScript {

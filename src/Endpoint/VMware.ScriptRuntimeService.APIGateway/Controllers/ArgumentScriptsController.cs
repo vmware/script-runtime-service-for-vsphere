@@ -23,9 +23,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// List available argument script templates
       /// </summary>
       /// <remarks>
-      /// ### LList available argument script templates
-      /// Argument script templates are scripts with placeholders. When placeholders are replaced by values script can be executed in a given script runtime.
-      /// Argument script templates are designed to help to convert simple type values to objects of types that can only be produced in a given script runtime. Those object can be used as arguments to scripts' parameters.
+      /// ### List available argument script templates
+      /// Argument script templates are scripts with placeholders. When values replace the placeholders, the script can run in a given script runtime.
+      /// Argument script templates help to convert simple type values to objects of types that can only be produced in a given script runtime. Those objects can be used as arguments to scripts' parameters.
       /// 
       /// This operation retrieves the available argument script templates.
       /// </remarks>
@@ -65,14 +65,14 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// <remarks>
       /// ### Creates scripts for a given script template id and placeholder values
       /// Replaces the placeholders in a given argument transformation script template with given values on the placeholder_value_list field
-      /// The result script can be provided to a **script execution** parameter that expects specific script runtime type
+      /// The resulting script can be provided to a **script execution** parameter that expects a specific script runtime type
       /// 
       /// ### Example
       /// If the template argument transformation script is
       /// 
       /// Get-VM -Id &lt;vm-id&gt; -Server &lt;server&gt;
       /// 
-      /// The result of this operation with given Id 'vm-1' and Server 'server-1' would be
+      /// The result of this operation with given Id 'vm-1' and Server 'server-1' is
       /// 
       /// Get-VM -Id 'vm-1' -Server 'server-1'
       /// </remarks>

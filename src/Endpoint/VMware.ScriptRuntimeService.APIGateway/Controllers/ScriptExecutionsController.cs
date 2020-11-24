@@ -51,8 +51,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// When created **script execution** starts running in the **runspace**. To monitor the script execution
       /// progress polling of the resource by its identifier should be used.
       /// ### Retruns
-      /// When request is accepted **202 Accepted** with **Location** header is returned in the response that leads you to the **script execution** resource that is in running state initially.
-      /// When script execution is requested with non existing runspace  **404 Not Found** is returned.
+      /// When the request is accepted **202 Accepted** with **Location** header is returned in the response that leads you to the **script execution** resource that is in running state initially.
+      /// When script execution is requested with non-existing runspace  **404 Not Found** is returned.
       /// </remarks>
       /// <param name="script_execution">Desired script execution resource.</param>
       /// <returns>
@@ -140,8 +140,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </summary>
       /// <remarks>
       /// ### Cancel a script execution
-      /// This operation is equivalent of pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be cancelled.
-      /// The state of the **script execution** will become cancelled after this operation. The operation is asynchronous. Cancel request
+      /// This operation is equivalent to pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be canceled.
+      /// The state of the **script execution** will become canceled after this operation. The operation is asynchronous. Cancel request
       /// is sent to the runtime.
       /// 
       /// ### Returns
@@ -281,7 +281,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
       // Out of scope for MVP release
-      // It is allowed to retrieve partial representation of the **script execution** resources giving desired fields on the **fields** query parameter.
+      // It is allowed to retrieve a partial representation of the **script execution** resources giving desired fields on the **fields** query parameter.
       // When fields are requested in the query parameter other fields will remain null.
       // <param name="fields"></param>
       //public ActionResult<DataTypes.ScriptExecution> Get([FromRoute] string id, [FromQuery]string[] fields)

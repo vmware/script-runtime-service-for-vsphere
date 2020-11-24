@@ -62,8 +62,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.DataTypes
       /// 
       /// It is optional to request VCenter Servers connection to be initialized on create request.
       /// If true is specified PowerCLI Connect-VIServer cmdlet will be called in the create PowerShell instance.
-      /// Connect-VIServer uses the authorized user's SSO SAML token to connect to VCenter servers.
-      /// Connection to all linked VCetner servers will be established. When requested the runspace creation will be slower
+      /// Connect-VIServer uses the authorized user's SSO SAML token to connect to the vCenter Servers.
+      /// Connection to all linked vCetner Servers will be established. When requested the runspace creation will be slower
       /// with the time needed for PowerCLI modules loading and Connect-VIServer execution time. _vc_connection_script_state
       /// field will hold state of the script completion. In case errors have occured during connect script execution
       /// _vc_connection_script_error_records will be populated.
@@ -74,15 +74,15 @@ namespace VMware.ScriptRuntimeService.APIGateway.DataTypes
       public bool RunVcConnectionScript { get; set; }
 
       /// <summary>
-      /// Id of vc connection script if it was requested on runspace create request.
+      /// Id of the vc connection script if it was requested on the runspace create request.
       /// You can use this id to retrieve all the details of the script execution.
-      /// The script could fail and the details about the script failure would be available in scriptexecutions API.
+      /// The script could fail and the details about the script failure would be available in the scriptexecutions API.
       /// </summary>
       [DataMember(Name = "vc_connection_script_id", IsRequired = false)]
       public string VcConnectionScriptId { get; }
 
       /// <summary>
-      /// Time at which the object was created. String representing time in format ISO 8601.
+      /// The time at which the object was created. String representing time in format ISO 8601.
       /// </summary>
       [DataMember(Name = "creation_time", IsRequired = false)]
       public DateTime CreationTime { get; }

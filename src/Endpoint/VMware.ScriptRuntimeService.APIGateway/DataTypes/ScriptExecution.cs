@@ -13,7 +13,7 @@ using VMware.ScriptRuntimeService.Runspace.Types;
 namespace VMware.ScriptRuntimeService.APIGateway.DataTypes
 {
    /// <summary>
-   /// Script Execution object allows you to run a script in a runspace.
+   /// Script Execution resource allows you to run a script in a runspace.
    /// The API allows you to create, cancel, and retrieve script executions. 
    /// </summary>
    [DataContract(Name = "script_execution")]
@@ -44,7 +44,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.DataTypes
       public string RunspaceId { get; set; }
 
       /// <summary>
-      /// Name of the script execution. It is optional to give a name of the script execution on create request. If name was not specified on script execution creation the field has null value.
+      /// Name of the script execution. It is optional to give a name of the script execution on create request. If name was not specified on the script execution creation, the field has null value.
       /// </summary>
       [DataMember(Name = "name")]
       public string Name { get; set; }

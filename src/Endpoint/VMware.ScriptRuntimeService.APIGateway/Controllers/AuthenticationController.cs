@@ -33,12 +33,12 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// Exchanges client credentials or SIGN token for SRS access key
       /// </summary>
       /// <remarks>
-      /// Uses VCenter SSO as Identity and Authentication Server.
+      /// Uses vCenter Server SSO as Identity and Authentication Server.
       /// Two types of authentication are supported SIGN and Basic.
-      /// When Basic authentication is used service exchanges username and password for SAML from VCenter SSO.
-      /// When SIGN authentication is used service exchanges the SSO SAML token from the SIGN token for another SAML token on behalf of the user from VCenter SSO.
-      /// On successful authentication with SSO the service issues **X-SRS-API-KEY** token are returns it the response headers. **X-SRS-API-KEY** token is used to authorize access to service resources. 
-      /// The service associates **X-SRS-API-KEY** token to acquired from SSO SAML token. The associated SSO SAML token is used to authorize PowerCLI to VCenter services. 
+      /// When Basic authentication is used, the service exchanges username and password for SAML Token from the vCenter Server SSO.
+      /// When SIGN authentication is used, the service exchanges the SSO SAML token from the SIGN token for another SAML token on behalf of the principal from the vCenter Server SSO.
+      /// On successful authentication with the SSO, the service returns **X-SRS-API-KEY** token in the response headers. **X-SRS-API-KEY** token authorizes access to the service resources. 
+      /// The service associates **X-SRS-API-KEY** token to the acquired SSO SAML token. The associated SSO SAML token authenticates PowerCLI to the vCenter services. 
       /// </remarks>
       [HttpPost("login", Name = "login")]
       [ProducesResponseType(StatusCodes.Status200OK)]
@@ -51,8 +51,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// Revokes SRS access key
       /// </summary>
       /// <remarks>
-      /// The service revokes **X-SRS-API-KEY** and deletes all non-active **runspace** resources associated with it.
-      /// Active runspaces will be deletely immediately after the completion of the scripts they run.
+      /// The service revokes **X-SRS-API-KEY** and deletes all associated non-active **runspace** resources.
+      /// Active runspaces are deleted immediately after the completion of the scripts they run.
       /// </remarks>
       [HttpPost("logout", Name = "logout")]
       [ProducesResponseType(StatusCodes.Status200OK)]
