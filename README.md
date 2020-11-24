@@ -3,7 +3,7 @@
 
 ## Overview
 
-Script Runtime Service for vSphere (SRS) enables vSphere users and services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS clients authenticate once with vSphere credentials or access token. SRS clients are able to create PowerCLI instances and run scripts within. PowerCLI runs server-side and automatically connects to the target vCenter Servers. SRS tracks history of script outputs.
+Script Runtime Service for vSphere (SRS) enables vSphere users and services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS clients authenticate once with vSphere credentials or access token. SRS clients create PowerCLI instances and run scripts within. PowerCLI runs server-side and automatically connects to the target vCenter Servers. SRS tracks history of script outputs.
 
 ### Highlights
 * Central place with REST API endpoint for VI Admins in an organization to run [VMware PowerCLI](https://code.vmware.com/web/tool/12.1.0/vmware-powercli)
