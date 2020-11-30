@@ -23,7 +23,7 @@ srs:
   ## configs for the docker image of SRS Configuration Job
   ##
   setup_image:
-    repository: "harbor-stg-repo.vmware.com/script_runtime_service/srs-setup"
+    repository: "projects.registry.vmware.com/script_runtime_service/srs-setup"
     tag: "1.0"
     ## values: Always or IfNotPresent
     pullPolicy: IfNotPresent    
@@ -31,7 +31,7 @@ srs:
   ## configs for the docker image of PowerCLI Runtime
   ##
   pclirunspace_image:
-    repository: "harbor-stg-repo.vmware.com/script_runtime_service/pclirunspace"
+    repository: "projects.registry.vmware.com/script_runtime_service/pclirunspace"
     tag: "12.1"
     ## values: Always or IfNotPresent
     pullPolicy: IfNotPresent    
@@ -39,14 +39,14 @@ srs:
   ## configs for the docker image of SRS API Gateway
   ##
   apigateway_image:
-    repository: "harbor-stg-repo.vmware.com/script_runtime_service/srs-apigateway"
+    repository: "projects.registry.vmware.com/script_runtime_service/srs-apigateway"
     tag: "1.0"
     ## values: Always or IfNotPresent
     pullPolicy: IfNotPresent    
   ##
   ## configs for the web service
   ##
-  service:
+  #service:
     ##
     ## DNS name for the service, it is be used on initial install to generate
     ## self-signed TLS certificate and also to configure ingress resource to
@@ -80,7 +80,7 @@ srs:
   ##
   ## configs persistin script execution output on a persistent volume claim
   ##
-  persistence:
+  #persistence:
     ##
     ## Storage class name for the Peristent Volume Claim to be created
     ##
