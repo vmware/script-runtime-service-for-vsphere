@@ -17,7 +17,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.SwaggerDoc {
          if (operation.Tags[0].Name == "ScriptExecutions" ||
              operation.Tags[0].Name == "ScriptExecutionOutput" ||
              operation.Tags[0].Name == "ScriptExecutionStreams") {
-            operation.Tags[0].Name = "script_еxecutions";
+            operation.Tags[0].Name = "script_executions";
          }
 
          if (operation.Tags[0].Name == "ArgumentScripts") {

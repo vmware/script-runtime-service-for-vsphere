@@ -390,9 +390,11 @@
           {
             "name": "id",
             "in": "path",
+            "description": "Unique identifier of the runspace",
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Unique identifier of the runspace",
               "nullable": true
             }
           }
@@ -449,9 +451,11 @@
           {
             "name": "id",
             "in": "path",
+            "description": "Unique identifier of the runspace",
             "required": true,
             "schema": {
               "type": "string",
+              "description": "Unique identifier of the runspace",
               "nullable": true
             }
           }
@@ -496,7 +500,7 @@
     "/api/script-executions/{id}/output": {
       "get": {
         "tags": [
-          "script_еxecutions"
+          "script_executions"
         ],
         "summary": "Retrieves output objects produced by a script execution.",
         "description": "### Retrieves output objects produced by a script execution ###\r\nOutput object could be in a different format depending on the requested output object format on **script execution** request.\r\nText and JSON are currently supported.\r\nWhen Text format is requested, the objects produced by the script execution are formatted in a table, the same way Format-Table formats the objects in PowerShell.\r\nWhen JSON format is requested, a custom json formatting is used to serialize the objects produced by the script execution. The JSON objects contain the type name and the full name of the implementing interfaces.",
@@ -572,7 +576,7 @@
     "/api/script-executions/{id}/streams/{stream-type}": {
       "get": {
         "tags": [
-          "script_еxecutions"
+          "script_executions"
         ],
         "summary": "Retrieves list of stream records received during script execution.",
         "description": "### Retrieves list of stream records received during script execution\r\nDuring the execution of a script, the script execution engine collects streams that are produced by the script execution.\r\nThere are five stream types: information, error, warning, debug, verbose.",
@@ -657,7 +661,7 @@
     "/api/script-executions": {
       "post": {
         "tags": [
-          "script_еxecutions"
+          "script_executions"
         ],
         "summary": "Creates a script execution",
         "description": "### Create a script execution\r\n**Script execution** represents asynchronous execution of a script in a specified **runspace**\r\nWhen created **script execution** starts running in the **runspace**. To monitor the script execution\r\nprogress polling of the resource by its identifier should be used.\r\n### Retruns\r\nWhen the request is accepted **202 Accepted** with **Location** header is returned in the response that leads you to the **script execution** resource that is in running state initially.\r\nWhen script execution is requested with non-existing runspace  **404 Not Found** is returned.",
@@ -723,7 +727,7 @@
       },
       "get": {
         "tags": [
-          "script_еxecutions"
+          "script_executions"
         ],
         "summary": "List all script executions",
         "description": "### List all script executions      \r\n### Returns\r\nReturns a list of your script executions.",
@@ -776,7 +780,7 @@
     "/api/script-executions/{id}/cancel": {
       "post": {
         "tags": [
-          "script_еxecutions"
+          "script_executions"
         ],
         "summary": "Cancels a script execution",
         "description": "### Cancel a script execution\r\nThis operation is equivalent to pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be canceled.\r\nThe state of the **script execution** will become canceled after this operation. The operation is asynchronous. Cancel request\r\nis sent to the runtime.\r\n\r\n### Returns\r\nThe operation doesn't return value. **200 Ok** will be returned if the request is successful.",
@@ -832,7 +836,7 @@
     "/api/script-executions/{id}": {
       "get": {
         "tags": [
-          "script_еxecutions"
+          "script_executions"
         ],
         "summary": "Retrieve a script execution",
         "description": "### Retrieve a script execution\r\nRetrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on script execution creation.      \r\n### Returns\r\nReturns a **script execution** resource instance if a valid identifier was provided.\r\nWhen requesting the Id of a script execution that doesn't exist **404 NotFound** is returned.",
@@ -841,11 +845,11 @@
           {
             "name": "id",
             "in": "path",
-            "description": "",
+            "description": "Unique identifier of the runspace",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "",
+              "description": "Unique identifier of the runspace",
               "nullable": true
             }
           }
@@ -1473,7 +1477,7 @@
       "description": "Runsapace is a PowerShell instance running in a dedicated container as a Kubernetes pod on the Kubernetes cluster. Runspace hosts the script running engine. Runspaces run in containers to isolate different users scripts and to isolate the script runtime from the hosting infrastructure. Multiple users can access SRS and run scripts. Different users are isolated in their own PowerShell runtime without access to other users script runtime and the underlying infrastructure. A user can create more than one runspace. So single user can run scripts simultaneously in isolated runspace. User can use one runspace to run multiple scripts sequentially.<br/> <br/> SRS presents Runspace as an API Resource with unique Id, name optionally given by the user, and state. The state of a Runspace switches during the Runspace life cycle. When Runspace creation is requested, a Runspace resource is returned in creating state. Once a runspace is prepared for running its state is switch to ready. A Runspace is in active state when it is busy running a script. Active runpsaces do not accept script execution requests."
     },
     {
-      "name": "script_еxecutions",
+      "name": "script_executions",
       "description": "To run a script in SRS, users request Script Execution. Script Execution is an SRS resource that represents a script that user requests to run in a Runspace. SRS assigns unique Id for a script execution and lets the user track the script progress and outcomes. When a script execution completes, SRS keeps a script execution record with the produced outputs. Script outputs consist of objects that script returns and messages that are raised in PowerShell run-time streams. PowerShell has six output streams Output, Error, Warning, Information, Debug, and Verbose. Everything produced by command return or Write-Output is recorded in the Output stream."
     }
   ]

@@ -38,7 +38,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.SwaggerDoc
          runspacesTag.Description = APIGatewayResources.RunspaceTagDescription;
 
          var scriptExecutionsTag = new OpenApiTag();
-         scriptExecutionsTag.Name = "script_еxecutions";
+         scriptExecutionsTag.Name = "script_executions";
          scriptExecutionsTag.Description = APIGatewayResources.ScriptExecutionsTagDescription;
 
          swaggerDoc.Tags.Add(aboutTag);
