@@ -43,12 +43,12 @@ namespace VMware.ScriptRuntimeService.APIGateway.SwaggerDoc {
                if (path.Key.Contains("streams")) {
                   path.Value.Extensions["x-vmw-doc-resource"] = new OpenApiString(typeof(StreamRecord).Name);
                }
-               path.Value.Extensions["x-vmw-doc-domain"] = new OpenApiString("scriptexecutions");
+               path.Value.Extensions["x-vmw-doc-domain"] = new OpenApiString("script_executions");
             }
 
             if (path.Key.StartsWith("/api/argument-scripts")) {
                path.Value.Extensions["x-vmw-doc-resource"] = new OpenApiString(typeof(ArgumentScript).Name);
-               path.Value.Extensions["x-vmw-doc-domain"] = new OpenApiString("argumentscripts");
+               path.Value.Extensions["x-vmw-doc-domain"] = new OpenApiString("argument_scripts");
             }
          }
 

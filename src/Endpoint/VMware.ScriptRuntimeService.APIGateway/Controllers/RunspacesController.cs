@@ -148,6 +148,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <summary>
       /// Retrieve a runspace
       /// </summary>
+      /// <param name="id">Unique identifier of the runspace</param>
       /// <remarks>
       /// ### Retrieve a runspace
       /// Retrieves the details of a runspace. One only needs to supply the unique runspace identifier returned on the runspace creation to retrieve runspace details.
@@ -187,6 +188,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <summary>
       /// Deletes a runspace
       /// </summary>
+      /// <param name="id">Unique identifier of the runspace</param>
       /// <remarks>
       /// ### Deletes a runspace
       /// Deletes the PowerShell instance that is prepresented by this **runspace** resource.

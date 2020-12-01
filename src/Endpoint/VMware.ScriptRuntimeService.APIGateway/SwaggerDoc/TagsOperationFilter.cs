@@ -14,13 +14,14 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace VMware.ScriptRuntimeService.APIGateway.SwaggerDoc {
    public class TagsOperationFilter : IOperationFilter {
       public void Apply(OpenApiOperation operation, OperationFilterContext context) {
-         if (operation.Tags[0].Name == "ScriptExecutionOutput" ||
+         if (operation.Tags[0].Name == "ScriptExecutions" ||
+             operation.Tags[0].Name == "ScriptExecutionOutput" ||
              operation.Tags[0].Name == "ScriptExecutionStreams") {
-            operation.Tags[0].Name = "scriptExecutions";
+            operation.Tags[0].Name = "script_executions";
          }
 
-         if (operation.Tags[0].Name == "ArgumentTransformationScripts") {
-            operation.Tags[0].Name = "argTransformations";
+         if (operation.Tags[0].Name == "ArgumentScripts") {
+            operation.Tags[0].Name = "argument_scripts";
          }
 
          operation.Tags[0].Name = operation.Tags[0].Name.ToLower();

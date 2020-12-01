@@ -61,6 +61,15 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About information for the product.
+        /// </summary>
+        public static string AboutTagDescription {
+            get {
+                return ResourceManager.GetString("AboutTagDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1.0.0.
         /// </summary>
         public static string ApiVersion {
@@ -75,6 +84,24 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         public static string ArgumentScriptsController_ArgumentTransformationScriptNotFound {
             get {
                 return ResourceManager.GetString("ArgumentScriptsController_ArgumentTransformationScriptNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SRS has a number of script templates to help users pass PowerCLI objects as arguments to scripts with PowerCLI type parameters. Argument transformation scripts are scripts given on the Parameter structure that produce value which is used as an argument to specific parameter of a requested script execution..
+        /// </summary>
+        public static string ArgumentScriptsTagDescription {
+            get {
+                return ResourceManager.GetString("ArgumentScriptsTagDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SRS uses vCenter Server SSO it is registered to as Identity and Authentication Server. SRS does not apply any role-based access control to its features. Any vSphere user that can authenticate in vCenter Server SSO can access the SRS feature. SRS establishes PowerCLI connections to vCenter Servers on behalf of the authenticated user. PowerCLI scripts run on behalf of the authenticated user..
+        /// </summary>
+        public static string AuthenticationTagDescription {
+            get {
+                return ResourceManager.GetString("AuthenticationTagDescription", resourceCulture);
             }
         }
         
@@ -180,11 +207,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         /// <summary>
         ///   Looks up a localized string similar to # Script Runtime Service API
         ///
-        ///Script Runtime Service for vSphere (SRS) allows running PowerShell and PowerCLI scripts. SRS is a VC add-on that is deployed separately from VCSA. SRS can be accessed via REST API that allows you to create PowerShell instances and run PowerShell and PowerCLI scripts within. No Connect-VIServer is required to run PowerCLI against VC(s) SRS is registered to.
-        ///
-        ///## Authetication
-        ///
-        ///SRS uses VC SSO as Identity and Authentication Server. Two types of authentication are supported.  [rest of string was truncated]&quot;;.
+        ///Script Runtime Service for vSphere (SRS) enables vSphere users and services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS clients authenticate once with vSphere credentials or access token. SRS clients can create PowerCLI instances and run scripts within. PowerCLI runs server-side and automatically connects to target vCenter servers. SRS tracks history of script outputs..
         /// </summary>
         public static string ProductApiDescription {
             get {
@@ -270,6 +293,24 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         public static string RunspaceNotReady {
             get {
                 return ResourceManager.GetString("RunspaceNotReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runsapace is a PowerShell instance running in a dedicated container as a Kubernetes pod on the Kubernetes cluster. Runspace hosts the script running engine. Runspaces run in containers to isolate different users scripts and to isolate the script runtime from the hosting infrastructure. Multiple users can access SRS and run scripts. Different users are isolated in their own PowerShell runtime without access to other users script runtime and the underlying infrastructure. A user can create more than one runsp [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string RunspaceTagDescription {
+            get {
+                return ResourceManager.GetString("RunspaceTagDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To run a script in SRS, users request Script Execution. Script Execution is an SRS resource that represents a script that user requests to run in a Runspace. SRS assigns unique Id for a script execution and lets the user track the script progress and outcomes. When a script execution completes, SRS keeps a script execution record with the produced outputs. Script outputs consist of objects that script returns and messages that are raised in PowerShell run-time streams. PowerShell has six output streams Outp [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string ScriptExecutionsTagDescription {
+            get {
+                return ResourceManager.GetString("ScriptExecutionsTagDescription", resourceCulture);
             }
         }
         

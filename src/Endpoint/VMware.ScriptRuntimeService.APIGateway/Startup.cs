@@ -79,6 +79,7 @@ namespace VMware.ScriptRuntimeService.APIGateway
                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                c.IncludeXmlComments(xmlPath);
 
+               GlobalTagsSchemeFilter.Configure(c);
                TagsOperationFilter.Configure(c);
                VMwareVapiVendorExtensionsOperationFilter.Configure(c);
                SecurityRequirementsOperationFilter.Configure(c);
