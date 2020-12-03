@@ -46,13 +46,10 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// Creates a script execution
       /// </summary>
       /// <remarks>
-      /// ### Create a script execution
       /// **Script execution** represents asynchronous execution of a script in a specified **runspace**
-      /// When created **script execution** starts running in the **runspace**. To monitor the script execution
-      /// progress polling of the resource by its identifier should be used.
-      /// ### Retruns
-      /// When the request is accepted **202 Accepted** with **Location** header is returned in the response that leads you to the **script execution** resource that is in running state initially.
-      /// When script execution is requested with non-existing runspace  **404 Not Found** is returned.
+      /// When created, the **script execution** starts running in the **runspace**. To monitor the script execution progress, poll the resource by id.
+      ///       
+      /// When the request is accepted **Location** header is returned in the response that leads you to the **script execution** resource.      
       /// </remarks>
       /// <param name="script_execution">Desired script execution resource.</param>
       /// <returns>
@@ -139,13 +136,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// Cancels a script execution
       /// </summary>
       /// <remarks>
-      /// ### Cancel a script execution
       /// This operation is equivalent to pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be canceled.
       /// The state of the **script execution** will become canceled after this operation. The operation is asynchronous. Cancel request
       /// is sent to the runtime.
-      /// 
-      /// ### Returns
-      /// The operation doesn't return value. **200 Ok** will be returned if the request is successful.
       /// </remarks>
       /// <param name="id">The id of the script execution</param>
       /// <returns></returns>
@@ -206,9 +199,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// List all script executions
       /// </summary>
       /// <remarks>
-      /// ### List all script executions      
-      /// ### Returns
-      /// Returns a list of your script executions.
+      /// Retrieves all available **script execution** records
       /// </remarks>      
       /// <returns></returns>
       [HttpGet(Name = "list-script-executions")]
@@ -266,11 +257,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </summary>
       /// <param name="id">Unique identifier of the runspace</param>
       /// <remarks>
-      /// ### Retrieve a script execution
-      /// Retrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on script execution creation.      
-      /// ### Returns
-      /// Returns a **script execution** resource instance if a valid identifier was provided.
-      /// When requesting the Id of a script execution that doesn't exist **404 NotFound** is returned.
+      /// Retrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on the **script execution** creation.      
       /// </remarks>
       /// <param name="id"></param>      
       /// <returns></returns>

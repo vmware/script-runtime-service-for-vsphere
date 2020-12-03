@@ -47,11 +47,12 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <summary>
       /// Starts a runspace creation
       /// </summary>
-      /// <remarks>
-      /// ### Create a runspace
+      /// <remarks>      
       /// Runspace creation and preparation time depends on the requested runspace details.
       /// If a connection to the vCenter Servers is requested, the operation creates a PowerShell instance, loads PowerCLI modules, and connects PowerCLI to the vCenter Servers.
-      /// ### Returns
+      /// 
+      /// Returns
+      /// 
       /// When request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource. The **runspace** resource is in **creation** state initially.
       /// </remarks>
       /// <param name="runspace">Desired runspace resource.</param>
@@ -99,9 +100,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// List all runspaces
       /// </summary>
       /// <remarks>
-      /// ### List all runspaces
-      /// ### Returns
-      /// Returns a list of your runspaces.
       /// </remarks>
       [HttpGet(Name= "list-runspaces")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
@@ -150,9 +148,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </summary>
       /// <param name="id">Unique identifier of the runspace</param>
       /// <remarks>
-      /// ### Retrieve a runspace
       /// Retrieves the details of a runspace. One only needs to supply the unique runspace identifier returned on the runspace creation to retrieve runspace details.
-      /// ### Returns
+      ///
       /// Returns a **runspace** resource instance if a valid identifier was provided.
       /// When requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.
       /// </remarks>
@@ -190,11 +187,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </summary>
       /// <param name="id">Unique identifier of the runspace</param>
       /// <remarks>
-      /// ### Deletes a runspace
       /// Deletes the PowerShell instance that is prepresented by this **runspace** resource.
-      /// Running script in the PowerShell instance won't prevent the operation.
-      /// ### Returns
-      /// When requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.
+      /// Running script in the PowerShell instance won't prevent the operation.      
       /// </remarks>
       [HttpDelete("{id}", Name = "delete-runspace")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]

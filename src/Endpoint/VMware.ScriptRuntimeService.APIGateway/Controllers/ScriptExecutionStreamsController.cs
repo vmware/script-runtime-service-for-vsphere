@@ -28,8 +28,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// Retrieves list of stream records received during script execution.
       /// </summary>
       /// <remarks>
-      /// ### Retrieves list of stream records received during script execution
-      /// During the execution of a script, the script execution engine collects streams that are produced by the script execution.
+      /// During the execution of a script, the script execution engine collects streams that are produced by the running script.
       /// There are five stream types: information, error, warning, debug, verbose.
       /// </remarks>
       /// <param name="id">Unique identifier of the script execution</param>

@@ -88,7 +88,7 @@ namespace VMware.ScriptRuntimeService.APIGateway
                SecurityRequirementsOperationFilter.Configure(c);
                ScriptExecutionParameterDocumentFilter.Configure(c);
                ScriptExecutionParameterSchemaFilter.Configure(c);
-               ServersDocumentFilter.Configure(c);
+               //ServersDocumentFilter.Configure(c);
                //VMwarePrintingPressExtensionsOperationFilter.Configure(c);
                //VMwarePrintingPressPathExtensionsDocumentFilter.Configure(c);
                ReadOnlySchemaFilter.Configure(c);

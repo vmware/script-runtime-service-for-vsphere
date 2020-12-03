@@ -106,7 +106,7 @@ namespace VMware.ScriptRuntimeService.APIGateway
    }
 
    /// <summary>
-   /// Defins extension method for IConfigurationBuilder
+   /// Defines extension method for IConfigurationBuilder
    /// </summary>
    public static class SettingsJsonConfigurationProvider
    {

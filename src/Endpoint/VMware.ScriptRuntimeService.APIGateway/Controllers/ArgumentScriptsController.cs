@@ -23,7 +23,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// List available argument script templates
       /// </summary>
       /// <remarks>
-      /// ### List available argument script templates
       /// Argument script templates are scripts with placeholders. When values replace the placeholders, the script can run in a given script runtime.
       /// Argument script templates help to convert simple type values to objects of types that can only be produced in a given script runtime. Those objects can be used as arguments to scripts' parameters.
       /// 
@@ -41,7 +40,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// Retrieves argument script template by given unique template identifier
       /// </summary>
       /// <remarks>
-      /// ### Retrieves argument script template by given unique template identifier
       /// This operation returns argument script template for the specified template id.
       /// </remarks>
       /// <param name="id">The Id of the argument script template</param>
@@ -63,11 +61,11 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// Creates scripts for a given script template id and placeholder values
       /// </summary>
       /// <remarks>
-      /// ### Creates scripts for a given script template id and placeholder values
       /// Replaces the placeholders in a given argument transformation script template with given values on the placeholder_value_list field
       /// The resulting script can be provided to a **script execution** parameter that expects a specific script runtime type
       /// 
-      /// ### Example
+      /// **Example**
+      /// 
       /// If the template argument transformation script is
       /// 
       /// Get-VM -Id &lt;vm-id&gt; -Server &lt;server&gt;
