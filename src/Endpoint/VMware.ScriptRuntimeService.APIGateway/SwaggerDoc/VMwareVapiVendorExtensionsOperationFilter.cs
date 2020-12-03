@@ -16,25 +16,25 @@ namespace VMware.ScriptRuntimeService.APIGateway.SwaggerDoc {
    public class VMwareVapiVendorExtensionsOperationFilter : IOperationFilter {
       public void Apply(OpenApiOperation operation, OperationFilterContext context) {
          if (operation.Tags[0].Name == "about" &&
-             operation.OperationId == "get.about") {
+             operation.OperationId == "get-product-about-info") {
             operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("about"));
             operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("get"));
          }
 
          if (operation.Tags[0].Name == "runspaces") {
-            if (operation.OperationId == "create.runspace") {
+            if (operation.OperationId == "create-runspace") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("runspaces"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("create"));
             }
-            if (operation.OperationId == "delete.runspace") {
+            if (operation.OperationId == "delete-runspace") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("runspaces"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("delete"));
             }
-            if (operation.OperationId == "get.runspace") {
+            if (operation.OperationId == "get-runspace") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("runspaces"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("get"));
             }
-            if (operation.OperationId == "list.runspaces") {
+            if (operation.OperationId == "list-runspaces") {
 
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("runspaces"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("list"));
@@ -42,27 +42,27 @@ namespace VMware.ScriptRuntimeService.APIGateway.SwaggerDoc {
          }
 
          if (operation.Tags[0].Name == "scriptexecutions") {
-            if (operation.OperationId == "create.script.execution") {
+            if (operation.OperationId == "create-script-execution") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("script_executions"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("create"));
             }
-            if (operation.OperationId == "cancel.script.execution") {
+            if (operation.OperationId == "cancel-script-execution") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("script_executions"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("cancel"));
             }
-            if (operation.OperationId == "get.script.execution") {
+            if (operation.OperationId == "get-script-execution") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("script_executions"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("get"));
             }
-            if (operation.OperationId == "list.script.executions") {
+            if (operation.OperationId == "list-script-executions") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("script_executions"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("list"));
             }
-            if (operation.OperationId == "get.script.execution.stream") {
+            if (operation.OperationId == "get-script-execution-stream") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("script_executions"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("get_stream"));
             }
-            if (operation.OperationId == "get.script.execution.output") {
+            if (operation.OperationId == "get-script-execution-output") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("script_executions"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("get_output"));
             }
@@ -81,17 +81,17 @@ namespace VMware.ScriptRuntimeService.APIGateway.SwaggerDoc {
          }
 
          if (operation.Tags[0].Name == "argumentscripts") {
-            if (operation.OperationId == "list.argument.scripts.templates") {
+            if (operation.OperationId == "list-argument-scripts-templates") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("argument_scripts"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("list_templates"));
             }
 
-            if (operation.OperationId == "get.argument.scripts.template") {
+            if (operation.OperationId == "gget-argument-scripts-template") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("argument_scripts"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("get_template"));
             }
 
-            if (operation.OperationId == "create.argument.scripts.script") {
+            if (operation.OperationId == "create-argument-scripts-script") {
                operation.Extensions.Add("x-vmw-vapi-servicename", new OpenApiString("argument_scripts"));
                operation.Extensions.Add("x-vmw-vapi-methodname", new OpenApiString("create_script"));
             }

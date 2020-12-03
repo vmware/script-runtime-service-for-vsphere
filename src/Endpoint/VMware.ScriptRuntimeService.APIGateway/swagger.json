@@ -2,12 +2,21 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Script Runtime Service for vSphere",
-    "description": "# Script Runtime Service API\r\n\r\nScript Runtime Service for vSphere (SRS) enables vSphere users and services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS clients authenticate once with vSphere credentials or access token. SRS clients can create PowerCLI instances and run scripts within. PowerCLI runs server-side and automatically connects to target vCenter servers. SRS tracks history of script outputs.",
+    "description": "Script Runtime Service for vSphere (SRS) enables vSphere users and services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS clients authenticate once with vSphere credentials or access token. SRS clients can create PowerCLI instances and run scripts within. PowerCLI runs server-side and automatically connects to target vCenter servers. SRS tracks history of script outputs.",
+    "contact": {
+      "name": "Script Runtime Service for vSphere",
+      "url": "https://github.com/vmware/script-runtime-service-for-vsphere"
+    },
     "version": "1.0",
     "x-vmw-vapi-codegenconfig": {
       "package-name": "com.vmware.srs"
     }
   },
+  "servers": [
+    {
+      "url": "https://{srs address}"
+    }
+  ],
   "paths": {
     "/api/about": {
       "get": {
@@ -15,8 +24,7 @@
           "about"
         ],
         "summary": "Retrieves about information for the product",
-        "description": "### Retrieve about information\r\n### Returns\r\n**about** resource with information for the product.",
-        "operationId": "get.about",
+        "operationId": "get-product-about-info",
         "responses": {
           "200": {
             "description": "Success",
@@ -30,11 +38,8 @@
           }
         },
         "x-vmw-vapi-servicename": "about",
-        "x-vmw-vapi-methodname": "get",
-        "x-vmw-doc-operation": "get.about"
-      },
-      "x-vmw-doc-resource": "About",
-      "x-vmw-doc-domain": "about"
+        "x-vmw-vapi-methodname": "get"
+      }
     },
     "/api/argument-scripts/templates": {
       "get": {
@@ -42,8 +47,8 @@
           "argument_scripts"
         ],
         "summary": "List available argument script templates",
-        "description": "### List available argument script templates\r\nArgument script templates are scripts with placeholders. When values replace the placeholders, the script can run in a given script runtime.\r\nArgument script templates help to convert simple type values to objects of types that can only be produced in a given script runtime. Those objects can be used as arguments to scripts' parameters.\r\n\r\nThis operation retrieves the available argument script templates.",
-        "operationId": "list.argument.scripts.templates",
+        "description": "Argument script templates are scripts with placeholders. When values replace the placeholders, the script can run in a given script runtime.nnnnnnnnArgument script templates help to convert simple type values to objects of types that can only be produced in a given script runtime. Those objects can be used as arguments to scripts' parameters.\n\nThis operation retrieves the available argument script templates.",
+        "operationId": "list-argument-scripts-templates",
         "responses": {
           "200": {
             "description": "Success",
@@ -63,11 +68,8 @@
           {
             "apiKeyAuth": [ ]
           }
-        ],
-        "x-vmw-doc-operation": "list.argument.scripts.templates"
-      },
-      "x-vmw-doc-resource": "ArgumentScript",
-      "x-vmw-doc-domain": "argument_scripts"
+        ]
+      }
     },
     "/api/argument-scripts/templates/{id}": {
       "get": {
@@ -75,8 +77,8 @@
           "argument_scripts"
         ],
         "summary": "Retrieves argument script template by given unique template identifier",
-        "description": "### Retrieves argument script template by given unique template identifier\r\nThis operation returns argument script template for the specified template id.",
-        "operationId": "get.argument.scripts.template",
+        "description": "This operation returns argument script template for the specified template id.",
+        "operationId": "get-argument-scripts-template",
         "parameters": [
           {
             "name": "id",
@@ -106,11 +108,8 @@
           {
             "apiKeyAuth": [ ]
           }
-        ],
-        "x-vmw-doc-operation": "get.argument.scripts.template"
-      },
-      "x-vmw-doc-resource": "ArgumentScript",
-      "x-vmw-doc-domain": "argument_scripts"
+        ]
+      }
     },
     "/api/argument-scripts/script": {
       "post": {
@@ -118,8 +117,8 @@
           "argument_scripts"
         ],
         "summary": "Creates scripts for a given script template id and placeholder values",
-        "description": "### Creates scripts for a given script template id and placeholder values\r\nReplaces the placeholders in a given argument transformation script template with given values on the placeholder_value_list field\r\nThe resulting script can be provided to a **script execution** parameter that expects a specific script runtime type\r\n\r\n### Example\r\nIf the template argument transformation script is\r\n\r\nGet-VM -Id <vm-id> -Server <server>\r\n\r\nThe result of this operation with given Id 'vm-1' and Server 'server-1' is\r\n\r\nGet-VM -Id 'vm-1' -Server 'server-1'",
-        "operationId": "create.argument.scripts.script",
+        "description": "Replaces the placeholders in a given argument transformation script template with given values on the placeholder_value_list field\nThe resulting script can be provided to a **script execution** parameter that expects a specific script runtime type\n\n**Example**\n\nIf the template argument transformation script is\n\nGet-VM -Id <vm-id> -Server <server>\n\nThe result of this operation with given Id 'vm-1' and Server 'server-1' is\n\nGet-VM -Id 'vm-1' -Server 'server-1'",
+        "operationId": "create-argument-scripts-script",
         "requestBody": {
           "description": "The argument script create request",
           "content": {
@@ -156,11 +155,8 @@
           {
             "apiKeyAuth": [ ]
           }
-        ],
-        "x-vmw-doc-operation": "create.argument.scripts.script"
-      },
-      "x-vmw-doc-resource": "ArgumentScript",
-      "x-vmw-doc-domain": "argument_scripts"
+        ]
+      }
     },
     "/api/auth/login": {
       "post": {
@@ -168,7 +164,7 @@
           "authentication"
         ],
         "summary": "Exchanges client credentials or SIGN token for SRS access key",
-        "description": "Uses vCenter Server SSO as Identity and Authentication Server.\r\nTwo types of authentication are supported SIGN and Basic.\r\nWhen Basic authentication is used, the service exchanges username and password for SAML Token from the vCenter Server SSO.\r\nWhen SIGN authentication is used, the service exchanges the SSO SAML token from the SIGN token for another SAML token on behalf of the principal from the vCenter Server SSO.\r\nOn successful authentication with the SSO, the service returns **X-SRS-API-KEY** token in the response headers. **X-SRS-API-KEY** token authorizes access to the service resources. \r\nThe service associates **X-SRS-API-KEY** token to the acquired SSO SAML token. The associated SSO SAML token authenticates PowerCLI to the vCenter services.",
+        "description": "Uses vCenter Server SSO as Identity and Authentication Server.\nTwo types of authentication are supported SIGN and Basic.\nWhen Basic authentication is used, the service exchanges username and password for SAML Token from the vCenter Server SSO.\nWhen SIGN authentication is used, the service exchanges the SSO SAML token from the SIGN token for another SAML token on behalf of the principal from the vCenter Server SSO.\nOn successful authentication with the SSO, the service returns **X-SRS-API-KEY** token in the response headers. **X-SRS-API-KEY** token authorizes access to the service resources. \nThe service associates **X-SRS-API-KEY** token to the acquired SSO SAML token. The associated SSO SAML token authenticates PowerCLI to the vCenter services.",
         "operationId": "login",
         "responses": {
           "200": {
@@ -204,11 +200,8 @@
           }
         ],
         "x-vmw-vapi-servicename": "authentication",
-        "x-vmw-vapi-methodname": "login",
-        "x-vmw-doc-operation": "login"
-      },
-      "x-vmw-doc-resource": "session",
-      "x-vmw-doc-domain": "authentication"
+        "x-vmw-vapi-methodname": "login"
+      }
     },
     "/api/auth/logout": {
       "post": {
@@ -216,7 +209,7 @@
           "authentication"
         ],
         "summary": "Revokes SRS access key",
-        "description": "The service revokes **X-SRS-API-KEY** and deletes all associated non-active **runspace** resources.\r\nActive runspaces are deleted immediately after the completion of the scripts they run.",
+        "description": "The service revokes **X-SRS-API-KEY** and deletes all associated non-active **runspace** resources.\nActive runspaces are deleted immediately after the completion of the scripts they run.",
         "operationId": "logout",
         "responses": {
           "200": {
@@ -249,11 +242,8 @@
           }
         ],
         "x-vmw-vapi-servicename": "authentication",
-        "x-vmw-vapi-methodname": "logout",
-        "x-vmw-doc-operation": "logout"
-      },
-      "x-vmw-doc-resource": "session",
-      "x-vmw-doc-domain": "authentication"
+        "x-vmw-vapi-methodname": "logout"
+      }
     },
     "/api/runspaces": {
       "post": {
@@ -261,8 +251,8 @@
           "runspaces"
         ],
         "summary": "Starts a runspace creation",
-        "description": "### Create a runspace\r\nRunspace creation and preparation time depends on the requested runspace details.\r\nIf a connection to the vCenter Servers is requested, the operation creates a PowerShell instance, loads PowerCLI modules, and connects PowerCLI to the vCenter Servers.\r\n### Returns\r\nWhen request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource. The **runspace** resource is in **creation** state initially.",
-        "operationId": "create.runspace",
+        "description": "Runspace creation and preparation time depends on the requested runspace details.\nIf a connection to the vCenter Servers is requested, the operation creates a PowerShell instance, loads PowerCLI modules, and connects PowerCLI to the vCenter Servers.\n\nReturns\n\nWhen request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource. The **runspace** resource is in **creation** state initially.",
+        "operationId": "create-runspace",
         "requestBody": {
           "description": "Desired runspace resource.",
           "content": {
@@ -311,16 +301,15 @@
           }
         ],
         "x-vmw-vapi-servicename": "runspaces",
-        "x-vmw-vapi-methodname": "create",
-        "x-vmw-doc-operation": "create.runspace"
+        "x-vmw-vapi-methodname": "create"
       },
       "get": {
         "tags": [
           "runspaces"
         ],
         "summary": "List all runspaces",
-        "description": "### List all runspaces\r\n### Returns\r\nReturns a list of your runspaces.",
-        "operationId": "list.runspaces",
+        "description": "",
+        "operationId": "list-runspaces",
         "responses": {
           "200": {
             "description": "Success",
@@ -372,11 +361,8 @@
           }
         ],
         "x-vmw-vapi-servicename": "runspaces",
-        "x-vmw-vapi-methodname": "list",
-        "x-vmw-doc-operation": "list.runspaces"
-      },
-      "x-vmw-doc-resource": "Runspace",
-      "x-vmw-doc-domain": "runspaces"
+        "x-vmw-vapi-methodname": "list"
+      }
     },
     "/api/runspaces/{id}": {
       "get": {
@@ -384,8 +370,8 @@
           "runspaces"
         ],
         "summary": "Retrieve a runspace",
-        "description": "### Retrieve a runspace\r\nRetrieves the details of a runspace. One only needs to supply the unique runspace identifier returned on the runspace creation to retrieve runspace details.\r\n### Returns\r\nReturns a **runspace** resource instance if a valid identifier was provided.\r\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.",
-        "operationId": "get.runspace",
+        "description": "Retrieves the details of a runspace. One only needs to supply the unique runspace identifier returned on the runspace creation to retrieve runspace details.\n            \nReturns a **runspace** resource instance if a valid identifier was provided.\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.",
+        "operationId": "get-runspace",
         "parameters": [
           {
             "name": "id",
@@ -437,16 +423,15 @@
           }
         ],
         "x-vmw-vapi-servicename": "runspaces",
-        "x-vmw-vapi-methodname": "get",
-        "x-vmw-doc-operation": "get.runspace"
+        "x-vmw-vapi-methodname": "get"
       },
       "delete": {
         "tags": [
           "runspaces"
         ],
         "summary": "Deletes a runspace",
-        "description": "### Deletes a runspace\r\nDeletes the PowerShell instance that is prepresented by this **runspace** resource.\r\nRunning script in the PowerShell instance won't prevent the operation.\r\n### Returns\r\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.",
-        "operationId": "delete.runspace",
+        "description": "Deletes the PowerShell instance that is prepresented by this **runspace** resource.\nRunning script in the PowerShell instance won't prevent the operation.",
+        "operationId": "delete-runspace",
         "parameters": [
           {
             "name": "id",
@@ -491,11 +476,8 @@
           }
         ],
         "x-vmw-vapi-servicename": "runspaces",
-        "x-vmw-vapi-methodname": "delete",
-        "x-vmw-doc-operation": "delete.runspace"
-      },
-      "x-vmw-doc-resource": "Runspace",
-      "x-vmw-doc-domain": "runspaces"
+        "x-vmw-vapi-methodname": "delete"
+      }
     },
     "/api/script-executions/{id}/output": {
       "get": {
@@ -503,8 +485,8 @@
           "script_executions"
         ],
         "summary": "Retrieves output objects produced by a script execution.",
-        "description": "### Retrieves output objects produced by a script execution ###\r\nOutput object could be in a different format depending on the requested output object format on **script execution** request.\r\nText and JSON are currently supported.\r\nWhen Text format is requested, the objects produced by the script execution are formatted in a table, the same way Format-Table formats the objects in PowerShell.\r\nWhen JSON format is requested, a custom json formatting is used to serialize the objects produced by the script execution. The JSON objects contain the type name and the full name of the implementing interfaces.",
-        "operationId": "get.script.execution.output",
+        "description": "Output object could be in a different format depending on the requested output object format on **script execution** request.\nText and JSON are currently supported.\nWhen Text format is requested, the objects produced by the script execution are formatted in a table, the same way Format-Table formats the objects in PowerShell.\nWhen JSON format is requested, a custom json formatting is used to serialize the objects produced by the script execution. The JSON objects contain the type name and the full name of the implementing interfaces.",
+        "operationId": "get-script-execution-output",
         "parameters": [
           {
             "name": "id",
@@ -567,11 +549,8 @@
           {
             "apiKeyAuth": [ ]
           }
-        ],
-        "x-vmw-doc-operation": "get.script.execution.output"
-      },
-      "x-vmw-doc-resource": "ScriptExecution",
-      "x-vmw-doc-domain": "script_executions"
+        ]
+      }
     },
     "/api/script-executions/{id}/streams/{stream-type}": {
       "get": {
@@ -579,8 +558,8 @@
           "script_executions"
         ],
         "summary": "Retrieves list of stream records received during script execution.",
-        "description": "### Retrieves list of stream records received during script execution\r\nDuring the execution of a script, the script execution engine collects streams that are produced by the script execution.\r\nThere are five stream types: information, error, warning, debug, verbose.",
-        "operationId": "get.script.execution.stream",
+        "description": "During the execution of a script, the script execution engine collects streams that are produced by the running script.\nThere are five stream types: information, error, warning, debug, verbose.",
+        "operationId": "get-script-execution-stream",
         "parameters": [
           {
             "name": "id",
@@ -652,11 +631,8 @@
           {
             "apiKeyAuth": [ ]
           }
-        ],
-        "x-vmw-doc-operation": "get.script.execution.stream"
-      },
-      "x-vmw-doc-resource": "StreamRecord",
-      "x-vmw-doc-domain": "script_executions"
+        ]
+      }
     },
     "/api/script-executions": {
       "post": {
@@ -664,8 +640,8 @@
           "script_executions"
         ],
         "summary": "Creates a script execution",
-        "description": "### Create a script execution\r\n**Script execution** represents asynchronous execution of a script in a specified **runspace**\r\nWhen created **script execution** starts running in the **runspace**. To monitor the script execution\r\nprogress polling of the resource by its identifier should be used.\r\n### Retruns\r\nWhen the request is accepted **202 Accepted** with **Location** header is returned in the response that leads you to the **script execution** resource that is in running state initially.\r\nWhen script execution is requested with non-existing runspace  **404 Not Found** is returned.",
-        "operationId": "create.script.execution",
+        "description": "**Script execution** represents asynchronous execution of a script in a specified **runspace**\nWhen created, the **script execution** starts running in the **runspace**. To monitor the script execution progress, poll the resource by id.\n      \nWhen the request is accepted **Location** header is returned in the response that leads you to the **script execution** resource.",
+        "operationId": "create-script-execution",
         "requestBody": {
           "description": "Desired script execution resource.",
           "content": {
@@ -722,16 +698,15 @@
           {
             "apiKeyAuth": [ ]
           }
-        ],
-        "x-vmw-doc-operation": "create.script.execution"
+        ]
       },
       "get": {
         "tags": [
           "script_executions"
         ],
         "summary": "List all script executions",
-        "description": "### List all script executions      \r\n### Returns\r\nReturns a list of your script executions.",
-        "operationId": "list.script.executions",
+        "description": "Retrieves all available **script execution** records",
+        "operationId": "list-script-executions",
         "responses": {
           "200": {
             "description": "Success",
@@ -771,11 +746,8 @@
           {
             "apiKeyAuth": [ ]
           }
-        ],
-        "x-vmw-doc-operation": "list.script.executions"
-      },
-      "x-vmw-doc-resource": "ScriptExecution",
-      "x-vmw-doc-domain": "script_executions"
+        ]
+      }
     },
     "/api/script-executions/{id}/cancel": {
       "post": {
@@ -783,8 +755,8 @@
           "script_executions"
         ],
         "summary": "Cancels a script execution",
-        "description": "### Cancel a script execution\r\nThis operation is equivalent to pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be canceled.\r\nThe state of the **script execution** will become canceled after this operation. The operation is asynchronous. Cancel request\r\nis sent to the runtime.\r\n\r\n### Returns\r\nThe operation doesn't return value. **200 Ok** will be returned if the request is successful.",
-        "operationId": "cancel.script.execution",
+        "description": "This operation is equivalent to pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be canceled.\nThe state of the **script execution** will become canceled after this operation. The operation is asynchronous. Cancel request\nis sent to the runtime.",
+        "operationId": "cancel-script-execution",
         "parameters": [
           {
             "name": "id",
@@ -827,11 +799,8 @@
           {
             "apiKeyAuth": [ ]
           }
-        ],
-        "x-vmw-doc-operation": "cancel.script.execution"
-      },
-      "x-vmw-doc-resource": "ScriptExecution",
-      "x-vmw-doc-domain": "script_executions"
+        ]
+      }
     },
     "/api/script-executions/{id}": {
       "get": {
@@ -839,8 +808,8 @@
           "script_executions"
         ],
         "summary": "Retrieve a script execution",
-        "description": "### Retrieve a script execution\r\nRetrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on script execution creation.      \r\n### Returns\r\nReturns a **script execution** resource instance if a valid identifier was provided.\r\nWhen requesting the Id of a script execution that doesn't exist **404 NotFound** is returned.",
-        "operationId": "get.script.execution",
+        "description": "Retrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on the **script execution** creation.",
+        "operationId": "get-script-execution",
         "parameters": [
           {
             "name": "id",
@@ -900,11 +869,8 @@
           {
             "apiKeyAuth": [ ]
           }
-        ],
-        "x-vmw-doc-operation": "get.script.execution"
-      },
-      "x-vmw-doc-resource": "ScriptExecution",
-      "x-vmw-doc-domain": "script_executions"
+        ]
+      }
     }
   },
   "components": {
@@ -937,8 +903,7 @@
             "readOnly": true
           }
         },
-        "additionalProperties": false,
-        "description": "About object allows you to read information for the product."
+        "description": "About information for the product."
       },
       "ArgumentScriptTemplate": {
         "type": "object",
@@ -976,8 +941,7 @@
             "nullable": true
           }
         },
-        "additionalProperties": false,
-        "description": "ArgumentScriptTemplate object represents a script with placeholders. If placeholders are replaced by values, the script can be executed.\r\nThe purpose of the script is to produce an object of a type valid for a given script runtime. The result type of the script is usually\r\ninput type for other scripts. The ArgumentScriptTemplate scripts help to convert simple type values to \r\nobjects of types that can only be produced in a given script runtime."
+        "description": "ArgumentScriptTemplate object represents a script with placeholders. If placeholders are replaced by values, the script can be executed.\nThe purpose of the script is to produce an object of a type valid for a given script runtime. The result type of the script is usually\ninput type for other scripts. The ArgumentScriptTemplate scripts help to convert simple type values to \nobjects of types that can only be produced in a given script runtime."
       },
       "PlaceholderValue": {
         "required": [
@@ -998,7 +962,6 @@
             "description": "Value that will be used to replace the placeholder on the creation of an argument script."
           }
         },
-        "additionalProperties": false,
         "description": "PlaceholderValue object represents a single value for a placeholder in template script."
       },
       "PlaceholderValueList": {
@@ -1015,7 +978,6 @@
             "description": "List of script placeholder values."
           }
         },
-        "additionalProperties": false,
         "description": "PlaceholderValueList object represents list of argument script placeholder values."
       },
       "ArgumentScript": {
@@ -1034,7 +996,7 @@
             "items": {
               "$ref": "#/components/schemas/PlaceholderValueList"
             },
-            "description": "Placeholder value list which are used to create script from script template.\r\n\r\nSingle template_placeholder_value_list produces script by the given template replacing placeholder with the given values.\r\nMultiple items for template_placeholder_value_list produce a script of scripts which can produce an array of objects. Each template_placeholder_value_list item is used to produce script from template. Scripts are then combined in a multi-line script where each line produces result object."
+            "description": "Placeholder value list which are used to create script from script template.\n\nSingle template_placeholder_value_list produces script by the given template replacing placeholder with the given values.\nMultiple items for template_placeholder_value_list produce a script of scripts which can produce an array of objects. Each template_placeholder_value_list item is used to produce script from template. Scripts are then combined in a multi-line script where each line produces result object."
           },
           "script": {
             "type": "string",
@@ -1043,7 +1005,6 @@
             "readOnly": true
           }
         },
-        "additionalProperties": false,
         "description": "ArgumentScript object represents a script produced from a given script template and placeholder values."
       },
       "ErrorDetails": {
@@ -1065,7 +1026,6 @@
             "nullable": true
           }
         },
-        "additionalProperties": false,
         "description": "ErrorDetails object gives information for an API error.",
         "readOnly": true
       },
@@ -1102,11 +1062,11 @@
           },
           "run_vc_connection_script": {
             "type": "boolean",
-            "description": "Boolean that indicates whether PowerCLI connection has to be initialized when a Runspace creation is requested.\r\n\r\nIt is optional to request VCenter Servers connection to be initialized on create request.\r\nIf true is specified PowerCLI Connect-VIServer cmdlet will be called in the create PowerShell instance.\r\nConnect-VIServer uses the authorized user's SSO SAML token to connect to the vCenter Servers.\r\nConnection to all linked vCetner Servers will be established. When requested the runspace creation will be slower\r\nwith the time needed for PowerCLI modules loading and Connect-VIServer execution time. _vc_connection_script_state\r\nfield will hold state of the script completion. In case errors have occured during connect script execution\r\n_vc_connection_script_error_records will be populated.\r\n\r\nDefault value is false."
+            "description": "Boolean that indicates whether PowerCLI connection has to be initialized when a Runspace creation is requested.\n\nIt is optional to request VCenter Servers connection to be initialized on create request.\nIf true is specified PowerCLI Connect-VIServer cmdlet will be called in the create PowerShell instance.\nConnect-VIServer uses the authorized user's SSO SAML token to connect to the vCenter Servers.\nConnection to all linked vCetner Servers will be established. When requested the runspace creation will be slower\nwith the time needed for PowerCLI modules loading and Connect-VIServer execution time. _vc_connection_script_state\nfield will hold state of the script completion. In case errors have occured during connect script execution\n_vc_connection_script_error_records will be populated.\n\nDefault value is false."
           },
           "vc_connection_script_id": {
             "type": "string",
-            "description": "Id of the vc connection script if it was requested on the runspace create request.\r\nYou can use this id to retrieve all the details of the script execution.\r\nThe script could fail and the details about the script failure would be available in the scriptexecutions API.",
+            "description": "Id of the vc connection script if it was requested on the runspace create request.\nYou can use this id to retrieve all the details of the script execution.\nThe script could fail and the details about the script failure would be available in the scriptexecutions API.",
             "nullable": true,
             "readOnly": true
           },
@@ -1117,8 +1077,7 @@
             "readOnly": true
           }
         },
-        "additionalProperties": false,
-        "description": "Runspace object allows you to create and delete isolated PowerShell instance for your script executions.\r\nThe API allows you to create, read, and delete runspaces."
+        "description": "Runspace object allows you to create and delete isolated PowerShell instance for your script executions.\nThe API allows you to create, read, and delete runspaces."
       },
       "StreamType": {
         "enum": [
@@ -1145,7 +1104,6 @@
             "format": "date-time"
           }
         },
-        "additionalProperties": false,
         "description": "StreamRecord object represents a single record of script stream."
       },
       "OutputObjectsFormat": {
@@ -1222,7 +1180,7 @@
                 }
               ]
             },
-            "description": "List of arguments that will be passed to the script.\r\nIf script content defines parameters argument can be provided.\r\nThe parameter names defined in the script content should match the names specified in this list.",
+            "description": "List of arguments that will be passed to the script.\nIf script content defines parameters argument can be provided.\nThe parameter names defined in the script content should match the names specified in this list.",
             "nullable": true
           },
           "output_objects_format": {
@@ -1233,7 +1191,7 @@
           },
           "reason": {
             "type": "string",
-            "description": "Reason for the current script execution state. In most of the cases reason field will be empty. In case\r\nof an error or cancellation reason will contain information about the reason that caused script execution to\r\nbecome in this state.",
+            "description": "Reason for the current script execution state. In most of the cases reason field will be empty. In case\nof an error or cancellation reason will contain information about the reason that caused script execution to\nbecome in this state.",
             "nullable": true,
             "readOnly": true
           },
@@ -1252,8 +1210,7 @@
             "readOnly": true
           }
         },
-        "additionalProperties": false,
-        "description": "Script Execution resource allows you to run a script in a runspace.\r\nThe API allows you to create, cancel, and retrieve script executions."
+        "description": "Script Execution resource allows you to run a script in a runspace.\nThe API allows you to create, cancel, and retrieve script executions."
       },
       "BooleanArrayScriptParameter": {
         "required": [
@@ -1262,17 +1219,16 @@
         "properties": {
           "value": {
             "type": "object",
-            "additionalProperties": false,
-            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
             "nullable": true
           },
           "name": {
             "type": "string",
-            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\nthe name of the parameter that is defined in the script."
           },
           "script": {
             "type": "string",
-            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\n\nIn case a script is specified as an argument for a script parameter the service runs the script of the\nparameter before running the requested script. The value that is produced as an output is used\nas an argument for the script parameter.\nIf both script and value are specified for a script parameter the script is executed with single argument\nwith value specified in the value field. The object that is produced as an output is used as an argument\nfor the script parameter.",
             "nullable": true
           }
         }
@@ -1284,17 +1240,16 @@
         "properties": {
           "value": {
             "type": "object",
-            "additionalProperties": false,
-            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
             "nullable": true
           },
           "name": {
             "type": "string",
-            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\nthe name of the parameter that is defined in the script."
           },
           "script": {
             "type": "string",
-            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\n\nIn case a script is specified as an argument for a script parameter the service runs the script of the\nparameter before running the requested script. The value that is produced as an output is used\nas an argument for the script parameter.\nIf both script and value are specified for a script parameter the script is executed with single argument\nwith value specified in the value field. The object that is produced as an output is used as an argument\nfor the script parameter.",
             "nullable": true
           }
         }
@@ -1306,17 +1261,16 @@
         "properties": {
           "value": {
             "type": "object",
-            "additionalProperties": false,
-            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
             "nullable": true
           },
           "name": {
             "type": "string",
-            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\nthe name of the parameter that is defined in the script."
           },
           "script": {
             "type": "string",
-            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\n\nIn case a script is specified as an argument for a script parameter the service runs the script of the\nparameter before running the requested script. The value that is produced as an output is used\nas an argument for the script parameter.\nIf both script and value are specified for a script parameter the script is executed with single argument\nwith value specified in the value field. The object that is produced as an output is used as an argument\nfor the script parameter.",
             "nullable": true
           }
         }
@@ -1328,17 +1282,16 @@
         "properties": {
           "value": {
             "type": "object",
-            "additionalProperties": false,
-            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
             "nullable": true
           },
           "name": {
             "type": "string",
-            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\nthe name of the parameter that is defined in the script."
           },
           "script": {
             "type": "string",
-            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\n\nIn case a script is specified as an argument for a script parameter the service runs the script of the\nparameter before running the requested script. The value that is produced as an output is used\nas an argument for the script parameter.\nIf both script and value are specified for a script parameter the script is executed with single argument\nwith value specified in the value field. The object that is produced as an output is used as an argument\nfor the script parameter.",
             "nullable": true
           }
         }
@@ -1350,17 +1303,16 @@
         "properties": {
           "value": {
             "type": "object",
-            "additionalProperties": false,
-            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
             "nullable": true
           },
           "name": {
             "type": "string",
-            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\nthe name of the parameter that is defined in the script."
           },
           "script": {
             "type": "string",
-            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\n\nIn case a script is specified as an argument for a script parameter the service runs the script of the\nparameter before running the requested script. The value that is produced as an output is used\nas an argument for the script parameter.\nIf both script and value are specified for a script parameter the script is executed with single argument\nwith value specified in the value field. The object that is produced as an output is used as an argument\nfor the script parameter.",
             "nullable": true
           }
         }
@@ -1372,17 +1324,16 @@
         "properties": {
           "value": {
             "type": "object",
-            "additionalProperties": false,
-            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
             "nullable": true
           },
           "name": {
             "type": "string",
-            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\nthe name of the parameter that is defined in the script."
           },
           "script": {
             "type": "string",
-            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\n\nIn case a script is specified as an argument for a script parameter the service runs the script of the\nparameter before running the requested script. The value that is produced as an output is used\nas an argument for the script parameter.\nIf both script and value are specified for a script parameter the script is executed with single argument\nwith value specified in the value field. The object that is produced as an output is used as an argument\nfor the script parameter.",
             "nullable": true
           }
         }
@@ -1394,17 +1345,16 @@
         "properties": {
           "value": {
             "type": "object",
-            "additionalProperties": false,
-            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
             "nullable": true
           },
           "name": {
             "type": "string",
-            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\nthe name of the parameter that is defined in the script."
           },
           "script": {
             "type": "string",
-            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\n\nIn case a script is specified as an argument for a script parameter the service runs the script of the\nparameter before running the requested script. The value that is produced as an output is used\nas an argument for the script parameter.\nIf both script and value are specified for a script parameter the script is executed with single argument\nwith value specified in the value field. The object that is produced as an output is used as an argument\nfor the script parameter.",
             "nullable": true
           }
         }
@@ -1416,17 +1366,16 @@
         "properties": {
           "value": {
             "type": "object",
-            "additionalProperties": false,
-            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
+            "description": "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\nargument. If only value is provided without script the object is passed to the script's parameter as is.",
             "nullable": true
           },
           "name": {
             "type": "string",
-            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
+            "description": "Name of the parameter. When a parameter is specified on a script execution create the name should match\nthe name of the parameter that is defined in the script."
           },
           "script": {
             "type": "string",
-            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter.",
+            "description": "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\n\nIn case a script is specified as an argument for a script parameter the service runs the script of the\nparameter before running the requested script. The value that is produced as an output is used\nas an argument for the script parameter.\nIf both script and value are specified for a script parameter the script is executed with single argument\nwith value specified in the value field. The object that is produced as an output is used as an argument\nfor the script parameter.",
             "nullable": true
           }
         }
@@ -1474,7 +1423,7 @@
     },
     {
       "name": "runspaces",
-      "description": "Runsapace is a PowerShell instance running in a dedicated container as a Kubernetes pod on the Kubernetes cluster. Runspace hosts the script running engine. Runspaces run in containers to isolate different users scripts and to isolate the script runtime from the hosting infrastructure. Multiple users can access SRS and run scripts. Different users are isolated in their own PowerShell runtime without access to other users script runtime and the underlying infrastructure. A user can create more than one runspace. So single user can run scripts simultaneously in isolated runspace. User can use one runspace to run multiple scripts sequentially.<br/> <br/> SRS presents Runspace as an API Resource with unique Id, name optionally given by the user, and state. The state of a Runspace switches during the Runspace life cycle. When Runspace creation is requested, a Runspace resource is returned in creating state. Once a runspace is prepared for running its state is switch to ready. A Runspace is in active state when it is busy running a script. Active runpsaces do not accept script execution requests."
+      "description": "Runspace is a PowerShell instance running in a dedicated container as a Kubernetes pod on the Kubernetes cluster. Runspace hosts the script running engine. Runspaces run in containers to isolate different users scripts and to isolate the script runtime from the hosting infrastructure. Multiple users can access SRS and run scripts. Different users are isolated in their own PowerShell runtime without access to other users script runtime and the underlying infrastructure. A user can create more than one runspace. So single user can run scripts simultaneously in isolated runspace. User can use one runspace to run multiple scripts sequentially.<br/> <br/> SRS presents Runspace as an API Resource with unique Id, name optionally given by the user, and state. The state of a Runspace switches during the Runspace life cycle. When Runspace creation is requested, a Runspace resource is returned in creating state. Once a runspace is prepared for running its state is switch to ready. A Runspace is in active state when it is busy running a script. Active runpsaces do not accept script execution requests."
     },
     {
       "name": "script_executions",
