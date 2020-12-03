@@ -49,7 +49,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.SwaggerDoc
       }
 
       public static void Configure(SwaggerGenOptions options) {
-         options.DocumentFilter<GlobalTagsSchemeFilter>();
+         options.DocumentFilter<GlobalTagsSchemeFilter>();       
       }
    }
 }

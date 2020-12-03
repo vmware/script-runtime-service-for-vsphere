@@ -23,7 +23,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.SwaggerDoc {
             .Distinct();
 
          if (requiredScopes.Any()) {
-            if (operation.OperationId != "get.about") {
+            if (operation.OperationId != "get-product-about-info") {
                if (operation.OperationId == "login") {
                   var basic = new OpenApiSecurityScheme {
                      Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "basicAuth" }

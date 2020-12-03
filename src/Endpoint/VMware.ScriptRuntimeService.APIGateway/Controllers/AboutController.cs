@@ -22,14 +22,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
    public class AboutController : ControllerBase {
       /// <summary>
       /// Retrieves about information for the product
-      /// </summary>
-      /// <remarks>
-      /// ### Retrieve about information
-      /// ### Returns
-      /// **about** resource with information for the product.
-      /// </remarks>
+      /// </summary>     
       /// <returns>Instance of <see cref="About"/></returns>
-      [HttpGet(Name = "get.about")]
+      [HttpGet(Name = "get-product-about-info")]
       [ProducesResponseType(typeof(About), StatusCodes.Status200OK)]
       public ActionResult<About> Get() {
          return Ok(new About());

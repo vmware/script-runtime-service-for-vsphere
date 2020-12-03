@@ -12,7 +12,7 @@ using VMware.ScriptRuntimeService.APIGateway.Properties;
 
 namespace VMware.ScriptRuntimeService.APIGateway.DataTypes {
    /// <summary>
-   /// About object allows you to read information for the product.
+   /// About information for the product.
    /// </summary>
    [DataContract(Name = "about")]
    public class About {

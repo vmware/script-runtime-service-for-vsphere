@@ -58,7 +58,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <returns>
       /// Script execution resource to monitor the requested script execution.
       /// </returns>
-      [HttpPost(Name= "create.script.execution")]
+      [HttpPost(Name= "create-script-execution")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(DataTypes.ScriptExecution), StatusCodes.Status202Accepted)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
@@ -150,7 +150,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <param name="id">The id of the script execution</param>
       /// <returns></returns>
       // POST api/script-executions/{id}/cancel
-      [HttpPost("{id}/cancel", Name = "cancel.script.execution")]
+      [HttpPost("{id}/cancel", Name = "cancel-script-execution")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
@@ -211,7 +211,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// Returns a list of your script executions.
       /// </remarks>      
       /// <returns></returns>
-      [HttpGet(Name = "list.script.executions")]
+      [HttpGet(Name = "list-script-executions")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(DataTypes.ScriptExecution[]), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
@@ -275,7 +275,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <param name="id"></param>      
       /// <returns></returns>
       // GET api/script-executions/{id}
-      [HttpGet("{id}", Name = "get.script.execution")]
+      [HttpGet("{id}", Name = "get-script-execution")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(DataTypes.ScriptExecution), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]

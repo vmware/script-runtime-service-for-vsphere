@@ -35,7 +35,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <param name="id">Unique identifier of the script execution</param>
       /// <param name="streamType">Type of the stream for which records to be rterieved</param>
       /// <returns></returns>
-      [HttpGet(Name = "get.script.execution.stream")]
+      [HttpGet(Name = "get-script-execution-stream")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(StreamRecord[]), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]

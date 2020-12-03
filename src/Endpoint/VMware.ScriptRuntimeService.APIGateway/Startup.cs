@@ -70,6 +70,10 @@ namespace VMware.ScriptRuntimeService.APIGateway
                      Description = APIGatewayResources.ProductApiDescription,
                      Title = APIGatewayResources.ProductName,
                      Version = APIGatewayResources.ProductVersion,
+                     Contact = new OpenApiContact() {
+                        Name = "Script Runtime Service for vSphere",                        
+                        Url = new Uri(@"https://github.com/vmware/script-runtime-service-for-vsphere"),
+                     },
                      Extensions = {
                         { "x-vmw-vapi-codegenconfig", packageNameExtension }
                      }
@@ -78,15 +82,15 @@ namespace VMware.ScriptRuntimeService.APIGateway
                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                c.IncludeXmlComments(xmlPath);
-
                GlobalTagsSchemeFilter.Configure(c);
                TagsOperationFilter.Configure(c);
                VMwareVapiVendorExtensionsOperationFilter.Configure(c);
                SecurityRequirementsOperationFilter.Configure(c);
                ScriptExecutionParameterDocumentFilter.Configure(c);
                ScriptExecutionParameterSchemaFilter.Configure(c);
-               VMwarePrintingPressExtensionsOperationFilter.Configure(c);
-               VMwarePrintingPressPathExtensionsDocumentFilter.Configure(c);
+               ServersDocumentFilter.Configure(c);
+               //VMwarePrintingPressExtensionsOperationFilter.Configure(c);
+               //VMwarePrintingPressPathExtensionsDocumentFilter.Configure(c);
                ReadOnlySchemaFilter.Configure(c);
             });
          services.AddSwaggerGenNewtonsoftSupport();

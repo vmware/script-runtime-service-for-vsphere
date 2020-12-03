@@ -34,7 +34,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </remarks>
       /// <param name="id">Unique identifier of the script execution</param>      
       /// <returns></returns>
-      [HttpGet(Name = "get.script.execution.output")]
+      [HttpGet(Name = "get-script-execution-output")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]

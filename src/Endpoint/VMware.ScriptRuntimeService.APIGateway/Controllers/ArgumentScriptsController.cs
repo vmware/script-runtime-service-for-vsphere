@@ -30,7 +30,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// This operation retrieves the available argument script templates.
       /// </remarks>
       /// <returns>List of names of the available PowerCLI argument transformation scripts</returns>
-      [HttpGet("templates", Name = "list.argument.scripts.templates")]
+      [HttpGet("templates", Name = "list-argument-scripts-templates")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(ArgumentScriptTemplate[]), StatusCodes.Status200OK)]
       public ActionResult<ArgumentScriptTemplate[]> List() {
@@ -46,7 +46,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// </remarks>
       /// <param name="id">The Id of the argument script template</param>
       /// <returns></returns>
-      [HttpGet("templates/{id}", Name = "get.argument.scripts.template")]
+      [HttpGet("templates/{id}", Name = "get-argument-scripts-template")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(ArgumentScriptTemplate), StatusCodes.Status200OK)]
       public ActionResult<ArgumentScriptTemplate> Get([FromRoute]string id) {
@@ -78,7 +78,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers {
       /// </remarks>
       /// <param name="argumentScript">The argument script create request</param>
       /// <returns></returns>
-      [HttpPost("script", Name = "create.argument.scripts.script")]
+      [HttpPost("script", Name = "create-argument-scripts-script")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(ArgumentScript), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status404NotFound)]

@@ -205,9 +205,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to # Script Runtime Service API
-        ///
-        ///Script Runtime Service for vSphere (SRS) enables vSphere users and services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS clients authenticate once with vSphere credentials or access token. SRS clients can create PowerCLI instances and run scripts within. PowerCLI runs server-side and automatically connects to target vCenter servers. SRS tracks history of script outputs..
+        ///   Looks up a localized string similar to Script Runtime Service for vSphere (SRS) enables vSphere users and services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS clients authenticate once with vSphere credentials or access token. SRS clients can create PowerCLI instances and run scripts within. PowerCLI runs server-side and automatically connects to target vCenter servers. SRS tracks history of script outputs..
         /// </summary>
         public static string ProductApiDescription {
             get {
@@ -297,7 +295,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Runsapace is a PowerShell instance running in a dedicated container as a Kubernetes pod on the Kubernetes cluster. Runspace hosts the script running engine. Runspaces run in containers to isolate different users scripts and to isolate the script runtime from the hosting infrastructure. Multiple users can access SRS and run scripts. Different users are isolated in their own PowerShell runtime without access to other users script runtime and the underlying infrastructure. A user can create more than one runsp [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to Runspace is a PowerShell instance running in a dedicated container as a Kubernetes pod on the Kubernetes cluster. Runspace hosts the script running engine. Runspaces run in containers to isolate different users scripts and to isolate the script runtime from the hosting infrastructure. Multiple users can access SRS and run scripts. Different users are isolated in their own PowerShell runtime without access to other users script runtime and the underlying infrastructure. A user can create more than one runspa [rest of string was truncated]&quot;;.
         /// </summary>
         public static string RunspaceTagDescription {
             get {

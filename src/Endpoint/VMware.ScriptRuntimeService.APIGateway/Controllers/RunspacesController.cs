@@ -56,7 +56,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </remarks>
       /// <param name="runspace">Desired runspace resource.</param>
       /// <returns>Runspace resource to monitor the requested runspace. Once runspace becomes in **ready** state you will be able to run scripts in it.</returns>
-      [HttpPost(Name = "create.runspace")]
+      [HttpPost(Name = "create-runspace")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(DataTypes.Runspace), StatusCodes.Status202Accepted)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
@@ -103,7 +103,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// ### Returns
       /// Returns a list of your runspaces.
       /// </remarks>
-      [HttpGet(Name= "list.runspaces")]
+      [HttpGet(Name= "list-runspaces")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(DataTypes.Runspace[]), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
@@ -156,7 +156,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// Returns a **runspace** resource instance if a valid identifier was provided.
       /// When requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.
       /// </remarks>
-      [HttpGet("{id}", Name = "get.runspace")]
+      [HttpGet("{id}", Name = "get-runspace")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(DataTypes.Runspace), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
@@ -196,7 +196,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// ### Returns
       /// When requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned.
       /// </remarks>
-      [HttpDelete("{id}", Name = "delete.runspace")]
+      [HttpDelete("{id}", Name = "delete-runspace")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
