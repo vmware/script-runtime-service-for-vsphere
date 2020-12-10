@@ -6,12 +6,18 @@
 Script Runtime Service for vSphere (SRS) enables vSphere users and services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS clients authenticate once with vSphere credentials or access token. SRS clients create PowerCLI instances and run scripts within. PowerCLI runs server-side and automatically connects to the target vCenter Servers. SRS tracks history of script outputs.
 
 ### Highlights
-* Central place with REST API endpoint for VI Admins in an organization to run [VMware PowerCLI](https://code.vmware.com/web/tool/12.1.0/vmware-powercli)
-* Run PowerCLI without having it installed on local machine
-* Manage multiple PowerCLI instances and run commands and scripts within against vSphere infrastructure without calling Connect-VIServer
+* Central place with REST API endpoint for VI Admins to run [VMware PowerCLI](https://code.vmware.com/web/tool/12.1.0/vmware-powercli)
+* Manage multiple PowerCLI instances to run commands and scripts against vCenter Servers without calling Connect-VIServer
 * Runs on Kubernetes
 
 ![SRS Overview](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/SRSOverview.jpg?raw=true)
+
+## Latest release
+[Script Runtime Service for vSphere 1.0.0](https://github.com/vmware/script-runtime-service-for-vsphere/releases/tag/v1.0.0)
+
+## Istall SRS
+- [Install on a VM](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Getting-Started-with-SRSHostVM)
+- [Install on a Kubernetes Cluster](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Install-SRS)
 
 ## Build & Run
 Script Runtime Service is a kubernetes application but since it is vSphere add-on service you can build and package it in a Photon OS OVF virtual machine from source code. Build uses Photon OS appliance templates from [William Lam](https://github.com/lamw) github repository [photon os appliance](https://github.com/lamw/photonos-appliance)  modified with custom properties that take care to register SRS to desired vCenter Server on first boot. Thus, you can have SRS deployed and configured with simple ovf deploy.
