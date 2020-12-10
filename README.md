@@ -27,7 +27,7 @@ Script Runtime Service for vSphere (SRS) enables vSphere users and services (cli
 
 ## SRS API Client-side SDKs
 [Swagger Codegen](https://github.com/swagger-api/swagger-codegen) can be used to generate client side SDKs for different lnaguages.<br/>
-Java and C# example client appliactions based on automatic generate client-side SDKs are available in [OpenAPI Clients](https://github.com/vmware/script-runtime-service-for-vsphere/tree/master/test/openapi-clients).<br/>
+Java and C# example client appliactions based on auto-generated client-side SDKs are available in [OpenAPI Clients](https://github.com/vmware/script-runtime-service-for-vsphere/tree/master/test/openapi-clients).<br/>
 
 ## Build & Run
 [Build & Run](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/BUILD_AND_RUN.md)
