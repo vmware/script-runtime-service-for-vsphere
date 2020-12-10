@@ -16,14 +16,14 @@ Script Runtime Service for vSphere (SRS) enables vSphere users and services (cli
 [Script Runtime Service for vSphere 1.0.0](https://github.com/vmware/script-runtime-service-for-vsphere/releases/tag/v1.0.0)
 
 ## Istall SRS
-- [Install on a VM](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Getting-Started-with-SRSHostVM)
-- [Install on a Kubernetes Cluster](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Install-SRS)
+[Install on a VM](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Getting-Started-with-SRSHostVM)<br/>
+[Install on a Kubernetes Cluster](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Install-SRS)
 
 ## User Guide
-- [User Guide](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Home)
+[User Guide](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Home)
 
 ## SRS API
-- [Getting-Started-with-SRS-API](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Getting-Started-with-SRS-API)
+[Getting Started with SRS API](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Getting-Started-with-SRS-API)
 
 ## SRS API Client-side SDKs
 [Swagger Codegen](https://github.com/swagger-api/swagger-codegen) can be used to generate client side SDKs for different lnaguages.<br/>
