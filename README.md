@@ -13,7 +13,7 @@ Script Runtime Service for vSphere (SRS) enables vSphere users and services (cli
 ![SRS Overview](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/SRSOverview.jpg?raw=true)
 
 ## Latest Release
-[Script Runtime Service for vSphere 1.0.0](https://github.com/vmware/script-runtime-service-for-vsphere/releases/tag/v1.0.0)
+[1.0.0](https://github.com/vmware/script-runtime-service-for-vsphere/releases/tag/v1.0.0)
 
 ## Istall SRS
 [Install on a VM](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Getting-Started-with-SRSHostVM)<br/>
