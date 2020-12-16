@@ -34,17 +34,25 @@ echo "INFO: PowerCLI directory is: $PCLI_SOURCE_DIR"
 APP_DESTINATION_DIR="$SCRIPT_DIR/app"
 PCLI_DESTINATION_DIR="$APP_DESTINATION_DIR/PowerCLIModules"
 SERVICE_DESTINATION_DIR="$APP_DESTINATION_DIR/service"
+TTYD_DESTINATION_DIR="$APP_DESTINATION_DIR/ttyd"
 SERVICE_SRC_DIR="$SCRIPT_DIR/../../"
 
-echo "INFO: PowerCLI Destination Dir is: $PCLI_DESTINATION_DIR"
-echo "INFO: Service Sources Dir is: $SERVICE_SRC_DIR"
+echo "INFO: PowerCLI Destination dir is: $PCLI_DESTINATION_DIR"
+echo "INFO: Service Sources dir is: $SERVICE_SRC_DIR"
 echo "INFO: App destination dir is: $APP_DESTINATION_DIR"
-echo "INFO: Service Destination Dir is: $SERVICE_DESTINATION_DIR"
+echo "INFO: Service Destination dir is: $SERVICE_DESTINATION_DIR"
+echo "INFO: Ttyd Destination dir is: $TTYD_DESTINATION_DIR"
 
 echo "INFO: Creating direcctory $APP_DESTINATION_DIR"
 mkdir $APP_DESTINATION_DIR
 echo "INFO: Creating directory $SERVICE_DESTINATION_DIR"
 mkdir $SERVICE_DESTINATION_DIR
+echo "INFO: Creatind directory $TTYD_DESTINATION_DIR"
+mkdir $TTYD_DESTINATION_DIR
+pushd $TTYD_DESTINATION_DIR
+wget https://github.com/tsl0922/ttyd/releases/download/1.6.2/ttyd.x86_64
+mv ./ttyd.x86_64 ./ttyd
+popd
 
 echo "INFO: dotnet publish $SERVICE_SRC_DIR"
 $DOTNET_COMMAND publish $SERVICE_SRC_DIR -c Release -f netcoreapp3.1 -o $SERVICE_DESTINATION_DIR

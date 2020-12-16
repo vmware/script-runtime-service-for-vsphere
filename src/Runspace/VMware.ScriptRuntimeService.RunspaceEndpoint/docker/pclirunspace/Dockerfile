@@ -9,6 +9,8 @@ WORKDIR /app
 # Copy application
 COPY /app/service/ /app/service/
 COPY /app/PowerCLIModules/ /app/PowerCLIModules/
+COPY /app/ttyd/ /app/ttyd/
+RUN chmod +x /app/ttyd/ttyd
 
 # Add PowerCLI Modules to PSModulePath
 ENV PSModulePath="${PSModulePath}:/app/PowerCLIModules"
