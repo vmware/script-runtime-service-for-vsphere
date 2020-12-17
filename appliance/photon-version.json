@@ -5,7 +5,7 @@
   "vm_name": "SRS_Appliance",
   "iso_checksum": "250ade2baa1b3a23041d04e3b0cff66238245457",
   "iso_checksum_type": "sha1",
-  "iso_url": "https://packages.vmware.com/photon/3.0/Rev2/iso/Update2/photon-3.0-a0f216d.iso",
+  "iso_url": "https://packages.vmware.com/photon/3.0/Rev3/iso/photon-3.0-a383732.iso",
   "numvcpus": "2",
   "ramsize": "8192",
   "guest_username": "root",
