@@ -24,6 +24,8 @@ param(
    $VcPassword
 )
 
+$script:vSphereIntegrationLibsOutput = (Join-Path $PsScriptRoot "vsphere-libs-output")
+
 function Test-BuildToolsAreAvailable {
    $dotnetSdk = Get-Command 'dotnet'
    if (-not $dotnetSdk) {
@@ -34,7 +36,10 @@ function Test-BuildToolsAreAvailable {
 function Build-vSphereIntegrationLibrary {
 param(
    [string]
-   $LibraryName
+   $LibraryName,
+
+   [string]
+   $OutputPath
 )
    $librariesSourcePath = (Join-Path (Join-Path ($PsScriptRoot | Split-Path) "src") "vSphereIntegrationLibraries")
    $libraryProjectFile = [IO.Path]::Combine($librariesSourcePath, $LibraryName, "$LibraryName.csproj")
@@ -44,27 +49,27 @@ param(
    }
 
    Write-Host "Build '$libraryProjectFile'"
-   $configuration = 'Debug'
-   dotnet build --configuration $configuration $libraryProjectFile | Out-Null
+   dotnet build $libraryProjectFile -o $OutputPath | Out-Null
 
    # Return Path to build output
    [IO.Path]::Combine(
-      $librariesSourcePath,
-      $LibraryName,
-      "bin",
-      $configuration,
-      "netcoreapp3.0",
+      $OutputPath,
       "$LibraryName.dll")
 }
 
 # Build .NET libraries needed for integration tests from source
 Test-BuildToolsAreAvailable
 
-$STSLibraryPath = Build-vSphereIntegrationLibrary "VMware.ScriptRuntimeService.Sts"
+# Create .NET libraries output dir
+if (-not (Test-Path $script:vSphereIntegrationLibsOutput)) {
+   New-Item -ItemType Directory -Path $script:vSphereIntegrationLibsOutput | Out-Null
+}
+
+$STSLibraryPath = Build-vSphereIntegrationLibrary "VMware.ScriptRuntimeService.Sts" $script:vSphereIntegrationLibsOutput
 Write-Host "STS Library: '$STSLibraryPath'"
-$LSLibraryPath = Build-vSphereIntegrationLibrary "VMware.ScriptRuntimeService.Ls"
+$LSLibraryPath = Build-vSphereIntegrationLibrary "VMware.ScriptRuntimeService.Ls" $script:vSphereIntegrationLibsOutput
 Write-Host "LS Library: '$LSLibraryPath'"
-$SsoAdminLibraryPath = Build-vSphereIntegrationLibrary "VMware.ScriptRuntimeService.SsoAdmin"
+$SsoAdminLibraryPath = Build-vSphereIntegrationLibrary "VMware.ScriptRuntimeService.SsoAdmin" $script:vSphereIntegrationLibsOutput
 Write-Host "Sso Admin Library: '$SsoAdminLibraryPath'"
 
 Import-Module $STSLibraryPath
@@ -88,16 +93,17 @@ $lsClient = New-Object `
    'VMware.ScriptRuntimeService.Ls.LookupServiceClient' `
    -ArgumentList $VcAddress, (New-Object 'CertificateValidators.AcceptAllX509CertificateValidator')
 
-# Get SRS Solution
+# Get Registered SRS Solutions
 $services = $lsClient.ListRegisteredServices()
-$srsService = $services | Where-Object {$_.serviceDescriptionResourceKey -eq 'srs.ServiceDescritpion'}
+$srsServices = $services | Where-Object {$_.serviceDescriptionResourceKey -eq 'srs.ServiceDescritpion'}
 
-if ($srsService -ne $null) {
+$srsServices | Foreach-Object {
+   $srsServiceRegistration = $_
    Write-Host "Remove SRS Service registration from VC"
    $lsClient.DeleteService(
       $VcUser,
       (ConvertTo-SecureString -String $VcPassword -Force -AsPlainText),
-      $srsService.serviceId)
+      $srsServiceRegistration.serviceId)
 
    $ssoAdminClient = New-Object `
       'VMware.ScriptRuntimeService.SsoAdmin.SsoAdminClient' `
@@ -107,5 +113,5 @@ if ($srsService -ne $null) {
          DeleteLocalPrincipal(
             $VcUser,
             (ConvertTo-SecureString -String $VcPassword -Force -AsPlainText),
-            $srsService.ownerId );
+            $srsServiceRegistration.ownerId );
 }

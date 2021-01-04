@@ -84,3 +84,4 @@ srs-appliance/files/srs-setup-docker-image.tar
 /test/openapi-clients/dotnet/SrsClient/.vs
 /test/openapi-clients/dotnet/SrsClient/SrsClient/bin/Debug/netcoreapp3.1
 /test/openapi-clients/dotnet/SrsClient/SrsClient/obj
+/appliance/vsphere-libs-output
