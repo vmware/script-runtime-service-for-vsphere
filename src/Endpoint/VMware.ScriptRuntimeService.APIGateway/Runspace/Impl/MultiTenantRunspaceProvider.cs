@@ -216,6 +216,70 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          return result;
       }
 
+      public IRunspaceData StartCreateWebConsole(
+         string userId,
+         ISessionToken sessionToken,
+         string name,
+         bool runVcConnectionScript,
+         ISolutionStsClient stsClient,
+         string vcEndpoint) {
+
+         IRunspaceData result = null;
+
+         _logger.LogInformation("StartCreate");
+
+         try {
+            Sessions.Instance.EnsureValidUser(userId);
+            _logger.LogDebug("RunspaceProvider -> StartCreate call");
+            var runspaceInfo = _runspaceProvider.StartCreateWebConsole();
+            _logger.LogDebug($"Runspace provider result: {runspaceInfo.Id}, {runspaceInfo.CreationState}, {runspaceInfo.CreationError}");
+            result = new RunspaceData(runspaceInfo);
+            result.CreationTime = DateTime.Now;
+            result.Name = name;
+            result.RunVcConnectionScript = runVcConnectionScript;
+            result.State = DataTypes.RunspaceState.Ready;
+
+            _userRunspaces.Add(userId, result.Id, result);
+
+         } catch (RunspaceProviderException runspaceProviderException) {
+            _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown");
+            throw;
+         } catch (Exception ex) {
+            throw new RunspaceProviderException(
+               string.Format(
+                  APIGatewayResources.MultiTenantRunspaceProvider_CreateFailed,
+                  userId,
+                  ex.Message),
+               ex);
+         }
+
+         return result;
+      }
+
+      public void KillWebConsole(string userId, string runspaceId) {
+         _logger.LogInformation($"Kill runspace {runspaceId}");
+         try {
+            Sessions.Instance.EnsureValidUser(userId);
+
+            if (_userRunspaces.Contains(userId, runspaceId)) {               
+               _userRunspaces.RemoveData(userId, runspaceId);
+            }           
+
+            _runspaceProvider.KillWebConsole(runspaceId);
+            
+            if (_userRunspaces.List(userId) == null) {
+               _userRunspaces.RemoveUser(userId);
+            }
+         } catch (Exception ex) {
+            throw new RunspaceProviderException(
+               string.Format(
+                  APIGatewayResources.MultiTenantRunspaceProvider_KillFailed,
+                  userId,
+                  ex.Message),
+               ex);
+         }
+      }
+
       public IRunspaceData Get(string userId, string runspaceId) {
          _logger.LogInformation($"Get runspace with id: {runspaceId}");
          IRunspaceData result = null;
