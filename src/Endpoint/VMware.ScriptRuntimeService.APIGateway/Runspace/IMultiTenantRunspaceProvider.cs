@@ -37,6 +37,15 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace {
          ISolutionStsClient stsClient,
          string vcEndpoint);
 
+      IRunspaceData StartCreateWebConsole(
+         string userId,
+         ISessionToken sessionToken,
+         string name,
+         bool runVcConnectionScript,
+         ISolutionStsClient stsClient,
+         string vcEndpoint);
+      void KillWebConsole(string userId, string runspaceId);
+
       /// <summary>
       /// Gets all running runspace instances for specified user
       /// </summary>

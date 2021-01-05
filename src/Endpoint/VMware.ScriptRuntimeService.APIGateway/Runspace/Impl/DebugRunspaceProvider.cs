@@ -43,5 +43,12 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl {
       public void UpdateConfiguration(IRunspaceProviderSettings runspaceProviderSettings) {
          // Do nothing
       }
+
+      public IRunspaceInfo StartCreateWebConsole() {
+         return StartCreate();
+      }
+      public void KillWebConsole(string id) {
+         Kill(id);
+      }
    }
 }

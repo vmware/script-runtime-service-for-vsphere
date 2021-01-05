@@ -17,6 +17,9 @@ namespace VMware.ScriptRuntimeService.RunspaceProviders.Types
       /// </returns>
       IRunspaceInfo StartCreate();
 
+      IRunspaceInfo StartCreateWebConsole();
+      void KillWebConsole(string id);
+
       /// <summary>
       /// Synchronously waits <see cref="IRunspaceInfo"/> CreationState to become different than 'Creating'.
       /// Implementer decides whether to introduce timeout to not block execution.
