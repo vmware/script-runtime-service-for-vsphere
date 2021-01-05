@@ -15,7 +15,7 @@ Script Runtime Service for vSphere (SRS) enables vSphere users and services (cli
 ## Latest Release
 [1.0.0](https://github.com/vmware/script-runtime-service-for-vsphere/releases/tag/v1.0.0)
 
-## Istall SRS
+## Install SRS
 [Install on a VM](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Getting-Started-with-SRSHostVM)<br/>
 [Install on a Kubernetes Cluster](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Install-SRS)
 
@@ -26,8 +26,8 @@ Script Runtime Service for vSphere (SRS) enables vSphere users and services (cli
 [Getting Started with SRS API](https://github.com/vmware/script-runtime-service-for-vsphere/wiki/Getting-Started-with-SRS-API)
 
 ## SRS API Client-side SDKs
-[Swagger Codegen](https://github.com/swagger-api/swagger-codegen) can be used to generate client side SDKs for different lnaguages.<br/>
-Java and C# example client appliactions based on auto-generated client-side SDKs are available in [OpenAPI Clients](https://github.com/vmware/script-runtime-service-for-vsphere/tree/master/test/openapi-clients).<br/>
+[Swagger Codegen](https://github.com/swagger-api/swagger-codegen) can be used to generate client side SDKs for different languages.<br/>
+Java and C# example client applications based on auto-generated client-side SDKs are available in [OpenAPI Clients](https://github.com/vmware/script-runtime-service-for-vsphere/tree/master/test/openapi-clients).<br/>
 
 ## Build & Run
 [Build & Run](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/BUILD_AND_RUN.md)
