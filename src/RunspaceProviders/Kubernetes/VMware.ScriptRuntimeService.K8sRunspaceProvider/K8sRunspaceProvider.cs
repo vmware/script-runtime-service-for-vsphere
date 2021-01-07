@@ -205,7 +205,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                         {
                            new V1Container(
                               appName,
-                              image:"ttydbase:latest",
+                              image:_imageName,
                               command: new [] { "ttyd" },
                               args: new [] {"-p", "8086", "-b", $"/{appName}", "pwsh" },
                               //ports: new [] { new V1ContainerPort(8086, protocol:"TCP", hostPort:8086) },
