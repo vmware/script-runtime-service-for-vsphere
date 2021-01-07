@@ -17,7 +17,7 @@ namespace VMware.ScriptRuntimeService.RunspaceProviders.Types
       /// </returns>
       IRunspaceInfo StartCreate();
 
-      IRunspaceInfo StartCreateWebConsole();
+      IRunspaceInfo StartCreateWebConsole(string vc, string token, bool allLinked);
       void KillWebConsole(string id);
 
       /// <summary>

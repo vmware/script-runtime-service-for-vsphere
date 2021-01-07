@@ -231,7 +231,26 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          try {
             Sessions.Instance.EnsureValidUser(userId);
             _logger.LogDebug("RunspaceProvider -> StartCreate call");
-            var runspaceInfo = _runspaceProvider.StartCreateWebConsole();
+
+            string bearerSamlToken = "";
+            try {
+               _logger.LogDebug($"HoK Saml Token availble: {sessionToken.HoKSamlToken != null}");
+               if (sessionToken.HoKSamlToken == null) {
+                  throw new Exception(APIGatewayResources.PowerCLIVCloginController_NoRefreshTokenAvailable_For_Session);
+               }
+
+               _logger.LogDebug($"STSClient -> IssueBearerTokenBySolutionToken call");
+               bearerSamlToken = stsClient
+                  .IssueBearerTokenBySolutionToken(sessionToken.HoKSamlToken.RawXmlElement)
+                  .OuterXml;
+            } catch (Exception exc) {
+               _logger.LogError(exc, "Issue Bearer Token failed");
+               result.State = DataTypes.RunspaceState.Error;
+               result.ErrorDetails = new DataTypes.ErrorDetails(exc);
+            }
+
+            var token = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(bearerSamlToken));
+            var runspaceInfo = _runspaceProvider.StartCreateWebConsole(vcEndpoint, token, true);
             _logger.LogDebug($"Runspace provider result: {runspaceInfo.Id}, {runspaceInfo.CreationState}, {runspaceInfo.CreationError}");
             result = new RunspaceData(runspaceInfo);
             result.CreationTime = DateTime.Now;
