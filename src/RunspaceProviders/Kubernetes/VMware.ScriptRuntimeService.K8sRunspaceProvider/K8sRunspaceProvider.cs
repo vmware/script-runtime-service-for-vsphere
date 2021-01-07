@@ -182,7 +182,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          return createdPod;
       }
 
-      private V1Deployment CreateK8sApp(string appName) {
+      private V1Deployment CreateK8sApp(string appName, string vc, string token, bool allLinked) {
          _logger.LogDebug($"CreateK8sApp: {appName}");
 
          var deploymentBody = new V1Deployment(
@@ -205,9 +205,14 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                         {
                            new V1Container(
                               appName,
-                              image:_imageName,
+                              image: _imageName,
+                              env: new []{ 
+                                 new V1EnvVar("vc", vc),
+                                 new V1EnvVar("token", token),
+                                 new V1EnvVar("allLinked", allLinked.ToString()),
+                              },
                               command: new [] { "ttyd" },
-                              args: new [] {"-p", "8086", "-b", $"/{appName}", "pwsh" },
+                              args: new [] {"-p", "8086", "-b", $"/{appName}", "pwsh", "-File", "/app/scripts/connect.ps1", "-NoExit" },
                               //ports: new [] { new V1ContainerPort(8086, protocol:"TCP", hostPort:8086) },
                               imagePullPolicy:"IfNotPresent",
                               volumeMounts: CreateRunspacePodVolumeMounts())
@@ -383,14 +388,14 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          return result;
       }
 
-      public IRunspaceInfo StartCreateWebConsole() {
+      public IRunspaceInfo StartCreateWebConsole(string vc, string token, bool allLinked) {
          _logger.LogInformation("Create Runspace");
          K8sRunspaceInfo result = null;
          try {
             _logger.LogDebug("GenerateWebconsoleId");
             var runspaceId = GenerateWebconsoleId();
             _logger.LogDebug($"RunspaceId: {runspaceId}");            
-            var runspacePod = CreateK8sApp(runspaceId);
+            var runspacePod = CreateK8sApp(runspaceId, vc, token, allLinked);
 
             result = new K8sRunspaceInfo {
                Id = runspaceId,

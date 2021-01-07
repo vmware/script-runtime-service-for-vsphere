@@ -44,7 +44,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl {
          // Do nothing
       }
 
-      public IRunspaceInfo StartCreateWebConsole() {
+      public IRunspaceInfo StartCreateWebConsole(string vc, string token, bool allLinked) {
          return StartCreate();
       }
       public void KillWebConsole(string id) {

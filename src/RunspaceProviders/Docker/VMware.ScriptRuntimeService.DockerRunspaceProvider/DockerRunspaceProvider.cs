@@ -96,7 +96,7 @@ namespace VMware.ScriptRuntimeService.DockerRunspaceProvider
       #endregion
 
       #region IRunspaceProvider interface
-      public IRunspaceInfo StartCreateWebConsole() {
+      public IRunspaceInfo StartCreateWebConsole(string vc, string token, bool allLinked) {
          return StartCreate();
       }
       public void KillWebConsole(string id) {
