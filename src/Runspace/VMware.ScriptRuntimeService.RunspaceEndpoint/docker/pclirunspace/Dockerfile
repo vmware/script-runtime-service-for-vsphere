@@ -13,6 +13,7 @@ WORKDIR /app
 
 # Copy application
 COPY /app/service/ /app/service/
+COPY /app/scripts/ /app/scripts/
 COPY /app/PowerCLIModules/ /app/PowerCLIModules/
 
 # Add PowerCLI Modules to PSModulePath
