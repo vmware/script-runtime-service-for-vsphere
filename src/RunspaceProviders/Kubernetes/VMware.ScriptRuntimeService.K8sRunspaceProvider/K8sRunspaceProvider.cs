@@ -212,7 +212,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                                  new V1EnvVar("allLinked", allLinked.ToString()),
                               },
                               command: new [] { "ttyd" },
-                              args: new [] {"-p", "8086", "-b", $"/{appName}", "-P", "30", "-m", "1", "pwsh", "-NoExit", "/app/scripts/connect.ps1" },
+                              args: new [] {"-p", "8086", "-b", $"/{appName}", "-T", "linux", "-P", "30", "-m", "1", "pwsh", "-NoExit", "/app/scripts/connect.ps1" },
                               //ports: new [] { new V1ContainerPort(8086, protocol:"TCP", hostPort:8086) },
                               imagePullPolicy:"IfNotPresent",
                               volumeMounts: CreateRunspacePodVolumeMounts())
