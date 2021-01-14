@@ -182,6 +182,10 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          return createdPod;
       }
 
+      private static string GetSvcName(string appName) {
+         return $"wc{appName}";
+      }
+
       private V1Deployment CreateK8sApp(string appName, string vc, string token, bool allLinked) {
          _logger.LogDebug($"CreateK8sApp: {appName}");
 
@@ -212,8 +216,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                                  new V1EnvVar("allLinked", allLinked.ToString()),
                               },
                               command: new [] { "ttyd" },
-                              args: new [] {"-p", "8086", "-b", $"/{appName}", "-T", "linux", "-P", "30", "-m", "1", "pwsh", "-NoExit", "/app/scripts/connect.ps1" },
-                              //ports: new [] { new V1ContainerPort(8086, protocol:"TCP", hostPort:8086) },
+                              args: new [] {"-p", "8086", "-b", $"/{appName}", "-T", "linux", "-P", "30", "-m", "1", "pwsh", "-NoExit", "/app/scripts/connect.ps1" },                              
                               imagePullPolicy:"IfNotPresent",
                               volumeMounts: CreateRunspacePodVolumeMounts())
                         }
@@ -228,7 +231,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             "v1",
             "Service",
             new V1ObjectMeta(
-               name: appName),
+               name: GetSvcName(appName)),
             spec: new V1ServiceSpec(
                type:"ClusterIP",
                sessionAffinity: "None",                     
@@ -244,7 +247,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          );
 
          var deployment = _client.CreateNamespacedDeployment(deploymentBody, _namespace);
-         var service = _client.CreateNamespacedService(serviceBody, _namespace);
+         _client.CreateNamespacedService(serviceBody, _namespace);
 
          AddSrsIngressWebConsolePath(appName);
 
@@ -260,7 +263,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          pathRule.path = $"/{id}";
          pathRule.pathType = "ImplementationSpecific";
          dynamic backend = new ExpandoObject();
-         backend.serviceName = id;
+         backend.serviceName = GetSvcName(id);
          backend.servicePort = 8086;
          pathRule.backend = backend;
 
@@ -424,7 +427,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          try {
             RemoveSrsIngressWebConsolePath(id);
             _client.DeleteNamespacedDeployment(id, _namespace);
-            _client.DeleteNamespacedService(id, _namespace);
+            _client.DeleteNamespacedService(GetSvcName(id), _namespace);
             // Wait pod to be deleted
             int maxRetry = 20;
             int retryCount = 1;
@@ -435,7 +438,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                service = null;
                try {
                   deployment = _client.ReadNamespacedDeployment(id, _namespace);
-                  service = _client.ReadNamespacedService(id, _namespace);
+                  service = _client.ReadNamespacedService(GetSvcName(id), _namespace);
                   Thread.Sleep(100);
                } catch (Exception) { }
                retryCount++;
