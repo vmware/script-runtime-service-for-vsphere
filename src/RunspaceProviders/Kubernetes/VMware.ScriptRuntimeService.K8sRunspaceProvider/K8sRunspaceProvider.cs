@@ -163,7 +163,14 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      new V1Container(
                         podName,
                         image:_imageName,
-                        imagePullPolicy:"IfNotPresent",                        
+                        imagePullPolicy:"IfNotPresent",
+                        env: new []{
+                           new V1EnvVar("ASPNETCORE_URLS", "http://+:5550")
+                        },
+                        ports: new [] {
+                           new V1ContainerPort(5550)
+                        },
+                        command: new [] { "/app/service/VMware.ScriptRuntimeService.RunspaceEndpoint" },
                         volumeMounts: CreateRunspacePodVolumeMounts())
                   }
                },               
