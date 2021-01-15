@@ -20,13 +20,14 @@ COPY /app/PowerCLIModules/ /app/PowerCLIModules/
 ENV PSModulePath="${PSModulePath}:/app/PowerCLIModules"
 
 # Expose Runspace Endpoint on port 5550
-#ENV ASPNETCORE_URLS http://+:5550
-#EXPOSE 5550
-
-# Start Runspace Endpoint Service
-#ENTRYPOINT ["/app/service/VMware.ScriptRuntimeService.RunspaceEndpoint"]
+ENV ASPNETCORE_URLS http://+:5550
+EXPOSE 5550
 
 COPY --from=0 /ttyd/build/ttyd /usr/bin/ttyd
+
+# Start Runspace Endpoint Service
+# ENTRYPOINT ["/app/service/VMware.ScriptRuntimeService.RunspaceEndpoint"]
+
 
 ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini /sbin/tini
 RUN chmod +x /sbin/tini
