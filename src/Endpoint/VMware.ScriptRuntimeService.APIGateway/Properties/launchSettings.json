@@ -1,13 +1,13 @@
-﻿{
-  "$schema": "http://json.schemastore.org/launchsettings.json",
+{
   "iisSettings": {
-    "windowsAuthentication": false, 
-    "anonymousAuthentication": true, 
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:56658",
       "sslPort": 0
     }
   },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
@@ -17,10 +17,22 @@
     },
     "VMware.ScriptRuntimeService.APIGateway": {
       "commandName": "Project",
-      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "StsSettings:SolutionOwnerId": "srs-SolutionOwner-dff29701-3897-4b96-ba97-4e67724135b1",
+        "RunspaceProviderSettings:LocalhostDebug": "false",
+        "StsSettings:RealmStsServiceEndpoint": "https://10.23.80.118/sts/STSService/vsphere.local",
+        "RunspaceProviderSettings:K8sRunspacePort": "5550",
+        "StsSettings:Realm": "6E712619A5B1948FE52EB89A84923DAFF8B15CD0",
+        "RunspaceProviderSettings:K8sClusterAccessToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ing5VGZpRVhqNnlRbk4xdWRyQzViaDg2NWxBb0dCR3ZhQ3lwRkV5em5QdVUifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJzY3JpcHQtcnVudGltZS1zZXJ2aWNlIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InNycy1ydW5zcGFjZS1wcm92aWRlci10b2tlbi1jcmJueiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJzcnMtcnVuc3BhY2UtcHJvdmlkZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI4YjA3MmRlNC0yOTJlLTQwNDMtOGIyMC04NjJjZmFmMjA1ZGEiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6c2NyaXB0LXJ1bnRpbWUtc2VydmljZTpzcnMtcnVuc3BhY2UtcHJvdmlkZXIifQ.vUzAth823V4qZYOcMTrSyBWa9H8wpleWV3u7Xbp7Z8WFzz6Q9zWKFqWBHYSBZOehhr9630E90BmgxOjiPyAfNhNSI4n0UmuH3rSua2DSvYj1SiTwy7n5DJ3MGpTHgcDcqzPV-krxK6gqD9Oe8WV7BPW1hJRoqWhfP8xwFBuNw9LrSD3qa5s0kaO03Y6V3sWe04Sij28XpO2Ia1IS-FhgZk5KzHnb7mBB__wUwh7kd2zP6722DXJdwJfFSctUH7eyCkIpAwjHITnxH97skqD3LnCbCqrp9d9B_Kum5aTxuZDsOqItDqb3jpvxjyuNpSZlbXp3Z8hqutrBWFuULeZZDw",
+        "RunspaceProviderSettings:K8sClusterEndpoint": "https://10.23.82.191:6443",
+        "RunspaceProviderSettings:K8sNamespace": "script-runtime-service",
+        "RunspaceProviderSettings:RunspaceTrustedCertsConfigMapName": "trusted-ca-certs",
+        "StsSettings:SolutionUserSigningCertificatePath": "C:\\Temp\\srs-sign.p12",
+        "RunspaceProviderSettings:K8sRunspaceImageName": "pclirunspace:latest",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "StsSettings:SolutionServiceId": "97bffc3c-b636-45b1-b94c-22a820f20bd8"
+      },
+      "applicationUrl": "http://localhost:5000"
     }
   }
 }

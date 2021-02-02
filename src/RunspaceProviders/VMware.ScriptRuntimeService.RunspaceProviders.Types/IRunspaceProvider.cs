@@ -15,10 +15,7 @@ namespace VMware.ScriptRuntimeService.RunspaceProviders.Types
       /// <returns>
       /// Info object <see cref="IRunspaceInfo"/> for the created runspace.
       /// </returns>
-      IRunspaceInfo StartCreate();
-
-      IRunspaceInfo StartCreateWebConsole(string vc, string token, bool allLinked);
-      void KillWebConsole(string id);
+      IRunspaceInfo StartCreate();      
 
       /// <summary>
       /// Synchronously waits <see cref="IRunspaceInfo"/> CreationState to become different than 'Creating'.
@@ -47,6 +44,34 @@ namespace VMware.ScriptRuntimeService.RunspaceProviders.Types
       /// Returns available runspaces
       /// </summary>
       IRunspaceInfo[] List();
+
+      /// <summary>
+      /// Creates a WebConsole Runspace
+      /// </summary>
+      /// <param name="vc">VC Address to connect to</param>
+      /// <param name="token">VC Token for connection</param>
+      /// <param name="allLinked">True to connect all linked servers, otherwise false</param>
+      /// <returns>WebConsoleInfo instance</returns>
+      IWebConsoleInfo CreateWebConsole(string vc, string token, bool allLinked);
+
+      /// <summary>
+      /// Gets a WebConsole Runspace by specified Id
+      /// </summary>
+      /// <param name="id">The Id of the WebConsole runspace</param>
+      /// <returns>WebConsoleInfo instance</returns>
+      IWebConsoleInfo GetWebConsole(string id);
+
+      /// <summary>
+      /// Gets all WebConsole Runspaces
+      /// </summary>
+      /// <returns>List of WebConsole isntances</returns>
+      IWebConsoleInfo[] ListWebConsole();
+
+      /// <summary>
+      /// Removes a WebConsole Runspace
+      /// </summary>
+      /// <param name="id">The id of the WebConsole runspace to delete</param>
+      void KillWebConsole(string id);
 
       /// <summary>
       /// Updates runspace provider configuration

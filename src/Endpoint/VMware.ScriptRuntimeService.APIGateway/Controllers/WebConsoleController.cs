@@ -45,46 +45,38 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
 
       // POST api/webconsole
       /// <summary>
-      /// Starts a runspace creation
+      /// Creates a PowerShell console accessible as web page
       /// </summary>
       /// <remarks>      
-      /// Runspace creation and preparation time depends on the requested runspace details.
-      /// If a connection to the vCenter Servers is requested, the operation creates a PowerShell instance, loads PowerCLI modules, and connects PowerCLI to the vCenter Servers.
-      /// 
-      /// Returns
-      /// 
-      /// When request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource. The **runspace** resource is in **creation** state initially.
-      /// </remarks>
-      /// <param name="runspace">Desired runspace resource.</param>
-      /// <returns>Runspace resource to monitor the requested runspace. Once runspace becomes in **ready** state you will be able to run scripts in it.</returns>
+      /// Web console is accessble on the SRS Url/web-console-Id      
+      /// </remarks>      
+      /// <returns>A Web Csonole resource.</returns>
       [HttpPost(Name = "create-webconsole")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
-      [ProducesResponseType(typeof(DataTypes.Runspace), StatusCodes.Status202Accepted)]
+      [ProducesResponseType(typeof(WebConsole), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<DataTypes.Runspace> Post([FromBody]DataTypes.Runspace runspace) {         
-         ActionResult<DataTypes.Runspace> result = null;
+      public ActionResult<WebConsole> Post() {         
+         ActionResult<WebConsole> result = null;
          try {
             var authzToken = SessionToken.FromHeaders(Request.Headers);
 
-            if (RunspaceProviderSingleton.Instance.RunspaceProvider.CanCreateNewRunspace()) {
-               var runspaceData = RunspaceProviderSingleton.Instance.RunspaceProvider.StartCreateWebConsole(
+            if (RunspaceProviderSingleton.Instance.RunspaceProvider.CanCreateNewWebConsole()) {
+               var webConsoleData = RunspaceProviderSingleton.Instance.RunspaceProvider.CreateWebConsole(
                      authzToken.UserName, 
-                     authzToken, 
-                     runspace.Name, 
-                     runspace.RunVcConnectionScript,
+                     authzToken,                      
                      new SolutionStsClient(_loggerFactory, _stsSettings),
                      // Assumes VC Address is same as STS Address
                      new Uri(_stsSettings.StsServiceEndpoint).Host);
 
-               result = StatusCode(202, new DataTypes.Runspace(runspaceData));
+               result = StatusCode(200, new WebConsole(webConsoleData));
             } else {
-               _logger.LogInformation($"Runspace provider can't create new runspaces: {APIGatewayResources.RunspaceController_Post_MaxnumberOfRunspacesReached}");
+               _logger.LogInformation($"Runspace provider can't create new web console: {APIGatewayResources.RunspaceController_Post_MaxnumberOfRunspacesReached}");
                result = StatusCode(
                   500, 
                   new ErrorDetails(
-                     ApiErrorCodes.GetErrorCode(nameof(APIGatewayResources.RunspaceController_Post_MaxnumberOfRunspacesReached)),
-                     APIGatewayResources.RunspaceController_Post_MaxnumberOfRunspacesReached));
+                     ApiErrorCodes.GetErrorCode(nameof(APIGatewayResources.WebConsoleController_Post_MaxNumberOfWebConsolesReached)),
+                     APIGatewayResources.WebConsoleController_Post_MaxNumberOfWebConsolesReached));
             }
             
 
@@ -98,11 +90,11 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
    
       // DELETE api/webconsole/{id}
       /// <summary>
-      /// Deletes a runspace
+      /// Deletes a web console
       /// </summary>
-      /// <param name="id">Unique identifier of the runspace</param>
+      /// <param name="id">Unique identifier of the web console</param>
       /// <remarks>
-      /// Deletes the PowerShell instance that is prepresented by this **runspace** resource.
+      /// Deletes the PowerShell instance that is prepresented by this **webconsole** resource.
       /// Running script in the PowerShell instance won't prevent the operation.      
       /// </remarks>
       [HttpDelete("{id}", Name = "delete-webconsole")]

@@ -398,18 +398,18 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          return result;
       }
 
-      public IRunspaceInfo StartCreateWebConsole(string vc, string token, bool allLinked) {
+      public IWebConsoleInfo CreateWebConsole(string vc, string token, bool allLinked) {
          _logger.LogInformation("Create Runspace");
-         K8sRunspaceInfo result = null;
+         K8sWebConsoleInfo result = null;
          try {
             _logger.LogDebug("GenerateWebconsoleId");
             var runspaceId = GenerateWebconsoleId();
             _logger.LogDebug($"RunspaceId: {runspaceId}");            
             var runspacePod = CreateK8sApp(runspaceId, vc, token, allLinked);
 
-            result = new K8sRunspaceInfo {
+            result = new K8sWebConsoleInfo {
                Id = runspaceId,
-               CreationState = RunspaceCreationState.Creating
+               CreationState = RunspaceCreationState.Ready
             };
             _logger.LogDebug($"RunspaceInfo.Id: {result.Id}");
          } catch (Exception exc) {
@@ -419,7 +419,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                Resources.K8sRunspaceProvider_Create_K8sRunspaceCreateFail,
                exc);
 
-            result = new K8sRunspaceInfo {
+            result = new K8sWebConsoleInfo {
                Id = result?.Id,
                CreationState = RunspaceCreationState.Error,
                CreationError = error
@@ -427,6 +427,14 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          }
 
          return result;
+      }
+
+      public IWebConsoleInfo GetWebConsole(string id) {
+         throw new NotImplementedException();
+      }
+
+      public IWebConsoleInfo[] ListWebConsole() {
+         throw new NotImplementedException();
       }
 
       public void KillWebConsole(string id) {
