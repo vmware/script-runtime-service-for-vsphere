@@ -410,5 +410,14 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
                 return ResourceManager.GetString("Vendor", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum number of web consoles is reached.
+        /// </summary>
+        public static string WebConsoleController_Post_MaxNumberOfWebConsolesReached {
+            get {
+                return ResourceManager.GetString("WebConsoleController_Post_MaxNumberOfWebConsolesReached", resourceCulture);
+            }
+        }
     }
 }

@@ -31,6 +31,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
       private IRunspaceProvider _runspaceProvider;
       private IRunspacesStatsMonitor _runspacesStatsMonitor;
       private UserToIdentifiableData<IRunspaceData> _userRunspaces = new UserToIdentifiableData<IRunspaceData>();
+      private UserToIdentifiableData<IWebConsoleData> _userWebConsoles = new UserToIdentifiableData<IWebConsoleData>();
       private Timer _runspacesCleanupTimer;
 
       public MultiTenantRunspaceProvider(ILoggerFactory loggerFactory, IRunspaceProvider runspaceProvider) : 
@@ -216,21 +217,24 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          return result;
       }
 
-      public IRunspaceData StartCreateWebConsole(
+      public bool CanCreateNewWebConsole() {
+         // TODO: Implement
+         return true;
+      }
+
+      public IWebConsoleData CreateWebConsole(
          string userId,
-         ISessionToken sessionToken,
-         string name,
-         bool runVcConnectionScript,
+         ISessionToken sessionToken,         
          ISolutionStsClient stsClient,
          string vcEndpoint) {
 
-         IRunspaceData result = null;
+         IWebConsoleData result = null;
 
-         _logger.LogInformation("StartCreate");
+         _logger.LogInformation("StartCreateWebConsole");
 
          try {
             Sessions.Instance.EnsureValidUser(userId);
-            _logger.LogDebug("RunspaceProvider -> StartCreate call");
+            _logger.LogDebug("RunspaceProvider -> CreateWebConsole call");
 
             string bearerSamlToken = "";
             try {
@@ -245,20 +249,18 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                   .OuterXml;
             } catch (Exception exc) {
                _logger.LogError(exc, "Issue Bearer Token failed");
-               result.State = DataTypes.RunspaceState.Error;
+               result.State = DataTypes.WebConsoleState.Error;
                result.ErrorDetails = new DataTypes.ErrorDetails(exc);
             }
 
             var token = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(bearerSamlToken));
-            var runspaceInfo = _runspaceProvider.StartCreateWebConsole(vcEndpoint, token, true);
-            _logger.LogDebug($"Runspace provider result: {runspaceInfo.Id}, {runspaceInfo.CreationState}, {runspaceInfo.CreationError}");
-            result = new RunspaceData(runspaceInfo);
+            var webConsoleInfo = _runspaceProvider.CreateWebConsole(vcEndpoint, token, true);
+            _logger.LogDebug($"Runspace provider result: {webConsoleInfo.Id}, {webConsoleInfo.CreationState}, {webConsoleInfo.CreationError}");
+            result = new WebConsoleData(webConsoleInfo);
             result.CreationTime = DateTime.Now;
-            result.Name = name;
-            result.RunVcConnectionScript = runVcConnectionScript;
-            result.State = DataTypes.RunspaceState.Ready;
+            result.State = DataTypes.WebConsoleState.Available;
 
-            _userRunspaces.Add(userId, result.Id, result);
+            _userWebConsoles.Add(userId, result.Id, result);
 
          } catch (RunspaceProviderException runspaceProviderException) {
             _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown");
@@ -275,19 +277,19 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          return result;
       }
 
-      public void KillWebConsole(string userId, string runspaceId) {
-         _logger.LogInformation($"Kill runspace {runspaceId}");
+      public void KillWebConsole(string userId, string webConsoleId) {
+         _logger.LogInformation($"Kill web console {webConsoleId}");
          try {
             Sessions.Instance.EnsureValidUser(userId);
 
-            if (_userRunspaces.Contains(userId, runspaceId)) {               
-               _userRunspaces.RemoveData(userId, runspaceId);
+            if (_userWebConsoles.Contains(userId, webConsoleId)) {
+               _userWebConsoles.RemoveData(userId, webConsoleId);
             }           
 
-            _runspaceProvider.KillWebConsole(runspaceId);
+            _runspaceProvider.KillWebConsole(webConsoleId);
             
-            if (_userRunspaces.List(userId) == null) {
-               _userRunspaces.RemoveUser(userId);
+            if (_userWebConsoles.List(userId) == null) {
+               _userWebConsoles.RemoveUser(userId);
             }
          } catch (Exception ex) {
             throw new RunspaceProviderException(

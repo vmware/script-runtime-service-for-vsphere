@@ -55,10 +55,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider.Tests {
 
       [Test]
       public void TestCreateWebConsole() {
-         var runspaceInfo = _k8sProvider.StartCreateWebConsole();
-         runspaceInfo = _k8sProvider.WaitCreateCompletion(runspaceInfo);
-         Assert.NotNull(runspaceInfo);
-         Assert.NotNull(runspaceInfo.Id);
+         var webConsole = _k8sProvider.CreateWebConsole("", "", false);
+         Assert.NotNull(webConsole);
       }
 
 

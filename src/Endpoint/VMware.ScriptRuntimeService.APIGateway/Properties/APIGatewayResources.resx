@@ -234,4 +234,7 @@
   <data name="ScriptExecutionsTagDescription" xml:space="preserve">
     <value>To run a script in SRS, users request Script Execution. Script Execution is an SRS resource that represents a script that user requests to run in a Runspace. SRS assigns unique Id for a script execution and lets the user track the script progress and outcomes. When a script execution completes, SRS keeps a script execution record with the produced outputs. Script outputs consist of objects that script returns and messages that are raised in PowerShell run-time streams. PowerShell has six output streams Output, Error, Warning, Information, Debug, and Verbose. Everything produced by command return or Write-Output is recorded in the Output stream.</value>
   </data>
+  <data name="WebConsoleController_Post_MaxNumberOfWebConsolesReached" xml:space="preserve">
+    <value>Maximum number of web consoles is reached</value>
+  </data>
 </root>
