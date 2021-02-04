@@ -124,10 +124,13 @@
     <value>Container has been created but it is not accessible over the network</value>
   </data>
   <data name="K8sRunspaceProvider_Delete_K8sRunspaceCreateFail" xml:space="preserve">
-    <value>Delete K8s Runspace Services failed.</value>
+    <value>Delete K8s Runspace Pod failed.</value>
   </data>
-  <data name="K8sRunspaceProvider_List_K8sRunspaceCreateFail" xml:space="preserve">
-    <value>List K8s Runspace Services failed.</value>
+  <data name="K8sRunspaceProvider_ListWebConsole_K8sWebConsoleListFail" xml:space="preserve">
+    <value>List K8s WebConsole Services failed.</value>
+  </data>
+  <data name="K8sRunspaceProvider_List_K8sRunspaceListFail" xml:space="preserve">
+    <value>List K8s Runspace Pods failed.</value>
   </data>
   <data name="K8sRunspaceProvider_WaitCreateComplation_PodNotFound" xml:space="preserve">
     <value>K8s Pod with ID {0} not found.</value>

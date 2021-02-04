@@ -234,6 +234,24 @@
   <data name="ScriptExecutionsTagDescription" xml:space="preserve">
     <value>To run a script in SRS, users request Script Execution. Script Execution is an SRS resource that represents a script that user requests to run in a Runspace. SRS assigns unique Id for a script execution and lets the user track the script progress and outcomes. When a script execution completes, SRS keeps a script execution record with the produced outputs. Script outputs consist of objects that script returns and messages that are raised in PowerShell run-time streams. PowerShell has six output streams Output, Error, Warning, Information, Debug, and Verbose. Everything produced by command return or Write-Output is recorded in the Output stream.</value>
   </data>
+  <data name="MultiTenantRunspaceProvider_CreateWebConsoleFailed" xml:space="preserve">
+    <value>Create web console for user "{0}" failed with error: {1}</value>
+  </data>
+  <data name="MultiTenantRunspaceProvider_GetWebConsoleFailed" xml:space="preserve">
+    <value>Get web console for user "{0}" failed with error: {1}</value>
+  </data>
+  <data name="MultiTenantRunspaceProvider_KillWebConsoleFailed" xml:space="preserve">
+    <value>Kill web console for user "{0}" failed with error: {1}</value>
+  </data>
+  <data name="MultiTenantRunspaceProvider_ListWebConsoleFailed" xml:space="preserve">
+    <value>List web consoles for user "{0}" failed with error: {1}</value>
+  </data>
+  <data name="MultiTenantRunspaceProvider_UserHasNoWebConsoles" xml:space="preserve">
+    <value>User "{0}" doesn't have running webconsoles</value>
+  </data>
+  <data name="MultiTenantRunspaceProvider_UserHasNoWebConsoleWithId" xml:space="preserve">
+    <value>User "{0}" doesn't have webconsole with id "{1}"</value>
+  </data>
   <data name="WebConsoleController_Post_MaxNumberOfWebConsolesReached" xml:space="preserve">
     <value>Maximum number of web consoles is reached</value>
   </data>
