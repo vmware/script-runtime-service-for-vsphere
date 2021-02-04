@@ -91,6 +91,26 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace {
       /// <param name="webConsoleId">Web Console id</param>
       void KillWebConsole(string userId, string webConsoleId);
 
+
+      /// <summary>
+      /// Gets all running web consoles for specified user
+      /// </summary>
+      /// <param name="userId">User identifier</param>
+      /// <returns>
+      /// List of runspace <see cref="IWebConsoleData"/>  if available, otherwise null.
+      /// </returns>
+      IEnumerable<IWebConsoleData> ListWebConsole(string userId);
+
+      /// <summary>
+      /// Get instance of running webconsoles if available, otherwise null
+      /// </summary>
+      /// <param name="userId">User identifier</param>
+      /// <param name="runspaceId">Runspace id</param>
+      /// <returns>
+      /// Instance of running web consoles  if available, otherwise null.
+      /// </returns>
+      IWebConsoleData GetWebConsole(string userId, string runspaceId);
+
       /// <summary>
       /// Removes redundant runspaces and web consoles and all data related for them
       /// Implementers take decision which are redundant runspaces

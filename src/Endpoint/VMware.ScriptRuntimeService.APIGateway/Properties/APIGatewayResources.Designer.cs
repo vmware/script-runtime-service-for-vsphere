@@ -466,11 +466,38 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Runspace Provider failed to destroy web console with id &apos;{0}&apos;.
+        /// </summary>
+        public static string WebConsoleController_Kill_RunspaceProviderKillWebConsoleFailed {
+            get {
+                return ResourceManager.GetString("WebConsoleController_Kill_RunspaceProviderKillWebConsoleFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runspace Provider failed to list user web consoles.
+        /// </summary>
+        public static string WebConsoleController_List_RunspaceProviderListWebConsoleFailed {
+            get {
+                return ResourceManager.GetString("WebConsoleController_List_RunspaceProviderListWebConsoleFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maximum number of web consoles is reached.
         /// </summary>
         public static string WebConsoleController_Post_MaxNumberOfWebConsolesReached {
             get {
                 return ResourceManager.GetString("WebConsoleController_Post_MaxNumberOfWebConsolesReached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web Console with id &apos;{0}&apos; not found.
+        /// </summary>
+        public static string WebConsoleNotFound {
+            get {
+                return ResourceManager.GetString("WebConsoleNotFound", resourceCulture);
             }
         }
     }
