@@ -32,6 +32,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       private int _runspaceApiPort;
       private const string LABEL_KEY = "runspace";
       private const string RUNSPACE_TYPE = "pcli";
+      private const string WEB_CONSOLE_LABEL_KEY = "webconsole";
+      private const string WEB_CONSOLE_LABEL_VALUE = "webconsole";
       public K8sRunspaceProvider(
          ILoggerFactory loggerFactory,
          string k8sClusterEndpoint, 
@@ -146,7 +148,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       private string GenerateWebconsoleId() {
          var uid = Guid.NewGuid().ToString();
          var parts = uid.Split("-");
-         return parts[parts.Length - 1];
+         return "wc" + parts[parts.Length - 1];
       }
 
       private V1Pod CreateK8sPod(string podName) {
@@ -188,11 +190,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          
          return createdPod;
       }
-
-      private static string GetSvcName(string appName) {
-         return $"wc{appName}";
-      }
-
+      
       private V1Deployment CreateK8sApp(string appName, string vc, string token, bool allLinked) {
          _logger.LogDebug($"CreateK8sApp: {appName}");
 
@@ -200,7 +198,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             "apps/v1",
             "Deployment",
             new V1ObjectMeta(
-               labels: new Dictionary<string, string> { { "app", appName } },
+               labels: new Dictionary<string, string> { { "app", appName }, { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE } },
                name: appName),
             new V1DeploymentSpec(
                replicas:1,
@@ -238,7 +236,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             "v1",
             "Service",
             new V1ObjectMeta(
-               name: GetSvcName(appName)),
+               labels: new Dictionary<string, string> { { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE } },
+               name: appName),
             spec: new V1ServiceSpec(
                type:"ClusterIP",
                sessionAffinity: "None",                     
@@ -270,7 +269,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          pathRule.path = $"/{id}";
          pathRule.pathType = "ImplementationSpecific";
          dynamic backend = new ExpandoObject();
-         backend.serviceName = GetSvcName(id);
+         backend.serviceName = id;
          backend.servicePort = 8086;
          pathRule.backend = backend;
 
@@ -403,12 +402,12 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          K8sWebConsoleInfo result = null;
          try {
             _logger.LogDebug("GenerateWebconsoleId");
-            var runspaceId = GenerateWebconsoleId();
-            _logger.LogDebug($"RunspaceId: {runspaceId}");            
-            var runspacePod = CreateK8sApp(runspaceId, vc, token, allLinked);
+            var webConsoleId = GenerateWebconsoleId();
+            _logger.LogDebug($"RunspaceId: {webConsoleId}");            
+            var runspacePod = CreateK8sApp(webConsoleId, vc, token, allLinked);
 
             result = new K8sWebConsoleInfo {
-               Id = runspaceId,
+               Id = webConsoleId,
                CreationState = RunspaceCreationState.Ready
             };
             _logger.LogDebug($"RunspaceInfo.Id: {result.Id}");
@@ -430,11 +429,35 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       public IWebConsoleInfo GetWebConsole(string id) {
-         throw new NotImplementedException();
+         _logger.LogInformation($"GetWebConsole: {id}");
+         return ListWebConsole().FirstOrDefault(r => r.Id == id);
       }
 
       public IWebConsoleInfo[] ListWebConsole() {
-         throw new NotImplementedException();
+         _logger.LogInformation("List WebConsoles");
+         List<IWebConsoleInfo> result = new List<IWebConsoleInfo>();
+
+         try {
+            var webConsoleServices = _client.ListNamespacedService(
+               _namespace,
+               labelSelector: $"{WEB_CONSOLE_LABEL_KEY}={WEB_CONSOLE_LABEL_KEY}");
+
+            foreach (var webConsoleService in webConsoleServices.Items) {
+               var webConsoleInfo = new K8sWebConsoleInfo {
+                  Id = webConsoleService.Metadata.Name
+               };
+
+               webConsoleInfo.CreationState = RunspaceCreationState.Ready;               
+               result.Add(webConsoleInfo);
+            }
+         } catch (Exception exc) {
+            _logger.LogError(exc.ToString());
+            throw new RunspaceProviderException(
+               Resources.K8sRunspaceProvider_ListWebConsole_K8sWebConsoleListFail,
+               exc);
+         }
+
+         return result.ToArray();
       }
 
       public void KillWebConsole(string id) {
@@ -442,7 +465,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          try {
             RemoveSrsIngressWebConsolePath(id);
             _client.DeleteNamespacedDeployment(id, _namespace);
-            _client.DeleteNamespacedService(GetSvcName(id), _namespace);
+            _client.DeleteNamespacedService(id, _namespace);
             // Wait pod to be deleted
             int maxRetry = 20;
             int retryCount = 1;
@@ -453,7 +476,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                service = null;
                try {
                   deployment = _client.ReadNamespacedDeployment(id, _namespace);
-                  service = _client.ReadNamespacedService(GetSvcName(id), _namespace);
+                  service = _client.ReadNamespacedService(id, _namespace);
                   Thread.Sleep(100);
                } catch (Exception) { }
                retryCount++;
@@ -683,7 +706,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          } catch (Exception exc) {
             _logger.LogError(exc.ToString());
             throw new RunspaceProviderException(
-               Resources.K8sRunspaceProvider_List_K8sRunspaceCreateFail,
+               Resources.K8sRunspaceProvider_List_K8sRunspaceListFail,
                exc);
          }
 

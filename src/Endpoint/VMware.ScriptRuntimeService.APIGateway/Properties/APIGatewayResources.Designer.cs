@@ -133,11 +133,29 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create web console for user &quot;{0}&quot; failed with error: {1}.
+        /// </summary>
+        public static string MultiTenantRunspaceProvider_CreateWebConsoleFailed {
+            get {
+                return ResourceManager.GetString("MultiTenantRunspaceProvider_CreateWebConsoleFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get runspace for user &quot;{0}&quot; failed with error: {1}.
         /// </summary>
         public static string MultiTenantRunspaceProvider_GetFailed {
             get {
                 return ResourceManager.GetString("MultiTenantRunspaceProvider_GetFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get web console for user &quot;{0}&quot; failed with error: {1}.
+        /// </summary>
+        public static string MultiTenantRunspaceProvider_GetWebConsoleFailed {
+            get {
+                return ResourceManager.GetString("MultiTenantRunspaceProvider_GetWebConsoleFailed", resourceCulture);
             }
         }
         
@@ -151,11 +169,29 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kill web console for user &quot;{0}&quot; failed with error: {1}.
+        /// </summary>
+        public static string MultiTenantRunspaceProvider_KillWebConsoleFailed {
+            get {
+                return ResourceManager.GetString("MultiTenantRunspaceProvider_KillWebConsoleFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List runspaces for user &quot;{0}&quot; failed with error: {1}.
         /// </summary>
         public static string MultiTenantRunspaceProvider_ListFailed {
             get {
                 return ResourceManager.GetString("MultiTenantRunspaceProvider_ListFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List web consoles for user &quot;{0}&quot; failed with error: {1}.
+        /// </summary>
+        public static string MultiTenantRunspaceProvider_ListWebConsoleFailed {
+            get {
+                return ResourceManager.GetString("MultiTenantRunspaceProvider_ListWebConsoleFailed", resourceCulture);
             }
         }
         
@@ -174,6 +210,24 @@ namespace VMware.ScriptRuntimeService.APIGateway.Properties {
         public static string MultiTenantRunspaceProvider_UserHasNoRunspaceWithId {
             get {
                 return ResourceManager.GetString("MultiTenantRunspaceProvider_UserHasNoRunspaceWithId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User &quot;{0}&quot; doesn&apos;t have running webconsoles.
+        /// </summary>
+        public static string MultiTenantRunspaceProvider_UserHasNoWebConsoles {
+            get {
+                return ResourceManager.GetString("MultiTenantRunspaceProvider_UserHasNoWebConsoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User &quot;{0}&quot; doesn&apos;t have webconsole with id &quot;{1}&quot;.
+        /// </summary>
+        public static string MultiTenantRunspaceProvider_UserHasNoWebConsoleWithId {
+            get {
+                return ResourceManager.GetString("MultiTenantRunspaceProvider_UserHasNoWebConsoleWithId", resourceCulture);
             }
         }
         
