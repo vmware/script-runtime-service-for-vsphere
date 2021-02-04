@@ -87,7 +87,93 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
          return result;
       }
 
-   
+      // GET api/webconsole
+      /// <summary>
+      /// List all webconsoles
+      /// </summary>
+      /// <remarks>
+      /// </remarks>
+      [HttpGet(Name = "list-webconsoles")]
+      [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
+      [ProducesResponseType(typeof(DataTypes.WebConsole[]), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status404NotFound)]
+      [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
+      public ActionResult<WebConsole[]> List() {
+         ActionResult<WebConsole[]> result = null;
+
+         try {
+            var authzToken = SessionToken.FromHeaders(Request.Headers);
+            var webConsoleDataList =
+               RunspaceProviderSingleton.
+                  Instance.
+                  RunspaceProvider.
+                  ListWebConsole(authzToken.UserName);
+            if (webConsoleDataList != null) {
+               List<WebConsole> webConsoleResponseList = new List<WebConsole>();
+               foreach (var webConsoleData in webConsoleDataList) {
+                  webConsoleResponseList.Add(new WebConsole(webConsoleData));
+               }
+
+               result = Ok(webConsoleResponseList.ToArray());
+            } else {
+               result = Ok(new DataTypes.Runspace[] { });
+            }
+
+         } catch (Exception e) {
+            _logger.LogError(e, "List web consoles operation failed.");
+            result = StatusCode(
+               500,
+               new ErrorDetails(
+                  ApiErrorCodes.GetErrorCode(
+                     nameof(APIGatewayResources.WebConsoleController_List_RunspaceProviderListWebConsoleFailed)),
+                  APIGatewayResources.WebConsoleController_List_RunspaceProviderListWebConsoleFailed,
+                  e.ToString()));
+         }
+         return result;
+      }
+
+
+      // GET api/webconsole/{id}
+      /// <summary>
+      /// Retrieve a web console
+      /// </summary>
+      /// <param name="id">Unique identifier of the web console</param>
+      /// <remarks>
+      /// Retrieves the details of a web console. One only needs to supply the unique web console identifier returned on the web console creation to retrieve the web console details.
+      ///
+      /// Returns a **webconsole** resource instance if a valid identifier was provided.
+      /// When requesting the Id of a web console that has been deleted or doesn't exist **404 NotFound** is returned.
+      /// </remarks>
+      [HttpGet("{id}", Name = "get-webconsole")]
+      [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
+      [ProducesResponseType(typeof(WebConsole), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
+      [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status404NotFound)]
+      public ActionResult<WebConsole> Get([FromRoute] string id) {
+         ActionResult<WebConsole> result = null;
+
+         try {
+            var authzToken = SessionToken.FromHeaders(Request.Headers);
+            var webConsoleData =
+               RunspaceProviderSingleton.
+                  Instance.
+                  RunspaceProvider.
+                  GetWebConsole(authzToken.UserName, id);
+            result = Ok(new WebConsole(webConsoleData));
+         } catch (Exception e) {
+            _logger.LogError(e, "Get web console operation failed.");
+            result = NotFound(
+               new ErrorDetails(
+                  ApiErrorCodes.GetErrorCode(nameof(APIGatewayResources.WebConsoleNotFound)),
+                  string.Format(
+                     APIGatewayResources.WebConsoleNotFound,
+                     id)));
+         }
+         return result;
+      }
+
+
       // DELETE api/webconsole/{id}
       /// <summary>
       /// Deletes a web console
@@ -115,9 +201,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
                500, 
                new ErrorDetails(
                   ApiErrorCodes.GetErrorCode(
-                     nameof(APIGatewayResources.RunspaceController_Kill_RunspaceProviderKillFailed)),
+                     nameof(APIGatewayResources.WebConsoleController_Kill_RunspaceProviderKillWebConsoleFailed)),
                   string.Format(
-                     APIGatewayResources.RunspaceController_Kill_RunspaceProviderKillFailed,
+                     APIGatewayResources.WebConsoleController_Kill_RunspaceProviderKillWebConsoleFailed,
                      id),
                   exc.ToString()));
          }

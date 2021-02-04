@@ -255,4 +255,13 @@
   <data name="WebConsoleController_Post_MaxNumberOfWebConsolesReached" xml:space="preserve">
     <value>Maximum number of web consoles is reached</value>
   </data>
+  <data name="WebConsoleController_Kill_RunspaceProviderKillWebConsoleFailed" xml:space="preserve">
+    <value>Runspace Provider failed to destroy web console with id '{0}'</value>
+  </data>
+  <data name="WebConsoleController_List_RunspaceProviderListWebConsoleFailed" xml:space="preserve">
+    <value>Runspace Provider failed to list user web consoles</value>
+  </data>
+  <data name="WebConsoleNotFound" xml:space="preserve">
+    <value>Web Console with id '{0}' not found</value>
+  </data>
 </root>
