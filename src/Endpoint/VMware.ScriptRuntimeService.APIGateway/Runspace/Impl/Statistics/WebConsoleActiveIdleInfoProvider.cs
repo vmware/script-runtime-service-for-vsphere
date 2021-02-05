@@ -17,7 +17,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl.Statistics
       }
       public string RunspaceId { get; }
 
-      public bool IsActive => true;
+      public bool IsActive => false;
 
       public int ActiveTimeSeconds => 0;
 

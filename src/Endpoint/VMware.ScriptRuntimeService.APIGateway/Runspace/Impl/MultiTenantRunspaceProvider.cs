@@ -482,6 +482,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             result.CreationTime = DateTime.Now;
             result.State = DataTypes.WebConsoleState.Available;
 
+            _runspacesStatsMonitor.RegisterWebConsole(result, sessionToken.SessionId);
             _userWebConsoles.Add(userId, result.Id, result);
 
          } catch (RunspaceProviderException runspaceProviderException) {
@@ -508,7 +509,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                _userWebConsoles.RemoveData(userId, webConsoleId);
             }
 
-            _runspaceProvider.KillWebConsole(webConsoleId);
+            _runspacesStatsMonitor.Unregister(webConsoleId);
+            _runspaceProvider.KillWebConsole(webConsoleId);            
 
             if (_userWebConsoles.List(userId) == null) {
                _userWebConsoles.RemoveUser(userId);
