@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,6 +14,7 @@ using System.Net.Sockets;
 using System.Threading;
 using k8s;
 using k8s.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using VMware.ScriptRuntimeService.K8sRunspaceProvider;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
@@ -30,6 +32,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       private int _runspaceApiPort;
       private const string LABEL_KEY = "runspace";
       private const string RUNSPACE_TYPE = "pcli";
+      private const string WEB_CONSOLE_LABEL_KEY = "webconsole";
+      private const string WEB_CONSOLE_LABEL_VALUE = "webconsole";
       public K8sRunspaceProvider(
          ILoggerFactory loggerFactory,
          string k8sClusterEndpoint, 
@@ -141,6 +145,12 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          return $"{RUNSPACE_TYPE}-{uid}";
       }
 
+      private string GenerateWebconsoleId() {
+         var uid = Guid.NewGuid().ToString();
+         var parts = uid.Split("-");
+         return "wc" + parts[parts.Length - 1];
+      }
+
       private V1Pod CreateK8sPod(string podName) {
          _logger.LogDebug($"CreateK8sPod: {podName}");
          var body = new V1Pod(
@@ -155,7 +165,14 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      new V1Container(
                         podName,
                         image:_imageName,
-                        imagePullPolicy:"IfNotPresent",                        
+                        imagePullPolicy:"IfNotPresent",
+                        env: new []{
+                           new V1EnvVar("ASPNETCORE_URLS", "http://+:5550")
+                        },
+                        ports: new [] {
+                           new V1ContainerPort(5550)
+                        },
+                        command: new [] { "/app/service/VMware.ScriptRuntimeService.RunspaceEndpoint" },
                         volumeMounts: CreateRunspacePodVolumeMounts())
                   }
                },               
@@ -174,6 +191,155 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          return createdPod;
       }
       
+      private V1Deployment CreateK8sApp(string appName, string vc, string token, bool allLinked) {
+         _logger.LogDebug($"CreateK8sApp: {appName}");
+
+         var deploymentBody = new V1Deployment(
+            "apps/v1",
+            "Deployment",
+            new V1ObjectMeta(
+               labels: new Dictionary<string, string> { { "app", appName }, { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE } },
+               name: appName),
+            new V1DeploymentSpec(
+               replicas:1,
+               selector: new V1LabelSelector(
+                  matchLabels: new Dictionary<string, string> { { "app", appName } }
+                  ),
+               template: new V1PodTemplateSpec(
+                  metadata: new V1ObjectMeta(
+                     labels: new Dictionary<string, string> { { "app", appName } }
+                     ),
+                  spec: new V1PodSpec(
+                     new List<V1Container> {
+                        {
+                           new V1Container(
+                              appName,
+                              image: _imageName,
+                              env: new []{ 
+                                 new V1EnvVar("vc", vc),
+                                 new V1EnvVar("token", token),
+                                 new V1EnvVar("allLinked", allLinked.ToString()),
+                              },
+                              command: new [] { "ttyd" },
+                              args: new [] {"-p", "8086", "-b", $"/{appName}", "-T", "linux", "-P", "30", "-m", "1", "pwsh", "-NoExit", "/app/scripts/connect.ps1" },                              
+                              imagePullPolicy:"IfNotPresent",
+                              volumeMounts: CreateRunspacePodVolumeMounts())
+                        }
+                     },
+                     volumes: CreateRunspacePodVolumes(),
+                     restartPolicy: "Always")
+                  )
+               )
+         );
+
+         var serviceBody = new V1Service(
+            "v1",
+            "Service",
+            new V1ObjectMeta(
+               labels: new Dictionary<string, string> { { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE } },
+               name: appName),
+            spec: new V1ServiceSpec(
+               type:"ClusterIP",
+               sessionAffinity: "None",                     
+               selector: new Dictionary<string, string> { { "app", appName } },
+               ports: new List<V1ServicePort> { 
+                  new V1ServicePort(
+                     port: 8086,
+                     protocol: "TCP",
+                     targetPort: 8086
+                     )
+                  }
+               )
+         );
+
+         var deployment = _client.CreateNamespacedDeployment(deploymentBody, _namespace);
+         _client.CreateNamespacedService(serviceBody, _namespace);
+
+         AddSrsIngressWebConsolePath(appName);
+
+         return deployment;
+      }
+
+      public void AddSrsIngressWebConsolePath(string id) {
+         var ingress = _client.ReadNamespacedIngress("srs-ingress", _namespace);
+
+         
+         // Path to add
+         dynamic pathRule = new ExpandoObject();
+         pathRule.path = $"/{id}";
+         pathRule.pathType = "ImplementationSpecific";
+         dynamic backend = new ExpandoObject();
+         backend.serviceName = id;
+         backend.servicePort = 8086;
+         pathRule.backend = backend;
+
+         // Patch Json Spec
+         dynamic ingressSpec = new ExpandoObject();
+         dynamic ingressSpecRulesHttp = new ExpandoObject();
+         dynamic ingressSpecRule = new ExpandoObject();         
+         ingressSpecRulesHttp.paths = new List<dynamic>();
+
+         // Existing paths
+         foreach (var path in ingress.Spec.Rules[0].Http.Paths) {
+            dynamic dPath = new ExpandoObject();
+            dPath.path = path.Path;
+            dPath.pathType = "ImplementationSpecific";
+            dynamic dBackend = new ExpandoObject();
+            dBackend.serviceName = path.Backend.ServiceName;
+            dBackend.servicePort = path.Backend.ServicePort;
+            dPath.backend = dBackend;
+            ingressSpecRulesHttp.paths.Add(dPath);
+         }
+
+         // Add the new path
+         ingressSpecRulesHttp.paths.Add(pathRule);
+
+         ingressSpecRule.http = ingressSpecRulesHttp;
+         dynamic ingressSpecRules = new[] { ingressSpecRule };
+         ingressSpec.rules = ingressSpecRules;
+         var jsonPatch = new JsonPatchDocument();
+         jsonPatch.Replace("spec", ingressSpec);
+         _client.PatchNamespacedIngress(new V1Patch(
+            jsonPatch
+            ), "srs-ingress", _namespace);
+      }
+
+      public void RemoveSrsIngressWebConsolePath(string id) {
+         var ingress = _client.ReadNamespacedIngress("srs-ingress", _namespace);
+         
+         // Patch Json Spec
+         dynamic ingressSpec = new ExpandoObject();
+         dynamic ingressSpecRulesHttp = new ExpandoObject();
+         dynamic ingressSpecRule = new ExpandoObject();
+         ingressSpecRulesHttp.paths = new List<dynamic>();
+
+         // Existing paths
+         foreach (var path in ingress.Spec.Rules[0].Http.Paths) {
+            // Exclude the path to remove
+            if (path.Path == $"/{id}") {
+               continue;
+            }
+            
+            dynamic dPath = new ExpandoObject();
+            dPath.path = path.Path;
+            dPath.pathType = "ImplementationSpecific";
+            dynamic dBackend = new ExpandoObject();
+            dBackend.serviceName = path.Backend.ServiceName;
+            dBackend.servicePort = path.Backend.ServicePort;
+            dPath.backend = dBackend;            
+            ingressSpecRulesHttp.paths.Add(dPath);
+         }
+
+         ingressSpecRule.http = ingressSpecRulesHttp;
+         dynamic ingressSpecRules = new[] { ingressSpecRule };
+         ingressSpec.rules = ingressSpecRules;
+         var jsonPatch = new JsonPatchDocument();
+         jsonPatch.Replace("spec", ingressSpec);
+         _client.PatchNamespacedIngress(new V1Patch(
+            jsonPatch
+            ), "srs-ingress", _namespace);
+      }
+
       private static void EnsureRunspaceEndpointIsAccessible(IRunspaceInfo runspaceInfo) {
          bool ready = false;
          var retryNum = 0;
@@ -229,6 +395,98 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          }        
 
          return result;
+      }
+
+      public IWebConsoleInfo CreateWebConsole(string vc, string token, bool allLinked) {
+         _logger.LogInformation("Create Runspace");
+         K8sWebConsoleInfo result = null;
+         try {
+            _logger.LogDebug("GenerateWebconsoleId");
+            var webConsoleId = GenerateWebconsoleId();
+            _logger.LogDebug($"RunspaceId: {webConsoleId}");            
+            var runspacePod = CreateK8sApp(webConsoleId, vc, token, allLinked);
+
+            result = new K8sWebConsoleInfo {
+               Id = webConsoleId,
+               CreationState = RunspaceCreationState.Ready
+            };
+            _logger.LogDebug($"RunspaceInfo.Id: {result.Id}");
+         } catch (Exception exc) {
+            _logger.LogError(exc.ToString());
+
+            var error = new RunspaceProviderException(
+               Resources.K8sRunspaceProvider_Create_K8sRunspaceCreateFail,
+               exc);
+
+            result = new K8sWebConsoleInfo {
+               Id = result?.Id,
+               CreationState = RunspaceCreationState.Error,
+               CreationError = error
+            };
+         }
+
+         return result;
+      }
+
+      public IWebConsoleInfo GetWebConsole(string id) {
+         _logger.LogInformation($"GetWebConsole: {id}");
+         return ListWebConsole().FirstOrDefault(r => r.Id == id);
+      }
+
+      public IWebConsoleInfo[] ListWebConsole() {
+         _logger.LogInformation("List WebConsoles");
+         List<IWebConsoleInfo> result = new List<IWebConsoleInfo>();
+
+         try {
+            var webConsoleServices = _client.ListNamespacedService(
+               _namespace,
+               labelSelector: $"{WEB_CONSOLE_LABEL_KEY}={WEB_CONSOLE_LABEL_KEY}");
+
+            foreach (var webConsoleService in webConsoleServices.Items) {
+               var webConsoleInfo = new K8sWebConsoleInfo {
+                  Id = webConsoleService.Metadata.Name
+               };
+
+               webConsoleInfo.CreationState = RunspaceCreationState.Ready;               
+               result.Add(webConsoleInfo);
+            }
+         } catch (Exception exc) {
+            _logger.LogError(exc.ToString());
+            throw new RunspaceProviderException(
+               Resources.K8sRunspaceProvider_ListWebConsole_K8sWebConsoleListFail,
+               exc);
+         }
+
+         return result.ToArray();
+      }
+
+      public void KillWebConsole(string id) {
+         _logger.LogInformation($"Kill Runspace: {id}");
+         try {
+            RemoveSrsIngressWebConsolePath(id);
+            _client.DeleteNamespacedDeployment(id, _namespace);
+            _client.DeleteNamespacedService(id, _namespace);
+            // Wait pod to be deleted
+            int maxRetry = 20;
+            int retryCount = 1;
+            V1Deployment deployment = null;
+            V1Service service = null;
+            do {
+               deployment = null;
+               service = null;
+               try {
+                  deployment = _client.ReadNamespacedDeployment(id, _namespace);
+                  service = _client.ReadNamespacedService(id, _namespace);
+                  Thread.Sleep(100);
+               } catch (Exception) { }
+               retryCount++;
+            } while (deployment != null && service != null && retryCount < maxRetry);
+         } catch (Exception exc) {
+            _logger.LogError(exc.ToString());
+            throw new RunspaceProviderException(
+               Resources.K8sRunspaceProvider_Create_K8sRunspaceCreateFail,
+               exc);
+         }
       }
 
       public IRunspaceInfo WaitCreateCompletion(IRunspaceInfo runspaceInfo) {
@@ -448,7 +706,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          } catch (Exception exc) {
             _logger.LogError(exc.ToString());
             throw new RunspaceProviderException(
-               Resources.K8sRunspaceProvider_List_K8sRunspaceCreateFail,
+               Resources.K8sRunspaceProvider_List_K8sRunspaceListFail,
                exc);
          }
 

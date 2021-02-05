@@ -43,5 +43,21 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl {
       public void UpdateConfiguration(IRunspaceProviderSettings runspaceProviderSettings) {
          // Do nothing
       }
+
+      public IWebConsoleInfo CreateWebConsole(string vc, string token, bool allLinked) {
+         throw new NotImplementedException();
+      }
+
+      public void KillWebConsole(string id) {
+         throw new NotImplementedException();
+      }
+
+      public IWebConsoleInfo GetWebConsole(string id) {
+         throw new NotImplementedException();
+      }
+
+      public IWebConsoleInfo[] ListWebConsole() {
+         throw new NotImplementedException();
+      }
    }
 }

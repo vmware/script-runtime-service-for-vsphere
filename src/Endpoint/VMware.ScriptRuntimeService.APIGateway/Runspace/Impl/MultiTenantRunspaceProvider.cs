@@ -31,6 +31,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
       private IRunspaceProvider _runspaceProvider;
       private IRunspacesStatsMonitor _runspacesStatsMonitor;
       private UserToIdentifiableData<IRunspaceData> _userRunspaces = new UserToIdentifiableData<IRunspaceData>();
+      private UserToIdentifiableData<IWebConsoleData> _userWebConsoles = new UserToIdentifiableData<IWebConsoleData>();
       private Timer _runspacesCleanupTimer;
 
       public MultiTenantRunspaceProvider(ILoggerFactory loggerFactory, IRunspaceProvider runspaceProvider) : 
@@ -74,6 +75,85 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             Cleanup();
          } catch (Exception exc) {
             _logger.Log(LogLevel.Error, exc.ToString());
+         }
+      }
+
+      private void CleanupRunspaces() {
+         // NB: The below operation could be slow because interacts with
+         // every running container to get stats.
+         var runspaceIdsToRemove = _runspacesStatsMonitor.EvaluateRunspacesToRemove(IRunspacesStatsMonitor.RunspaceType.Runspace);
+
+         foreach (var runspaceId in runspaceIdsToRemove) {
+            var userId = _userRunspaces.GetUser(runspaceId);
+
+            // Kill Runspace Container
+            Kill(userId, runspaceId);
+
+            // Unregister from stats
+            _runspacesStatsMonitor.Unregister(runspaceId);
+         }
+
+         // Cleanup Local Data for containers that are not running
+         // Get all running containers and if there are such for which
+         // local data exists but they are not available, remove local data
+         var runningRunspaces = _runspaceProvider.List().Select(a => a.Id);
+
+         // Clean up user to runspace data
+         var userIds = _userRunspaces.ListUsers();
+         foreach (var userId in userIds ?? Enumerable.Empty<string>()) {
+            var userRunspaces = _userRunspaces.List(userId);
+            foreach (var runspaceData in userRunspaces ?? Enumerable.Empty<IRunspaceData>()) {
+               if (!runningRunspaces.Contains(runspaceData.Id)) {
+                  _userRunspaces.RemoveData(userId, runspaceData.Id);
+               }
+            }
+         }
+
+         // Clean up statistics data
+         var monitoredRunspaces = _runspacesStatsMonitor.GetRegisteredRunspaces();
+         foreach (var runspaceId in monitoredRunspaces ?? Enumerable.Empty<string>()) {
+            if (!runningRunspaces.Contains(runspaceId)) {
+               _runspacesStatsMonitor.Unregister(runspaceId);
+            }
+         }
+      }
+
+
+      private void CleanupWebConsoles() {         
+         var webConsoleIdsToRemove = _runspacesStatsMonitor.EvaluateRunspacesToRemove(IRunspacesStatsMonitor.RunspaceType.WebConsole);
+
+         foreach (var webConsoleId in webConsoleIdsToRemove) {
+            var userId = _userWebConsoles.GetUser(webConsoleId);
+
+            // Kill WebConsole
+            KillWebConsole(userId, webConsoleId);
+
+            // Unregister from stats
+            _runspacesStatsMonitor.Unregister(webConsoleId);
+         }
+
+         // Cleanup Local Data for web consoles that are not running
+         // Get all running web consoles and if there are such for which
+         // local data exists but they are not available, remove local data
+         var runningWebConsoles = _runspaceProvider.ListWebConsole().Select(a => a.Id);
+
+         // Clean up user to web console data
+         var userIds = _userWebConsoles.ListUsers();
+         foreach (var userId in userIds ?? Enumerable.Empty<string>()) {
+            var userWebConosles = _userWebConsoles.List(userId);
+            foreach (var webConsoleData in userWebConosles ?? Enumerable.Empty<IWebConsoleData>()) {
+               if (!runningWebConsoles.Contains(webConsoleData.Id)) {
+                  _userWebConsoles.RemoveData(userId, webConsoleData.Id);
+               }
+            }
+         }
+
+         // Clean up statistics data
+         var monitoredWebConsoles = _runspacesStatsMonitor.GetRegisteredWebConsoles();
+         foreach (var webConsoleId in monitoredWebConsoles ?? Enumerable.Empty<string>()) {
+            if (!runningWebConsoles.Contains(webConsoleId)) {
+               _runspacesStatsMonitor.Unregister(webConsoleId);
+            }
          }
       }
 
@@ -215,7 +295,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 
          return result;
       }
-
+      
       public IRunspaceData Get(string userId, string runspaceId) {
          _logger.LogInformation($"Get runspace with id: {runspaceId}");
          IRunspaceData result = null;
@@ -243,6 +323,38 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             throw new RunspaceProviderException(
                string.Format(
                   APIGatewayResources.MultiTenantRunspaceProvider_GetFailed,
+                  userId,
+                  ex.Message),
+               ex);
+         }
+
+         return result;
+      }
+
+      public IEnumerable<IRunspaceData> List(string userId) {
+         _logger.LogInformation($"List");
+         var result = new List<IRunspaceData>();
+         try {
+            Sessions.Instance.EnsureValidUser(userId);
+
+            if (_userRunspaces.Contains(userId)) {
+               var runspaces = _userRunspaces.List(userId);
+
+               if (runspaces != null) {
+                  foreach (var runspaceData in runspaces) {
+                     var runspaceInfo = _runspaceProvider.Get(runspaceData.Id);
+                     if (runspaceInfo != null) {
+                        result.Add(runspaceData);
+                     } else {
+                        _userRunspaces.RemoveData(userId, runspaceData.Id);
+                     }
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            throw new RunspaceProviderException(
+               string.Format(
+                  APIGatewayResources.MultiTenantRunspaceProvider_ListFailed,
                   userId,
                   ex.Message),
                ex);
@@ -328,71 +440,58 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          }
       }
 
-      public void Cleanup() {
-         _logger.LogInformation($"Cleanup");
-         // NB: The below operation could be slow because interacts with
-         // every running container to get stats.
-         var runspaceIdsToRemove = _runspacesStatsMonitor.EvaluateRunspacesToRemove();
-
-         foreach (var runspaceId in runspaceIdsToRemove) {
-            var userId = _userRunspaces.GetUser(runspaceId);
-
-            // Kill Runspace Container
-            Kill(userId, runspaceId);
-
-            // Unregister from stats
-            _runspacesStatsMonitor.Unregister(runspaceId);
-         }
-
-         // Cleanup Local Data for containers that are not running
-         // Get all running containers and if there are such for which
-         // local data exists but they are not available, remove local data
-         var runningRunspaces = _runspaceProvider.List().Select(a => a.Id);
-
-         // Clean up user to runspace data
-         var userIds = _userRunspaces.ListUsers();
-         foreach (var userId in userIds ?? Enumerable.Empty<string>()) {
-            var userRunspaces = _userRunspaces.List(userId);
-            foreach (var runspaceData in userRunspaces ?? Enumerable.Empty<IRunspaceData>()) {
-               if (!runningRunspaces.Contains(runspaceData.Id)) {
-                  _userRunspaces.RemoveData(userId, runspaceData.Id);
-               }
-            }
-         }
-
-         // Clean up statistics data
-         var monitoredRunspaces = _runspacesStatsMonitor.GetRegisteredRunspaces();
-         foreach (var runspaceId in monitoredRunspaces ?? Enumerable.Empty<string>()) {
-            if (!runningRunspaces.Contains(runspaceId)) {
-               _runspacesStatsMonitor.Unregister(runspaceId);
-            }
-         }
+      public bool CanCreateNewWebConsole() {
+         return _runspacesStatsMonitor.IsCreateNewRunspaceAllowed();
       }
 
-      public IEnumerable<IRunspaceData> List(string userId) {
-         _logger.LogInformation($"List");
-         var result = new List<IRunspaceData>();
+      public IWebConsoleData CreateWebConsole(
+         string userId,
+         ISessionToken sessionToken,
+         ISolutionStsClient stsClient,
+         string vcEndpoint) {
+
+         IWebConsoleData result = null;
+
+         _logger.LogInformation("StartCreateWebConsole");
+
          try {
             Sessions.Instance.EnsureValidUser(userId);
+            _logger.LogDebug("RunspaceProvider -> CreateWebConsole call");
 
-            if (_userRunspaces.Contains(userId)) {
-               var runspaces = _userRunspaces.List(userId);
-
-               if (runspaces != null) {
-                  foreach (var runspaceData in runspaces) {
-                     var runspaceInfo = _runspaceProvider.Get(runspaceData.Id);
-                     if  (runspaceInfo != null) {
-                        result.Add(runspaceData);
-                     } else {
-                        _userRunspaces.RemoveData(userId, runspaceData.Id);
-                     }
-                  }
+            string bearerSamlToken = "";
+            try {
+               _logger.LogDebug($"HoK Saml Token availble: {sessionToken.HoKSamlToken != null}");
+               if (sessionToken.HoKSamlToken == null) {
+                  throw new Exception(APIGatewayResources.PowerCLIVCloginController_NoRefreshTokenAvailable_For_Session);
                }
+
+               _logger.LogDebug($"STSClient -> IssueBearerTokenBySolutionToken call");
+               bearerSamlToken = stsClient
+                  .IssueBearerTokenBySolutionToken(sessionToken.HoKSamlToken.RawXmlElement)
+                  .OuterXml;
+            } catch (Exception exc) {
+               _logger.LogError(exc, "Issue Bearer Token failed");
+               result.State = DataTypes.WebConsoleState.Error;
+               result.ErrorDetails = new DataTypes.ErrorDetails(exc);
             }
+
+            var token = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(bearerSamlToken));
+            var webConsoleInfo = _runspaceProvider.CreateWebConsole(vcEndpoint, token, true);
+            _logger.LogDebug($"Runspace provider result: {webConsoleInfo.Id}, {webConsoleInfo.CreationState}, {webConsoleInfo.CreationError}");
+            result = new WebConsoleData(webConsoleInfo);
+            result.CreationTime = DateTime.Now;
+            result.State = DataTypes.WebConsoleState.Available;
+
+            _runspacesStatsMonitor.RegisterWebConsole(result, sessionToken.SessionId);
+            _userWebConsoles.Add(userId, result.Id, result);
+
+         } catch (RunspaceProviderException runspaceProviderException) {
+            _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown");
+            throw;
          } catch (Exception ex) {
             throw new RunspaceProviderException(
                string.Format(
-                  APIGatewayResources.MultiTenantRunspaceProvider_ListFailed,
+                  APIGatewayResources.MultiTenantRunspaceProvider_CreateFailed,
                   userId,
                   ex.Message),
                ex);
@@ -401,8 +500,97 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          return result;
       }
 
-      public void Dispose() {
-         _runspacesCleanupTimer?.Dispose();
+      public void KillWebConsole(string userId, string webConsoleId) {
+         _logger.LogInformation($"Kill web console {webConsoleId}");
+         try {
+            Sessions.Instance.EnsureValidUser(userId);
+
+            if (_userWebConsoles.Contains(userId, webConsoleId)) {
+               _userWebConsoles.RemoveData(userId, webConsoleId);
+            }
+
+            _runspacesStatsMonitor.Unregister(webConsoleId);
+            _runspaceProvider.KillWebConsole(webConsoleId);            
+
+            if (_userWebConsoles.List(userId) == null) {
+               _userWebConsoles.RemoveUser(userId);
+            }
+         } catch (Exception ex) {
+            throw new RunspaceProviderException(
+               string.Format(
+                  APIGatewayResources.MultiTenantRunspaceProvider_KillFailed,
+                  userId,
+                  ex.Message),
+               ex);
+         }
+      }
+
+      public IWebConsoleData GetWebConsole(string userId, string webConsoleId) {
+         _logger.LogInformation($"Get web console with id: {webConsoleId}");
+         IWebConsoleData result = null;
+         try {
+            Sessions.Instance.EnsureValidUser(userId);
+
+            if (!_userWebConsoles.Contains(userId)) {
+               throw new RunspaceProviderException(
+                  string.Format(APIGatewayResources.MultiTenantRunspaceProvider_UserHasNoWebConsoles, userId));
+            }
+
+            if (!_userWebConsoles.Contains(userId, webConsoleId)) {
+               throw new RunspaceProviderException(
+                  string.Format(APIGatewayResources.MultiTenantRunspaceProvider_UserHasNoWebConsoleWithId, userId, webConsoleId));
+            }
+
+            var webConsoleInfo = _runspaceProvider.GetWebConsole(webConsoleId);
+            var webConsoleData = _userWebConsoles.GetData(userId, webConsoleId);
+            if (webConsoleInfo == null && webConsoleData != null) {
+               _userWebConsoles.RemoveData(userId, webConsoleId);
+            } else {
+               result = webConsoleData;
+            }
+         } catch (Exception ex) {
+            throw new RunspaceProviderException(
+               string.Format(
+                  APIGatewayResources.MultiTenantRunspaceProvider_GetWebConsoleFailed,
+                  userId,
+                  ex.Message),
+               ex);
+         }
+
+         return result;
+      }
+
+      public IEnumerable<IWebConsoleData> ListWebConsole(string userId) {
+         _logger.LogInformation($"ListWebConsole");
+         var result = new List<IWebConsoleData>();
+         try {
+            Sessions.Instance.EnsureValidUser(userId);
+
+            if (_userWebConsoles.Contains(userId)) {
+               var userWebConsoles = _userWebConsoles.List(userId);
+               var providerWebConsoles = _runspaceProvider.ListWebConsole();
+
+               if (userWebConsoles != null) {
+                  foreach (var userWebConsole in userWebConsoles) {
+                     var webConsoleInfo = providerWebConsoles.Where(pwc => pwc.Id == userWebConsole.Id).FirstOrDefault();
+                     if (webConsoleInfo != null) {
+                        result.Add(userWebConsole);
+                     } else {
+                        _userWebConsoles.RemoveData(userId, userWebConsole.Id);
+                     }
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            throw new RunspaceProviderException(
+               string.Format(
+                  APIGatewayResources.MultiTenantRunspaceProvider_ListWebConsoleFailed,
+                  userId,
+                  ex.Message),
+               ex);
+         }
+
+         return result;
       }
 
       public void UpdateConfiguration(RunspaceProviderSettings runspaceProviderSettings) {
@@ -425,6 +613,16 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                   runspaceProviderSettings.MaxRunspaceActiveTimeMinutes);
             }
          }         
+      }
+
+      public void Cleanup() {
+         _logger.LogInformation($"Cleanup");
+         CleanupRunspaces();
+         CleanupWebConsoles();
+      }
+
+      public void Dispose() {
+         _runspacesCleanupTimer?.Dispose();
       }
    }
 }

@@ -79,7 +79,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete K8s Runspace Services failed..
+        ///   Looks up a localized string similar to Delete K8s Runspace Pod failed..
         /// </summary>
         internal static string K8sRunspaceProvider_Delete_K8sRunspaceCreateFail {
             get {
@@ -88,11 +88,20 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to List K8s Runspace Services failed..
+        ///   Looks up a localized string similar to List K8s Runspace Pods failed..
         /// </summary>
-        internal static string K8sRunspaceProvider_List_K8sRunspaceCreateFail {
+        internal static string K8sRunspaceProvider_List_K8sRunspaceListFail {
             get {
-                return ResourceManager.GetString("K8sRunspaceProvider_List_K8sRunspaceCreateFail", resourceCulture);
+                return ResourceManager.GetString("K8sRunspaceProvider_List_K8sRunspaceListFail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List K8s WebConsole Services failed..
+        /// </summary>
+        internal static string K8sRunspaceProvider_ListWebConsole_K8sWebConsoleListFail {
+            get {
+                return ResourceManager.GetString("K8sRunspaceProvider_ListWebConsole_K8sWebConsoleListFail", resourceCulture);
             }
         }
         

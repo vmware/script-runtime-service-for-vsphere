@@ -258,8 +258,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <param name="id">Unique identifier of the runspace</param>
       /// <remarks>
       /// Retrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on the **script execution** creation.      
-      /// </remarks>
-      /// <param name="id"></param>      
+      /// </remarks>      
       /// <returns></returns>
       // GET api/script-executions/{id}
       [HttpGet("{id}", Name = "get-script-execution")]
