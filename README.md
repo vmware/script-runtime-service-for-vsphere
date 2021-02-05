@@ -8,6 +8,7 @@ Script Runtime Service for vSphere (SRS) enables vSphere users and services (cli
 ### Highlights
 * Central place with REST API endpoint for VI Admins to run [VMware PowerCLI](https://code.vmware.com/web/tool/12.1.0/vmware-powercli)
 * Manage multiple PowerCLI instances to run commands and scripts against vCenter Servers without calling Connect-VIServer
+* Interactive WebConsole to a PowerCLI instance
 * Runs on Kubernetes
 
 ![SRS Overview](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/SRSOverview.jpg?raw=true)
