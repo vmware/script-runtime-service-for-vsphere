@@ -88,8 +88,20 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             _runspaceStats.Add(
                _runspaceStatsFactory.Create(
                   runspaceInfo.Id, 
+                  false,
                   new RunspaceSessionInfoProvider(sessionId), 
                   new ActiveIdleInfoProvider(runspaceInfo)));
+         }
+      }
+
+      public void RegisterWebConsole(IWebConsoleInfo webConsoleInfo, string sessionId) {
+         lock (this) {
+            _runspaceStats.Add(
+               _runspaceStatsFactory.Create(
+                  webConsoleInfo.Id,
+                  true,
+                  new RunspaceSessionInfoProvider(sessionId),
+                  new WebConsoleActiveIdleInfoProvider(webConsoleInfo)));
          }
       }
 
@@ -106,13 +118,23 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          string[] result = null;
          lock (this) {
 
-            result = _runspaceStats.ToArray().Select(a => a.RunspaceId).ToArray();
+            result = _runspaceStats.ToArray().Where(stats => !stats.IsWebConsole).Select(a => a.RunspaceId).ToArray();
          }
 
          return result;
       }
 
-      public string[] EvaluateRunspacesToRemove() {
+      public string[] GetRegisteredWebConsoles() {
+         string[] result = null;
+         lock (this) {
+
+            result = _runspaceStats.ToArray().Where(stats => stats.IsWebConsole).Select(a => a.RunspaceId).ToArray();
+         }
+
+         return result;
+      }
+
+      public string[] EvaluateRunspacesToRemove(IRunspacesStatsMonitor.RunspaceType runspaceType) {
          IRunspaceStats[] runspacesToEvaluate = new IRunspaceStats[]{};
          lock (this) {
             runspacesToEvaluate = _runspaceStats.ToArray();
@@ -123,7 +145,13 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          foreach (var runspaceStats in runspacesToEvaluate) {
             runspaceStats.Refresh();
             if (_retentionPolicy.ShouldRemove(runspaceStats)) {
-               result.Add(runspaceStats.RunspaceId);
+               if (runspaceStats.IsWebConsole && runspaceType == IRunspacesStatsMonitor.RunspaceType.WebConsole) {
+                  result.Add(runspaceStats.RunspaceId);
+               }
+
+               if (!runspaceStats.IsWebConsole && runspaceType == IRunspacesStatsMonitor.RunspaceType.Runspace) {
+                  result.Add(runspaceStats.RunspaceId);
+               }
             }
          }
 

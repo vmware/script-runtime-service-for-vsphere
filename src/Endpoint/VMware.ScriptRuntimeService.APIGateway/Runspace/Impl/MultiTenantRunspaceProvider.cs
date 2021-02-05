@@ -30,7 +30,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
       private ILogger _logger;
       private IRunspaceProvider _runspaceProvider;
       private IRunspacesStatsMonitor _runspacesStatsMonitor;
-      private WebConsolesStatsMonitor _webConsolesStatsMonitor;
       private UserToIdentifiableData<IRunspaceData> _userRunspaces = new UserToIdentifiableData<IRunspaceData>();
       private UserToIdentifiableData<IWebConsoleData> _userWebConsoles = new UserToIdentifiableData<IWebConsoleData>();
       private Timer _runspacesCleanupTimer;
@@ -64,8 +63,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             _runspacesStatsMonitor = runspacesStatsMonitor;
          }
 
-         _webConsolesStatsMonitor = new WebConsolesStatsMonitor(maxNumberOfRunspaces, 1);
-
          _runspacesCleanupTimer = new Timer(
             CleanupTimerCallback, 
             null, 
@@ -84,7 +81,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
       private void CleanupRunspaces() {
          // NB: The below operation could be slow because interacts with
          // every running container to get stats.
-         var runspaceIdsToRemove = _runspacesStatsMonitor.EvaluateRunspacesToRemove();
+         var runspaceIdsToRemove = _runspacesStatsMonitor.EvaluateRunspacesToRemove(IRunspacesStatsMonitor.RunspaceType.Runspace);
 
          foreach (var runspaceId in runspaceIdsToRemove) {
             var userId = _userRunspaces.GetUser(runspaceId);
@@ -123,7 +120,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 
 
       private void CleanupWebConsoles() {         
-         var webConsoleIdsToRemove = _webConsolesStatsMonitor.EvaluateWebConsolesToRemove();
+         var webConsoleIdsToRemove = _runspacesStatsMonitor.EvaluateRunspacesToRemove(IRunspacesStatsMonitor.RunspaceType.WebConsole);
 
          foreach (var webConsoleId in webConsoleIdsToRemove) {
             var userId = _userWebConsoles.GetUser(webConsoleId);
@@ -132,7 +129,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             KillWebConsole(userId, webConsoleId);
 
             // Unregister from stats
-            _webConsolesStatsMonitor.Unregister(webConsoleId);
+            _runspacesStatsMonitor.Unregister(webConsoleId);
          }
 
          // Cleanup Local Data for web consoles that are not running
@@ -152,10 +149,10 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          }
 
          // Clean up statistics data
-         var monitoredWebConsoles = _webConsolesStatsMonitor.GetRegisteredWebConsoles();
+         var monitoredWebConsoles = _runspacesStatsMonitor.GetRegisteredWebConsoles();
          foreach (var webConsoleId in monitoredWebConsoles ?? Enumerable.Empty<string>()) {
             if (!runningWebConsoles.Contains(webConsoleId)) {
-               _webConsolesStatsMonitor.Unregister(webConsoleId);
+               _runspacesStatsMonitor.Unregister(webConsoleId);
             }
          }
       }
@@ -443,14 +440,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          }
       }
 
-      public void Cleanup() {
-         _logger.LogInformation($"Cleanup");
-         CleanupRunspaces();
-         CleanupWebConsoles();
-      }
-
       public bool CanCreateNewWebConsole() {
-         return _webConsolesStatsMonitor.IsCreateNewWebConsoleAllowed();
+         return _runspacesStatsMonitor.IsCreateNewRunspaceAllowed();
       }
 
       public IWebConsoleData CreateWebConsole(
@@ -600,11 +591,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          return result;
       }
 
-
-      public void Dispose() {
-         _runspacesCleanupTimer?.Dispose();
-      }
-
       public void UpdateConfiguration(RunspaceProviderSettings runspaceProviderSettings) {
          _logger.LogInformation($"UpdateConfiguration");
          if (runspaceProviderSettings != null) {
@@ -625,6 +611,16 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                   runspaceProviderSettings.MaxRunspaceActiveTimeMinutes);
             }
          }         
+      }
+
+      public void Cleanup() {
+         _logger.LogInformation($"Cleanup");
+         CleanupRunspaces();
+         CleanupWebConsoles();
+      }
+
+      public void Dispose() {
+         _runspacesCleanupTimer?.Dispose();
       }
    }
 }
