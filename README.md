@@ -38,6 +38,9 @@ Java and C# example client applications based on auto-generated client-side SDKs
 
 [Check the vision and what's coming next](https://github.com/vmware/script-runtime-service-for-vsphere/projects/2)<br/>
 
+## Coming Next
+![WebConsole](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/doc/assets/img/webconsole.gif)
+
 ## Contributing
 
 The script-runtime-service-for-vsphere project team welcomes contributions from the community. If you wish to contribute code and you have not signed our contributor license agreement (CLA), our bot will update the issue when you open a Pull Request. For any questions about the CLA process, please refer to our [FAQ](https://cla.vmware.com/faq). For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
