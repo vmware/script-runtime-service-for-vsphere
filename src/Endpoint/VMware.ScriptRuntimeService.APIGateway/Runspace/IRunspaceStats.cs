@@ -12,6 +12,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace {
       void Refresh();
 
       string RunspaceId { get; }
+      bool IsWebConsole { get; }
       bool HasActiveSession { get; }
       bool IsActive { get; }
       int ActiveTimeSeconds { get; }

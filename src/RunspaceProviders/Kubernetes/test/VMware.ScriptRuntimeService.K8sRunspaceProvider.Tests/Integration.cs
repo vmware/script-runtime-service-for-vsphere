@@ -18,8 +18,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider.Tests {
    /// and K8S API KEY on constant K8S_API_KEY, then uncomment [Test] attributes
    /// </summary>
    public class Itnegrationtests {
-      private const string K8S_API_ENDPOINT = "https://10.23.80.72:5443";
-      private const string K8S_API_KEY = "eyJhbGciOiJSUzI1NiIsImtpZCI6IlAxUHloOHlTYW1XeGVUUXhHaTE5QUQ1NHRqQXBSbGJmWUJ3OGstdDRVNTgifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJzZXMtc2VydmljZSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJzZXMtcnVuc3BhY2UtcHJvdmlkZXItdG9rZW4tYm40Y3oiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoic2VzLXJ1bnNwYWNlLXByb3ZpZGVyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiODkyMzMyNTAtYzIwOS00YTBiLThhYzEtOGVmNWIwMTMzOTJmIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OnNlcy1zZXJ2aWNlOnNlcy1ydW5zcGFjZS1wcm92aWRlciJ9.eN0mevVMURTegRYZS4eTYGXkVoEReOogGO1gZbhABj6A_0uw4IcXI2QNlJXBq6caZRLmjl6giMHlST8wmg3myPH8YihzhZB1UDhvtPWCW_Nfn1t4iU9M4KWFByWrn4D2nxDcKpWIroZjk2rMXpMei8AaRDJBCKk9KUFuMJBTGOvX1qkK2Xj8Sd5SAr8DRILSDMgt31b2n_QUiMRNus0kV6Qhj_5JIuSg6PA9ZZO4Xj5kLjgytoDmXQxIOLf_tfk4h5mMmeLEApN1c2c9KB8lvxt-BUV9ceGVICn_h79OlPRKhqjsLevHgULZV1so-D8zLIwEHU2YcD7jDLACGCmy1A";
+      private const string K8S_API_ENDPOINT = "https://10.23.82.191:6443";
+      private const string K8S_API_KEY = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ing5VGZpRVhqNnlRbk4xdWRyQzViaDg2NWxBb0dCR3ZhQ3lwRkV5em5QdVUifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJzY3JpcHQtcnVudGltZS1zZXJ2aWNlIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6InNycy1ydW5zcGFjZS1wcm92aWRlci10b2tlbi1jcmJueiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJzcnMtcnVuc3BhY2UtcHJvdmlkZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI4YjA3MmRlNC0yOTJlLTQwNDMtOGIyMC04NjJjZmFmMjA1ZGEiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6c2NyaXB0LXJ1bnRpbWUtc2VydmljZTpzcnMtcnVuc3BhY2UtcHJvdmlkZXIifQ.vUzAth823V4qZYOcMTrSyBWa9H8wpleWV3u7Xbp7Z8WFzz6Q9zWKFqWBHYSBZOehhr9630E90BmgxOjiPyAfNhNSI4n0UmuH3rSua2DSvYj1SiTwy7n5DJ3MGpTHgcDcqzPV-krxK6gqD9Oe8WV7BPW1hJRoqWhfP8xwFBuNw9LrSD3qa5s0kaO03Y6V3sWe04Sij28XpO2Ia1IS-FhgZk5KzHnb7mBB__wUwh7kd2zP6722DXJdwJfFSctUH7eyCkIpAwjHITnxH97skqD3LnCbCqrp9d9B_Kum5aTxuZDsOqItDqb3jpvxjyuNpSZlbXp3Z8hqutrBWFuULeZZDw";
       private K8sRunspaceProvider _k8sProvider;
       [SetUp]
       public void Setup() {
@@ -34,14 +34,14 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider.Tests {
             K8S_API_ENDPOINT,
             K8S_API_KEY,
             "script-runtime-service",
-            "pclirunspace:latest",
+            "pclirunspace:12.1",
             5555,
-            "regcred",
+            null,
             false,
             "trusted-ca-certificates");
       }
 
-      //[Test]
+      [Test]
       public void TestCreate() {
          var runspaceInfo = _k8sProvider.StartCreate();
          runspaceInfo = _k8sProvider.WaitCreateCompletion(runspaceInfo);
@@ -51,6 +51,28 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider.Tests {
          Assert.NotNull(runspaceInfo.Endpoint.Address);
          Assert.NotNull(runspaceInfo.Endpoint.Port);
          Assert.AreEqual(RunspaceCreationState.Ready, runspaceInfo.CreationState);
+      }
+
+      [Test]
+      public void TestCreateWebConsole() {
+         var webConsole = _k8sProvider.CreateWebConsole("", "", false);
+         Assert.NotNull(webConsole);
+      }
+
+
+      [Test]
+      public void TestKillWebConsole() {         
+         _k8sProvider.KillWebConsole("pcli-c0f80b2c-7ba4-4c4d-a2f6-b939a6ce3f63");
+      }
+
+      [Test]
+      public void TestAddWebConsolePathToIngress() {
+         _k8sProvider.AddSrsIngressWebConsolePath("pcli-e6d4663c-a755-455d-98e6-87dc7c7b8988");         
+      }
+
+      [Test]
+      public void TestAddRemoveWebConsolePathToIngress() {
+         _k8sProvider.RemoveSrsIngressWebConsolePath("pcli-e6d4663c-a755-455d-98e6-87dc7c7b8988");
       }
 
       //[Test]
@@ -63,7 +85,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider.Tests {
          Assert.NotNull(runspaceInfo.Endpoint.Port);
       }
 
-      //[Test]
+      [Test]
       public void TestKill() {
          var runspaceInfo = _k8sProvider.List().FirstOrDefault();
          _k8sProvider.Kill(runspaceInfo.Id);         

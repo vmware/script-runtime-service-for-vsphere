@@ -14,9 +14,11 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl.Statistics {
       private IActiveIdleInfoProvider _activeIdleInfoProvider;
 
       public RunspaceStats(string runspaceId,
+         bool isWebConsole,
          IRunspaceSessionInfoProvider sessionInfoProvider,
          IActiveIdleInfoProvider activeIdleInfoProvider) {
          RunspaceId = runspaceId;
+         IsWebConsole = isWebConsole;
          _sessionsInfoProvider = sessionInfoProvider;
          _activeIdleInfoProvider = activeIdleInfoProvider;
       }
@@ -35,6 +37,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl.Statistics {
       }
 
       public string RunspaceId { get; }
+      public bool IsWebConsole { get; }
       public bool HasActiveSession { get; private set; }
       public bool IsActive { get; private set; }
       public int ActiveTimeSeconds { get; private set; }

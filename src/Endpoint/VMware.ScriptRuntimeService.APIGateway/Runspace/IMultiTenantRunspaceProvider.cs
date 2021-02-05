@@ -63,8 +63,56 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace {
       /// <param name="runspaceId">Runspace id</param>
       void Kill(string userId, string runspaceId);
 
+
       /// <summary>
-      /// Removes redundant runspaces and all data related for them
+      /// Verifies whether a new web console can be created.
+      /// </summary>
+      /// <returns>True if a new web console is allowed to be created, otherwise false</returns>
+      bool CanCreateNewWebConsole();
+
+      /// <summary>
+      /// Creates a web console
+      /// </summary>
+      /// <param name="userId">User identifier</param>
+      /// <param name="sessionToken">Authorized session Roken with which create new runspace is requested</param>      
+      /// <param name="stsClient">StsClient needed to acquire SAML tokens for connect vc operation, if vc connection script is requested</param>
+      /// <param name="vcEndpoint">Vc endpoint to connect to, if vc connection script is requested</param>
+      /// <returns></returns>
+      IWebConsoleData CreateWebConsole(
+         string userId,
+         ISessionToken sessionToken,
+         ISolutionStsClient stsClient,
+         string vcEndpoint);
+
+      /// <summary>
+      /// Removes a web console
+      /// </summary>
+      /// <param name="userId">User identifier</param>      
+      /// <param name="webConsoleId">Web Console id</param>
+      void KillWebConsole(string userId, string webConsoleId);
+
+
+      /// <summary>
+      /// Gets all running web consoles for specified user
+      /// </summary>
+      /// <param name="userId">User identifier</param>
+      /// <returns>
+      /// List of runspace <see cref="IWebConsoleData"/>  if available, otherwise null.
+      /// </returns>
+      IEnumerable<IWebConsoleData> ListWebConsole(string userId);
+
+      /// <summary>
+      /// Get instance of running webconsoles if available, otherwise null
+      /// </summary>
+      /// <param name="userId">User identifier</param>
+      /// <param name="runspaceId">Runspace id</param>
+      /// <returns>
+      /// Instance of running web consoles  if available, otherwise null.
+      /// </returns>
+      IWebConsoleData GetWebConsole(string userId, string runspaceId);
+
+      /// <summary>
+      /// Removes redundant runspaces and web consoles and all data related for them
       /// Implementers take decision which are redundant runspaces
       /// </summary>
       void Cleanup();
