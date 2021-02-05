@@ -73,6 +73,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             f =>
                f.Create(
                   runspaceId1,
+                  false,
                   It.IsAny<IRunspaceSessionInfoProvider>(),
                   It.IsAny<IActiveIdleInfoProvider>())).Returns(runspaceStats1.Object);
 
@@ -88,6 +89,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             f =>
                f.Create(
                   runspaceId2,
+                  false,
                   It.IsAny<IRunspaceSessionInfoProvider>(),
                   It.IsAny<IActiveIdleInfoProvider>())).Returns(runspaceStats2.Object);
 
@@ -132,6 +134,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             f =>
                f.Create(
                   runspaceId1,
+                  false,
                   It.IsAny<IRunspaceSessionInfoProvider>(),
                   It.IsAny<IActiveIdleInfoProvider>())).Returns(runspaceStats1.Object);
 
@@ -147,6 +150,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             f =>
                f.Create(
                   runspaceId2,
+                  false,
                   It.IsAny<IRunspaceSessionInfoProvider>(),
                   It.IsAny<IActiveIdleInfoProvider>())).Returns(runspaceStats2.Object);
 
@@ -191,6 +195,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             f =>
                f.Create(
                   runspaceId1,
+                  false,
                   It.IsAny<IRunspaceSessionInfoProvider>(),
                   It.IsAny<IActiveIdleInfoProvider>())).Returns(runspaceStats1.Object);
 
@@ -207,6 +212,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             f =>
                f.Create(
                   runspaceId2,
+                  false,
                   It.IsAny<IRunspaceSessionInfoProvider>(),
                   It.IsAny<IActiveIdleInfoProvider>())).Returns(runspaceStats2.Object);
 
@@ -227,7 +233,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
 
 
          // Act
-         var actual = testMonitor.EvaluateRunspacesToRemove();
+         var actual = testMonitor.EvaluateRunspacesToRemove(IRunspacesStatsMonitor.RunspaceType.Runspace);
 
          // Assert
          runspaceStats1.Verify(r => r.Refresh(), Times.Once());
@@ -253,6 +259,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             f =>
                f.Create(
                   runspaceId1,
+                  false,
                   It.IsAny<IRunspaceSessionInfoProvider>(),
                   It.IsAny<IActiveIdleInfoProvider>())).Returns(runspaceStats1.Object);
 
@@ -298,6 +305,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             f =>
                f.Create(
                   runspaceId1,
+                  false,
                   It.IsAny<IRunspaceSessionInfoProvider>(),
                   It.IsAny<IActiveIdleInfoProvider>())).Returns(runspaceStats1.Object);
 
@@ -343,6 +351,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             f =>
                f.Create(
                   runspaceId1,
+                  false,
                   It.IsAny<IRunspaceSessionInfoProvider>(),
                   It.IsAny<IActiveIdleInfoProvider>())).Returns(runspaceStats1.Object);
 

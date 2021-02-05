@@ -451,7 +451,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
 
          // Mock RunsapcesStatsMonitor
          var runspacesStatsMonitor = new Mock<IRunspacesStatsMonitor>();
-         runspacesStatsMonitor.Setup(m => m.EvaluateRunspacesToRemove()).Returns(new[] {runspaceId1});
+         runspacesStatsMonitor.Setup(m => m.EvaluateRunspacesToRemove(IRunspacesStatsMonitor.RunspaceType.Runspace)).Returns(new[] {runspaceId1});
          runspacesStatsMonitor.Setup(m => m.Unregister(It.IsAny<string>()));
 
          _multiTenantRunspaceProvider =
@@ -519,7 +519,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
 
          // Mock RunsapcesStatsMonitor
          var runspacesStatsMonitor = new Mock<IRunspacesStatsMonitor>();
-         runspacesStatsMonitor.Setup(m => m.EvaluateRunspacesToRemove()).Returns(new string[]{});
+         runspacesStatsMonitor.Setup(m => m.EvaluateRunspacesToRemove(IRunspacesStatsMonitor.RunspaceType.Runspace)).Returns(new string[]{});
 
          runspacesStatsMonitor.Setup(m => m.GetRegisteredRunspaces()).Returns(new []{runspaceId1, runspaceId2});
          runspacesStatsMonitor.Setup(m => m.Unregister(runspaceId2));

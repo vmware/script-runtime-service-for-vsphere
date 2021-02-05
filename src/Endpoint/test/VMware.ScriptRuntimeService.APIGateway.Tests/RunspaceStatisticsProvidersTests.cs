@@ -38,7 +38,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             runspaceInfoMock.Object, 
             runspaceClientFactoryMock.Object);
 
-         var testStats = new RunspaceStats("", new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
+         var testStats = new RunspaceStats("", false, new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
 
          // Act
          testStats.Refresh();
@@ -66,7 +66,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             new Mock<IRunspaceInfo>().Object,
             runspaceClientFactoryMock.Object);
 
-         var testStats = new RunspaceStats("", new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
+         var testStats = new RunspaceStats("", false, new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
 
          // Act
          testStats.Refresh();
@@ -94,7 +94,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             new Mock<IRunspaceInfo>().Object,
             runspaceClientFactoryMock.Object);
 
-         var testStats = new RunspaceStats("", new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
+         var testStats = new RunspaceStats("", false, new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
 
          // Act
          testStats.Refresh();
@@ -122,7 +122,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             new Mock<IRunspaceInfo>().Object,
             runspaceClientFactoryMock.Object);
 
-         var testStats = new RunspaceStats("", new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
+         var testStats = new RunspaceStats("", false, new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
 
          // Act
          testStats.Refresh();
@@ -155,7 +155,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             runspaceInfoMock.Object,
             runspaceClientFactoryMock.Object);
 
-         var testStats = new RunspaceStats("", new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
+         var testStats = new RunspaceStats("", false, new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
 
          // Act
          testStats.Refresh();
@@ -186,7 +186,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             runspaceInfoMock.Object,
             runspaceClientFactoryMock.Object);
 
-         var testStats = new RunspaceStats("", new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
+         var testStats = new RunspaceStats("", false, new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
 
          // Act
          testStats.Refresh();
@@ -208,7 +208,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             new Mock<IRunspaceInfo>().Object,
             runspaceClientFactoryMock.Object);
 
-         var testStats = new RunspaceStats("", new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
+         var testStats = new RunspaceStats("", false, new Mock<IRunspaceSessionInfoProvider>().Object, actievIdleProvider);
 
          // Act
          Thread.Sleep(new TimeSpan(0, 0, 2));
@@ -227,6 +227,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
 
          var testStats = new RunspaceStats(
             "",
+            false,
             sessionInfoProviderMock.Object, 
             new Mock<IActiveIdleInfoProvider>().Object);
 
@@ -245,6 +246,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
 
          var testStats = new RunspaceStats(
             "",
+            false,
             sessionInfoProviderMock.Object,
             new Mock<IActiveIdleInfoProvider>().Object);
 
@@ -263,6 +265,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
 
          var testStats = new RunspaceStats(
             "",
+            false,
             sessionInfoProviderMock.Object,
             new Mock<IActiveIdleInfoProvider>().Object);
 
@@ -285,6 +288,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
 
          var testStats = new RunspaceStats(
             "",
+            false,
             sessionInfoProviderMock.Object,
             activeIdleInfoProvider.Object);
 
