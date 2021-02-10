@@ -107,8 +107,14 @@ metadata:
   namespace: script-runtime-service
 rules:
 - apiGroups: [""]
-  resources: ["pods", "pods/log", "configmaps"]
+  resources: ["pods", "pods/log", "configmaps","services"]
   verbs: ["get", "list", "watch", "create", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "delete"]
+- apiGroups: ["extensions", "networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
