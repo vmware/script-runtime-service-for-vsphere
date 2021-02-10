@@ -256,7 +256,7 @@ namespace VMware.ScriptRuntimeService.SsoAdmin {
 
          var result = new List<string>();
          foreach (var solutionUserId in findResult?.returnval) {
-            result.Add($"{solutionUserId.id?.name}@{solutionUserId.id?.domain}");
+            result.Add(solutionUserId.id?.name);
          }
 
          return result.ToArray();

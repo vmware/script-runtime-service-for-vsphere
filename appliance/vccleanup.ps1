@@ -99,19 +99,32 @@ $srsServices = $services | Where-Object {$_.serviceDescriptionResourceKey -eq 's
 
 $srsServices | Foreach-Object {
    $srsServiceRegistration = $_
-   Write-Host "Remove SRS Service registration from VC"
+   Write-Host "Remove SRS Service registration '$($srsServiceRegistration.serviceId)' from VC"
+
    $lsClient.DeleteService(
       $VcUser,
       (ConvertTo-SecureString -String $VcPassword -Force -AsPlainText),
       $srsServiceRegistration.serviceId)
+}
 
-   $ssoAdminClient = New-Object `
+$ssoAdminClient = New-Object `
       'VMware.ScriptRuntimeService.SsoAdmin.SsoAdminClient' `
       -ArgumentList $lsClient.GetSsoAdminEndpointUri(),  $lsClient.GetStsEndpointUri(), (New-Object 'CertificateValidators.AcceptAllX509CertificateValidator')
+
+$srsSolutionOwners = $ssoAdminClient.
+          FindSolutionUser(
+             $VcUser,
+             (ConvertTo-SecureString -String $VcPassword -Force -AsPlainText),
+             'srs-SolutionOwner',
+             10);
+
+$srsSolutionOwners | Foreach-Object {
+   $srsSolutionOwner = $_
+   Write-Host "Remove SRS Solution User '$srsSolutionOwner' from VC"
 
    $ssoAdminClient.
          DeleteLocalPrincipal(
             $VcUser,
             (ConvertTo-SecureString -String $VcPassword -Force -AsPlainText),
-            $srsServiceRegistration.ownerId );
+            $srsSolutionOwner);
 }
