@@ -16,8 +16,9 @@ namespace VMware.ScriptRuntimeService.SsoAdmin.Tests {
    /// To run those configure test vSphere on SERVER_ADDRESS with ADMIN_USER, ADMIN_PASSWORD constants
    /// and uncomment [Test] attributes
    /// </summary>
-   public class Integration {
-      private const string SERVER_ADDRESS = "10.23.81.78";
+   public class Integration
+   {
+      private const string SERVER_ADDRESS = "10.23.80.118";
       private const string ADMIN_USER = "Administrator";
       private const string ADMIN_PASSWORD = "Admin!23";
       private const string DOMAIN_NAME = "vsphere.local";
@@ -43,7 +44,7 @@ namespace VMware.ScriptRuntimeService.SsoAdmin.Tests {
          var ssoAdminUri = new Uri($"https://{SERVER_ADDRESS}:443/sso-adminserver/sdk");
          var stsUri = new Uri($"https://{SERVER_ADDRESS}/sts/STSService/vsphere.local");
          _ssoAdminClient = new SsoAdminClient(
-            ssoAdminUri, 
+            ssoAdminUri,
             stsUri,
             new AcceptAllX509CertificateValidator());
          _authorizationPassword = ConvertStringToSecureString(ADMIN_PASSWORD);
@@ -73,8 +74,8 @@ namespace VMware.ScriptRuntimeService.SsoAdmin.Tests {
             CreateLocalSolutionUser(
                _authorizationUsername,
                _authorizationPassword,
-               _userName, 
-               userSigningCertificate, 
+               _userName,
+               userSigningCertificate,
                "ScriptExecutionServer solution user");
 
          // Assert
@@ -137,6 +138,21 @@ namespace VMware.ScriptRuntimeService.SsoAdmin.Tests {
 
          // Assert
          Assert.NotNull(encodedCACertificate);
+      }
+
+      // [Test]
+      public void TestGetSolutionUser() {
+
+         // Act
+         /// Find Solution User
+         var users = _ssoAdminClient.
+            FindSolutionUser(
+               _authorizationUsername,
+               _authorizationPassword,
+               "srs",
+               10);
+         Assert.NotNull(users);
+         Assert.Greater(users.Length, 0);
       }
    }
 }

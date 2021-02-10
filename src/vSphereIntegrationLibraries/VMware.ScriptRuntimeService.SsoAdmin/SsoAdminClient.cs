@@ -224,6 +224,45 @@ namespace VMware.ScriptRuntimeService.SsoAdmin {
       }
 
       /// <summary>
+      /// Finds Solution Users by search string.
+      /// This operation requires administrator privileges for SSO
+      /// </summary>
+      /// <param name="authorizationUsername">User with administrator privileges</param>
+      /// <param name="authorizationPassword">Password for the authorizationUsername</param>
+      /// <param name="searchString">Search string to find the solution users</param>
+      /// <param name="limit">Limit the number of results</param>
+      /// <returns>PrincipalId in format "username@domainname"</returns>
+      public string[] FindSolutionUser(string authorizationUsername,
+         SecureString authorizationPassword,
+         string searchString,
+         int limit) {
+
+         // Create Authorization Invocation Context
+         var authorizedInvocationContext =
+            CreateAuthorizedInvocationContext(
+               authorizationUsername,
+               authorizationPassword);
+
+         // Invoke SSO Admin FindSolutionUsersAsync operation
+         var findResult = authorizedInvocationContext.
+            InvokeOperation(() =>
+               _ssoAdminClient.FindSolutionUsersAsync(
+                  new ManagedObjectReference {
+                     type = "SsoAdminPrincipalDiscoveryService",
+                     Value = "principalDiscoveryService"
+                  },
+                  searchString,
+                  limit)).Result;
+
+         var result = new List<string>();
+         foreach (var solutionUserId in findResult?.returnval) {
+            result.Add($"{solutionUserId.id?.name}@{solutionUserId.id?.domain}");
+         }
+
+         return result.ToArray();
+      }
+
+      /// <summary>
       /// Deletes Solution User from SSO
       /// This operation requires administrator privileges for SSO
       /// </summary>
