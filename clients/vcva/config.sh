@@ -2,8 +2,8 @@
 
 ##################################################
 
-ses_address="10.23.82.167"
-username="administrator@vsphere.local"
-password="Admin!23"
+srs_address="<SRS_address>"
+username="<VC_username>"
+password="<VC_password>"
 
 ##################################################
