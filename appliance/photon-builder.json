@@ -3,6 +3,6 @@
   "builder_host_username": "",
   "builder_host_password": "",
   "builder_host_datastore": "",
-  "builder_host_portgroup": "VM Network"
+  "builder_host_portgroup": ""
 }
 

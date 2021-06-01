@@ -9,6 +9,8 @@
     {
       "type": "vmware-iso",
       "vm_name": "{{ user `vm_name` }}",
+      "vnc_over_websocket": true,
+      "insecure_connection": true,
       "guest_os_type": "Other",
       "version": "13",
       "disk_size": "20480",
