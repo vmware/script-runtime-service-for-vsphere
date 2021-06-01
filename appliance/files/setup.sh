@@ -99,6 +99,17 @@ __CUSTOMIZE_PHOTON__
     systemctl enable docker
     systemctl start docker
 
+    DOCKER_USER_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.dockeruser")
+    DOCKER_USER=$(echo $DOCKER_USER_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
+    DOCKER_PASS_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.dockerpassword")
+    DOCKER_PASS=$(echo $DOCKER_PASS_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
+
+    if [ -z ${DOCKER_USER} ]; then
+      echo "Docker user not specified"
+    else
+      docker login --username=$DOCKER_USER --password=$DOCKER_PASS
+    fi
+
     echo "Create Cluster with ingress ready. Configures host port forwarding to ingress" > /dev/console
     cat <<EOF | kind create cluster --config=-
 kind: Cluster
@@ -119,6 +130,13 @@ nodes:
     hostPort: 6443
     protocol: TCP
 EOF
+     echo "Pull nginx docker images"
+     docker pull docker.io/jettech/kube-webhook-certgen:v1.2.2
+     docker pull us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1
+
+     echo "Load nginx docker image to kind node"
+     kind load docker-image jettech/kube-webhook-certgen:v1.2.2
+     kind load docker-image us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1
 
      echo "Deploy ingress controller for SRS on K8s Cluster" > /dev/console
      kubectl apply -f /root/ingress-controller.yaml

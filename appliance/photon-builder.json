@@ -1,8 +1,8 @@
 {
-  "builder_host": "10.23.82.233",
-  "builder_host_username": "root",
-  "builder_host_password": "ca$hc0w",
-  "builder_host_datastore": "pcli-shared5",
-  "builder_host_portgroup": "VM Network"
+  "builder_host": "",
+  "builder_host_username": "",
+  "builder_host_password": "",
+  "builder_host_datastore": "",
+  "builder_host_portgroup": ""
 }
 
