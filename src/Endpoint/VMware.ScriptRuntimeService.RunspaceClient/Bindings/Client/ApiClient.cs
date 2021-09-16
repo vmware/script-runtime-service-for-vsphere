@@ -193,7 +193,7 @@ namespace VMware.ScriptRuntimeService.RunspaceClient.Bindings.Client {
              path, method, queryParams, postBody, headerParams, formParams, fileParams,
              pathParams, contentType);
          InterceptRequest(request);
-         var response = await RestClient.ExecuteTaskAsync(request);
+         var response = await RestClient.ExecuteAsync(request);
          InterceptResponse(request, response);
          return (Object)response;
       }
@@ -259,7 +259,7 @@ namespace VMware.ScriptRuntimeService.RunspaceClient.Bindings.Client {
       /// <param name="type">Object type.</param>
       /// <returns>Object representation of the JSON string.</returns>
       public object Deserialize(IRestResponse response, Type type) {
-         IList<Parameter> headers = response.Headers;
+         var headers = response.Headers;
          if (type == typeof(byte[])) // return byte array
          {
             return response.RawBytes;

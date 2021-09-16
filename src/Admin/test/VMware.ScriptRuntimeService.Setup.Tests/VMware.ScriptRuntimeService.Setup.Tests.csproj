@@ -10,21 +10,13 @@
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="System.IO.Abstractions" Version="6.0.32" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
+    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="13.2.47" />
     <PackageReference Include="Moq" Version="4.12.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\VMware.ScriptRuntimeService.Setup\VMware.ScriptRuntimeService.Setup.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.IO.Abstractions">
-      <HintPath>..\..\..\..\..\..\Users\dmilov\.nuget\packages\system.io.abstractions\6.0.32\lib\netcoreapp2.0\System.IO.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Abstractions.TestingHelpers">
-      <HintPath>..\..\..\..\..\..\Users\dmilov\.nuget\packages\system.io.abstractions.testinghelpers\6.0.32\lib\netcoreapp2.0\System.IO.Abstractions.TestingHelpers.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

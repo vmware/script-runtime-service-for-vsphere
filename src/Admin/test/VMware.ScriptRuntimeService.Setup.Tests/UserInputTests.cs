@@ -5,11 +5,6 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.IO.Abstractions;
-using System.IO.Abstractions.TestingHelpers;
-using System.Text;
-using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace VMware.ScriptRuntimeService.Setup.Tests
