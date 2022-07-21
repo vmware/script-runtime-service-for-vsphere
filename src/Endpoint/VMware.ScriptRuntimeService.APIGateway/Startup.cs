@@ -102,11 +102,28 @@ namespace VMware.ScriptRuntimeService.APIGateway
          // Get logger for Startup class
          _logger = loggerFactory.CreateLogger(typeof(Startup));
 
-         Newtonsoft.Json.JsonConvert.DefaultSettings = 
-            () => new Newtonsoft.Json.JsonSerializerSettings() { 
-               MaxDepth = int.MaxValue, 
-               NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore 
-            };
+         // Override Newtonsoft.Json MaxDepth de/serialization because
+         // as of version 13.0.1 the default MaxDepth is 64
+         // this keeps pre 13.0.1 behaviour
+         Func<Newtonsoft.Json.JsonSerializerSettings> defaultSettingsFunc =
+            Newtonsoft.Json.JsonConvert.DefaultSettings;
+         if (null == Newtonsoft.Json.JsonConvert.DefaultSettings) {
+            defaultSettingsFunc =
+               () => new Newtonsoft.Json.JsonSerializerSettings() {
+                  MaxDepth = int.MaxValue,
+                  NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+               };
+         } else {
+            defaultSettingsFunc =
+               () => {
+                  var settings = defaultSettingsFunc();
+                  settings.MaxDepth = int.MaxValue;
+
+                  return settings;
+               };
+         }
+
+         Newtonsoft.Json.JsonConvert.DefaultSettings = defaultSettingsFunc;
 
          // Get from app settings
          RunspaceProviderSingleton.Instance.CreateRunspaceProvider(
