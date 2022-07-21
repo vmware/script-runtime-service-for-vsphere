@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -46,6 +46,7 @@ namespace VMware.ScriptRuntimeService.APIGateway
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
             .AddNewtonsoftJson(options => {
                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+               options.SerializerSettings.MaxDepth = int.MaxValue;
             });
 
 
@@ -100,6 +101,12 @@ namespace VMware.ScriptRuntimeService.APIGateway
       public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory) {
          // Get logger for Startup class
          _logger = loggerFactory.CreateLogger(typeof(Startup));
+
+         Newtonsoft.Json.JsonConvert.DefaultSettings = 
+            () => new Newtonsoft.Json.JsonSerializerSettings() { 
+               MaxDepth = int.MaxValue, 
+               NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore 
+            };
 
          // Get from app settings
          RunspaceProviderSingleton.Instance.CreateRunspaceProvider(
