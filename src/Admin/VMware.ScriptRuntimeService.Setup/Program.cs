@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -18,6 +18,14 @@ namespace VMware.ScriptRuntimeService.Setup {
                    .AddConsole();})) {
 
             var logger = loggerFactory.CreateLogger(typeof(Program));
+
+            // Override Newtonsoft.Json MaxDepth de/serialization because
+            // as of version 13.0.1 the default MaxDepth is 64
+            Newtonsoft.Json.JsonConvert.DefaultSettings =
+               () => new Newtonsoft.Json.JsonSerializerSettings() {
+                  MaxDepth = int.MaxValue,
+                  NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+               };
 
             try {
                var userInput = new ArgsParser().Parse(args);
