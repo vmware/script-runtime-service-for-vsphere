@@ -1,44 +1,61 @@
 $currentPath = $PSScriptRoot
 
+$product = 'IO.Swagger'
+$outputDirectory = (Join-Path $currentPath "build")
 $osType = Get-ComputerInfo | Select-Object -ExpandProperty OsType
 $dotnetInstallScript = 'dotnet-install.ps1'
 $dotnetInstallScriptRemoteLocation = 'https://dot.net/v1/dotnet-install.ps1'
-$sln = (Join-Path $currentPath "IO.Swagger.sln")
+$sln = (Join-Path $currentPath "$product.sln")
 
-Write-Host ''
 Write-Host "******************************************************" -ForegroundColor Green
-Write-Host "[INFO] Install dotnet CLI" -ForegroundColor Green
+Write-Host "[INFO] Building $product" -ForegroundColor Green
 Write-Host "******************************************************" -ForegroundColor Green
 Write-Host ''
 
-if ($osType -ne 'WINNT') {
-   $dotnetInstallScript = 'dotnet-install.sh'
-   $dotnetInstallScriptRemoteLocation = 'https://dot.net/v1/dotnet-install.sh'
-}
-$dotnetInstallScriptLocalLocation = (Join-Path $currentPath "bin\$dotnetInstallScript")
+$dotnetCmd = Get-Command 'dotnet' -ErrorAction SilentlyContinue
+$continueBuilding = $false
 
-if (!(Test-Path $dotnetInstallScriptLocalLocation)) {
-   Invoke-WebRequest $dotnetInstallScriptRemoteLocation -outfile $dotnetInstallScriptLocalLocation
-}
+if (!$dotnetCmd) {
+   Write-Host "[WARN] dotnet CLI is missing." -ForegroundColor Yellow
+   $response = Read-Host -Prompt "[CONF] Do you want to install dotnet CLI (Yes/Y/No/N): "
+   if ($response.ToLower() -eq 'n') {
+      Write-Host "[ERRO] dotnet CLI is missing and installation is denied. Unable to proceed." -ForegroundColor Red
+   } else {
+      Write-Host "[INFO]    Installing dotnet CLI" -ForegroundColor Green
+      if ($osType -ne 'WINNT') {
+         $dotnetInstallScript = 'dotnet-install.sh'
+         $dotnetInstallScriptRemoteLocation = 'https://dot.net/v1/dotnet-install.sh'
+      }
+      $dotnetInstallScriptLocalLocation = (Join-Path $outputDirectory $dotnetInstallScript)
 
-if ($osType -ne 'WINNT') {
-   . $dotnetInstallScriptLocalLocation --channel LTS --quality GA --runtime dotnet
+      Write-Host "[INFO]    Downloading dotnet CLI install script from '$dotnetInstallScriptRemoteLocation' to '$dotnetInstallScriptLocalLocation'" -ForegroundColor Green
+      if (!(Test-Path $dotnetInstallScriptLocalLocation)) {
+         Invoke-WebRequest $dotnetInstallScriptRemoteLocation -OutFile $dotnetInstallScriptLocalLocation
+      }
+
+      Write-Host "[INFO]    Running dotnet CLI install script" -ForegroundColor Green
+      if ($osType -ne 'WINNT') {
+         . $dotnetInstallScriptLocalLocation --channel LTS --quality GA --runtime dotnet
+      } else {
+         . $dotnetInstallScriptLocalLocation -Channel LTS -Quality GA -Runtime dotnet
+      }
+
+      $continueBuilding = $true
+   }
 } else {
-   . $dotnetInstallScriptLocalLocation -Channel LTS -Quality GA -Runtime dotnet
+   $continueBuilding = $true
 }
 
-Write-Host ''
-Write-Host "******************************************************" -ForegroundColor Green
-Write-Host "[INFO] Running tests" -ForegroundColor Green
-Write-Host "******************************************************" -ForegroundColor Green
-Write-Host ''
+if ($continueBuilding) {
+   Write-Host "[INFO] Running $product tests" -ForegroundColor Green
 
-dotnet test $sln
+   & dotnet test $sln
 
-Write-Host ''
-Write-Host "******************************************************" -ForegroundColor Green
-Write-Host "[INFO] Packaging client SDK" -ForegroundColor Green
-Write-Host "******************************************************" -ForegroundColor Green
-Write-Host ''
+   Write-Host "[INFO] Building $product SDK" -ForegroundColor Green
 
-dotnet pack -c Release $sln
+   & dotnet build -c Release $sln -o (Join-Path $outputDirectory 'bin')
+
+   Write-Host "[INFO] Packaging $product SDK" -ForegroundColor Green
+
+   & dotnet pack -c Release $sln -o (Join-Path $outputDirectory 'packages')
+}
