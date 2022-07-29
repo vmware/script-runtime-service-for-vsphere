@@ -1,0 +1,12 @@
+{
+  "builder_vcenter": "",
+  "builder_vcenter_username": "",
+  "builder_vcenter_password": "",
+  "builder_vcenter_datacenter": "",
+  "builder_vcenter_folder": "",
+  "builder_vcenter_host": "",
+  "builder_vcenter_cluster": "",
+  "builder_vcenter_resource_pool": "",
+  "builder_vcenter_datastore": ""
+}
+

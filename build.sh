@@ -7,6 +7,8 @@
 
 PCLI_SOURCE_DIR=$1
 
+PACKER_BUILDER_TYPE="$2" | tr '[:upper:]' '[:lower:]' # second argument to lower case
+
 if [ -z "$PCLI_SOURCE_DIR" ];then
 	echo -e "\e[31mERROR: Specify source PowerCLI Modules directory as first argument of this script.\e[0m"
 	echo "Usage: build.sh ~/PowerCLIMoudles"
@@ -24,4 +26,9 @@ echo "[Step 1] Build SRS containers"
 $BUILD_CONTAINERS_SCRIPT $PCLI_SOURCE_DIR $CONTAINERS_OUTPUT_DIR
 
 echo "[Step 2] Build SRS appliance"
-$BUILD_APPLIANCE_SCRIPT
+if [ "$PACKER_BUILDER_TYPE" = "vshere" ];then
+	$BUILD_APPLIANCE_SCRIPT "vsphere"
+else
+	$BUILD_APPLIANCE_SCRIPT
+fi
+

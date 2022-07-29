@@ -1,0 +1,120 @@
+{
+  "variables": {
+    "photon_ovf_template": "photon.xml.template",
+    "ovftool_deploy_vcenter": "",
+    "ovftool_deploy_vcenter_username": "",
+    "ovftool_deploy_vcenter_password": ""
+  },
+  "builders": [
+    {
+
+      "type": "vsphere-iso",
+      "guest_os_type": "vmwarePhoton64Guest",
+      "boot_command": [
+        "<esc><wait>",
+        "vmlinuz initrd=initrd.img root=/dev/ram0 loglevel=3 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/photon-kickstart.json photon.media=cdrom",
+        "<enter>"
+      ],
+      "boot_wait": "10s",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
+      "http_directory": "http",
+      "ssh_username": "{{ user `guest_username` }}",
+      "ssh_password": "{{ user `guest_password` }}",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "60m",
+      "shutdown_command": "/sbin/shutdown -h now",
+      "shutdown_timeout": "1000s",
+      "CPUs": "{{ user `numvcpus` }}",
+      "RAM": "{{ user `ramsize`  }}",
+      "network_adapters": [
+         {
+            "network": "{{ user `guest_network` }}",
+            "network_card": "vmxnet3"
+         }
+      ],
+      "storage": [
+         {
+           "disk_size": 20480
+         }
+      ],
+      "vcenter_server": "{{ user `builder_vcenter` }}",
+      "username": "{{ user `builder_vcenter_username` }}",
+      "password": "{{ user `builder_vcenter_password` }}",
+      "insecure_connection": true,
+      "datacenter": "{{ user `builder_vcenter_datacenter` }}",
+      "vm_name": "{{ user `vm_name` }}",
+      "folder": "{{ user `builder_vcenter_folder` }}",
+      "host": "{{ user `builder_vcenter_host` }}",
+      "cluster": "{{ user `builder_vcenter_cluster` }}",
+      "resource_pool": "{{ user `builder_vcenter_resource_pool` }}",
+      "datastore": "{{ user `builder_vcenter_datastore` }}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "files/rc.local",
+      "destination": "/etc/rc.d/rc.local"
+    },
+    {
+      "type": "file",
+      "source": "files/ingress-controller.yaml",
+      "destination": "/root/ingress-controller.yaml"
+    },
+    {
+      "type": "file",
+      "source": "files/srs-base-docker-image.tar",
+      "destination": "/root/srs-base-docker-image.tar"
+    },
+    {
+      "type": "file",
+      "source": "files/srs-setup-docker-image.tar",
+      "destination": "/root/srs-setup-docker-image.tar"
+    },
+    {
+      "type": "file",
+      "source": "files/srs-apigateway-docker-image.tar",
+      "destination": "/root/srs-apigateway-docker-image.tar"
+    },
+    {
+      "type": "file",
+      "source": "files/pclirunspace-docker-image.tar",
+      "destination": "/root/pclirunspace-docker-image.tar"
+    },
+    {
+      "type": "file",
+      "source": "files/srs-app-template.yaml",
+      "destination": "/root/srs-app-template.yaml"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/photon-settings.sh",
+        "scripts/install-kind.sh",
+        "scripts/photon-cleanup.sh"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/setup.sh",
+      "destination": "/root/setup.sh"
+    },
+    {
+      "type": "file",
+      "source": "files/update-pclirunspace-image.sh",
+      "destination": "/root/update-pclirunspace-image.sh"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "shell-local",
+      "environment_vars": ["PHOTON_VERSION={{ user `version` }}", "PHOTON_APPLIANCE_NAME={{ user `vm_name` }}", "FINAL_PHOTON_APPLIANCE_NAME={{ user `vm_name` }}_{{user `version`}}", "PHOTON_OVF_TEMPLATE={{ user `photon_ovf_template` }}"],
+      "inline": [
+        "cd manual",
+        "./add_ovf_properties.sh"
+      ]
+    }
+  ]
+}
+

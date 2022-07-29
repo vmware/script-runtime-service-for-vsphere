@@ -9,5 +9,6 @@
   "numvcpus": "2",
   "ramsize": "8192",
   "guest_username": "root",
-  "guest_password": "Srsa!23"
+  "guest_password": "Srsa!23",
+  "guest_network": "VMNetwork"
 }
