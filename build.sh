@@ -7,7 +7,7 @@
 
 PCLI_SOURCE_DIR=$1
 
-PACKER_BUILDER_TYPE="$2" | tr '[:upper:]' '[:lower:]' # second argument to lower case
+PACKER_BUILDER_TYPE="${2,,}"
 
 if [ -z "$PCLI_SOURCE_DIR" ];then
 	echo -e "\e[31mERROR: Specify source PowerCLI Modules directory as first argument of this script.\e[0m"
