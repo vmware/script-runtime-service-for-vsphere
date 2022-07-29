@@ -26,7 +26,7 @@ echo "[Step 1] Build SRS containers"
 $BUILD_CONTAINERS_SCRIPT $PCLI_SOURCE_DIR $CONTAINERS_OUTPUT_DIR
 
 echo "[Step 2] Build SRS appliance"
-if [ "$PACKER_BUILDER_TYPE" = "vshere" ];then
+if [ "$PACKER_BUILDER_TYPE" = "vsphere" ];then
 	$BUILD_APPLIANCE_SCRIPT "vsphere"
 else
 	$BUILD_APPLIANCE_SCRIPT
