@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OUTPUT_PATH="../output-vmware-iso"
+OUTPUT_PATH="../${OUTPUT_DIRECTORY}"
 
 rm -f ${OUTPUT_PATH}/${PHOTON_APPLIANCE_NAME}.mf
 

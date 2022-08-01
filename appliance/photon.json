@@ -47,6 +47,9 @@
         "ethernet0.addressType": "generated",
         "ethernet0.wakeOnPcktRcv": "FALSE",
         "annotation": "Version: {{ user `version` }}"
+      },
+      "export": {
+         "output_directory": "{{ user `output_directory` }}"
       }
     }
   ],

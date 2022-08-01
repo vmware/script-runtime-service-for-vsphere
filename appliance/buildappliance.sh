@@ -11,7 +11,7 @@ PACKER_BUILDER_TYPE="${1,,}"
 pushd $SCRIPT_DIR
 
 echo "Building Script Runtime Service OVA Appliance ..."
-rm -rf ./output-vmware-iso
+rm -rf ./output-iso
 
 
 if [ "$PACKER_BUILDER_TYPE" = "vsphere" ];then
