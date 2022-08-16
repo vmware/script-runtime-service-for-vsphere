@@ -28,15 +28,13 @@ namespace VMware.ScriptRuntimeService.RunspaceClient {
          if (null == Newtonsoft.Json.JsonConvert.DefaultSettings) {
             defaultSettingsFunc =
                () => new Newtonsoft.Json.JsonSerializerSettings() {
-                  MaxDepth = int.MaxValue,
-                  NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+                  MaxDepth = int.MaxValue
                };
          } else {
+            var settings = defaultSettingsFunc();
             defaultSettingsFunc =
                () => {
-                  var settings = defaultSettingsFunc();
                   settings.MaxDepth = int.MaxValue;
-
                   return settings;
                };
          }

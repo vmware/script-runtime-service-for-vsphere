@@ -72,7 +72,7 @@ namespace VMware.ScriptRuntimeService.APIGateway
                      Title = APIGatewayResources.ProductName,
                      Version = APIGatewayResources.ProductVersion,
                      Contact = new OpenApiContact() {
-                        Name = "Script Runtime Service for vSphere",                        
+                        Name = "Script Runtime Service for vSphere",
                         Url = new Uri(@"https://github.com/vmware/script-runtime-service-for-vsphere"),
                      },
                      Extensions = {
@@ -110,15 +110,13 @@ namespace VMware.ScriptRuntimeService.APIGateway
          if (null == Newtonsoft.Json.JsonConvert.DefaultSettings) {
             defaultSettingsFunc =
                () => new Newtonsoft.Json.JsonSerializerSettings() {
-                  MaxDepth = int.MaxValue,
-                  NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+                  MaxDepth = int.MaxValue
                };
          } else {
+            var settings = defaultSettingsFunc();
             defaultSettingsFunc =
                () => {
-                  var settings = defaultSettingsFunc();
                   settings.MaxDepth = int.MaxValue;
-
                   return settings;
                };
          }

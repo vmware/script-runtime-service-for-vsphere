@@ -27,15 +27,14 @@ namespace VMware.ScriptRuntimeService.Setup {
             if (null == Newtonsoft.Json.JsonConvert.DefaultSettings) {
                defaultSettingsFunc =
                   () => new Newtonsoft.Json.JsonSerializerSettings() {
-                     MaxDepth = int.MaxValue,
-                     NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+                     MaxDepth = int.MaxValue
                   };
             } else {
+
+               var settings = defaultSettingsFunc();
                defaultSettingsFunc =
                   () => {
-                     var settings = defaultSettingsFunc();
                      settings.MaxDepth = int.MaxValue;
-
                      return settings;
                   };
             }
@@ -49,8 +48,8 @@ namespace VMware.ScriptRuntimeService.Setup {
             } catch (Exception exc) {
                logger.LogError(exc, "No valid input is extracted from environment variables and commandline arguments");
                return 1;
-            }  
+            }
          }
-      }      
+      }
    }
 }
