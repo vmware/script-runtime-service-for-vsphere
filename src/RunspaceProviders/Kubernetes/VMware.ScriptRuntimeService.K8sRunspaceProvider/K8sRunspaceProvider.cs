@@ -24,7 +24,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       private ILogger _logger;
       private string _namespace;
       private string _imageName;
-      private string _imagePullSecret;      
+      private string _imagePullSecret;
       private bool _verifyRunspaceApiIsAccessibleOnCreate;
       private string _runspaceTrustedCertsConfigMapName;
       private string[] _trustedCertsFileNames;
@@ -36,17 +36,17 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       private const string WEB_CONSOLE_LABEL_VALUE = "webconsole";
       public K8sRunspaceProvider(
          ILoggerFactory loggerFactory,
-         string k8sClusterEndpoint, 
-         string accessToken, 
-         string @namespace, 
-         string imageName, 
-         int runspaceApiPort, 
+         string k8sClusterEndpoint,
+         string accessToken,
+         string @namespace,
+         string imageName,
+         int runspaceApiPort,
          string imagePullSecret,
          bool verifyRunspaceApiIsAccessibleOnCreate,
          string runspaceTrustedCertsConfigMapName) {
 
          _logger = loggerFactory.CreateLogger(typeof(K8sRunspaceProvider).ToString());
-         
+
          var config = new KubernetesClientConfiguration() {
             Host = k8sClusterEndpoint ?? @"https://kubernetes.default.svc",
             AccessToken = accessToken ?? File.ReadAllText("/run/secrets/kubernetes.io/serviceaccount/token"),
@@ -82,7 +82,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          ReadTrustedCertsKeys();
       }
 
-      internal K8sRunspaceProvider() {         
+      internal K8sRunspaceProvider() {
       }
 
       #region Private helpers
@@ -135,7 +135,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   "trusted-certs",
                   readOnlyProperty: true,
                   subPath: certFileName));
-            }            
+            }
          }
          return result;
       }
@@ -175,22 +175,22 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                         command: new [] { "/app/service/VMware.ScriptRuntimeService.RunspaceEndpoint" },
                         volumeMounts: CreateRunspacePodVolumeMounts())
                   }
-               },               
-               volumes: CreateRunspacePodVolumes(),         
+               },
+               volumes: CreateRunspacePodVolumes(),
                restartPolicy: "Never"));
 
-         if (!string.IsNullOrEmpty(_imagePullSecret)) {            
-            body.Spec.ImagePullSecrets = new List<V1LocalObjectReference> (new[] { 
+         if (!string.IsNullOrEmpty(_imagePullSecret)) {
+            body.Spec.ImagePullSecrets = new List<V1LocalObjectReference> (new[] {
                new V1LocalObjectReference(_imagePullSecret)
             });
          }
 
          _logger.LogDebug($"K8s API Call CreateNamespacedPod: {body}");
          var createdPod = _client.CreateNamespacedPod(body, _namespace);
-         
+
          return createdPod;
       }
-      
+
       private V1Deployment CreateK8sApp(string appName, string vc, string token, bool allLinked) {
          _logger.LogDebug($"CreateK8sApp: {appName}");
 
@@ -215,13 +215,13 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                            new V1Container(
                               appName,
                               image: _imageName,
-                              env: new []{ 
+                              env: new []{
                                  new V1EnvVar("vc", vc),
                                  new V1EnvVar("token", token),
                                  new V1EnvVar("allLinked", allLinked.ToString()),
                               },
                               command: new [] { "ttyd" },
-                              args: new [] {"-p", "8086", "-b", $"/{appName}", "-T", "linux", "-P", "30", "-m", "1", "pwsh", "-NoExit", "/app/scripts/connect.ps1" },                              
+                              args: new [] {"-p", "8086", "-b", $"/{appName}", "-T", "linux", "-P", "30", "-m", "1", "pwsh", "-NoExit", "/app/scripts/connect.ps1" },
                               imagePullPolicy:"IfNotPresent",
                               volumeMounts: CreateRunspacePodVolumeMounts())
                         }
@@ -240,9 +240,9 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                name: appName),
             spec: new V1ServiceSpec(
                type:"ClusterIP",
-               sessionAffinity: "None",                     
+               sessionAffinity: "None",
                selector: new Dictionary<string, string> { { "app", appName } },
-               ports: new List<V1ServicePort> { 
+               ports: new List<V1ServicePort> {
                   new V1ServicePort(
                      port: 8086,
                      protocol: "TCP",
@@ -263,7 +263,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       public void AddSrsIngressWebConsolePath(string id) {
          var ingress = _client.ReadNamespacedIngress("srs-ingress", _namespace);
 
-         
+
          // Path to add
          dynamic pathRule = new ExpandoObject();
          pathRule.path = $"/{id}";
@@ -276,11 +276,11 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          // Patch Json Spec
          dynamic ingressSpec = new ExpandoObject();
          dynamic ingressSpecRulesHttp = new ExpandoObject();
-         dynamic ingressSpecRule = new ExpandoObject();         
+         dynamic ingressSpecRule = new ExpandoObject();
          ingressSpecRulesHttp.paths = new List<dynamic>();
 
          // Existing paths
-         foreach (var path in ingress.Spec.Rules[0].Http.Paths) {
+         foreach (var path in ingress.Spec.Rules.Where(r => r.Http != null).First().Http.Paths) {
             dynamic dPath = new ExpandoObject();
             dPath.path = path.Path;
             dPath.pathType = "ImplementationSpecific";
@@ -306,7 +306,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
       public void RemoveSrsIngressWebConsolePath(string id) {
          var ingress = _client.ReadNamespacedIngress("srs-ingress", _namespace);
-         
+
          // Patch Json Spec
          dynamic ingressSpec = new ExpandoObject();
          dynamic ingressSpecRulesHttp = new ExpandoObject();
@@ -319,14 +319,14 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             if (path.Path == $"/{id}") {
                continue;
             }
-            
+
             dynamic dPath = new ExpandoObject();
             dPath.path = path.Path;
             dPath.pathType = "ImplementationSpecific";
             dynamic dBackend = new ExpandoObject();
             dBackend.serviceName = path.Backend.ServiceName;
             dBackend.servicePort = path.Backend.ServicePort;
-            dPath.backend = dBackend;            
+            dPath.backend = dBackend;
             ingressSpecRulesHttp.paths.Add(dPath);
          }
 
@@ -364,7 +364,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             throw new RunspaceProviderException(Resources.K8sRunspaceProvider_Create_K8sServiceIsNotAccessible);
          }
       }
-      #endregion     
+      #endregion
 
       public IRunspaceInfo StartCreate() {
          _logger.LogInformation("Create Runspace");
@@ -379,10 +379,10 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                Id = runspaceId,
                CreationState = RunspaceCreationState.Creating
             };
-            _logger.LogDebug($"RunspaceInfo.Id: {result.Id}");            
+            _logger.LogDebug($"RunspaceInfo.Id: {result.Id}");
          } catch (Exception exc) {
             _logger.LogError(exc.ToString());
-            
+
             var error = new RunspaceProviderException(
                Resources.K8sRunspaceProvider_Create_K8sRunspaceCreateFail,
                exc);
@@ -391,8 +391,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                Id = result?.Id,
                CreationState = RunspaceCreationState.Error,
                CreationError = error
-            };            
-         }        
+            };
+         }
 
          return result;
       }
@@ -403,7 +403,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          try {
             _logger.LogDebug("GenerateWebconsoleId");
             var webConsoleId = GenerateWebconsoleId();
-            _logger.LogDebug($"RunspaceId: {webConsoleId}");            
+            _logger.LogDebug($"RunspaceId: {webConsoleId}");
             var runspacePod = CreateK8sApp(webConsoleId, vc, token, allLinked);
 
             result = new K8sWebConsoleInfo {
@@ -447,7 +447,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   Id = webConsoleService.Metadata.Name
                };
 
-               webConsoleInfo.CreationState = RunspaceCreationState.Ready;               
+               webConsoleInfo.CreationState = RunspaceCreationState.Ready;
                result.Add(webConsoleInfo);
             }
          } catch (Exception exc) {
@@ -507,9 +507,9 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      exc)
                };
             }
-            
+
             if (pod != null) {
-               // Set 10 minutes timeout for container creation. 
+               // Set 10 minutes timeout for container creation.
                // Worst case would be image pulling from server.
                int maxRetryCount = 6000;
                int retryIntervalMs = 100;
@@ -523,7 +523,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                // Terminating - Pod is terminating
 
                // The Pending phase could last forever when container image pull error occurred or some other error
-               // in the container initialization happens. In order to stop waiting below we first monitor for Pod status to 
+               // in the container initialization happens. In order to stop waiting below we first monitor for Pod status to
                // phase to switch from pending to running. While Pod is pending phase we monitor the container
                // creation for errors and if such occur we break the waiting with error.
                //
@@ -554,7 +554,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                }
 
                if (retryCount >= maxRetryCount) {
-                  // Timeout                  
+                  // Timeout
                   result = new K8sRunspaceInfo {
                      Id = result.Id,
                      CreationState = RunspaceCreationState.Error,
@@ -620,7 +620,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             "REGISTRYUNAVAILABLE",
             "INVALIDIMAGENAME"
          };
-         
+
          var containerStatus = status.ContainerStatuses.FirstOrDefault<V1ContainerStatus>();
 
          if (!string.IsNullOrEmpty(containerStatus?.State?.Waiting?.Reason)) {
@@ -637,7 +637,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                errorMessage = containerStatus.
                   State.
                   Waiting.
-                  Message;                   
+                  Message;
             }
          }
 
@@ -662,7 +662,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                try {
                   pod = _client.ReadNamespacedPod(id, _namespace);
                   Thread.Sleep(100);
-               } catch (Exception) { }               
+               } catch (Exception) { }
                retryCount++;
             } while (pod != null && pod.Status?.Phase == "Running" && retryCount < maxRetry);
          } catch (Exception exc) {
@@ -691,16 +691,16 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                var runspaceInfo = new K8sRunspaceInfo {
                   Id = runspacePod.Metadata.Name
                };
-               
+
                if (runspacePod?.Status?.Phase == "Pending") {
-                  runspaceInfo.CreationState = RunspaceCreationState.Creating;                  
+                  runspaceInfo.CreationState = RunspaceCreationState.Creating;
                } else {
                   runspaceInfo.Endpoint = new IPEndPoint(
                      IPAddress.Parse(runspacePod.Status.PodIP),
                      _runspaceApiPort);
                   runspaceInfo.CreationState = RunspaceCreationState.Ready;
                }
-               
+
                result.Add(runspaceInfo);
             }
          } catch (Exception exc) {
