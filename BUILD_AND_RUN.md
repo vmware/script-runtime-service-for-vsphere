@@ -21,6 +21,16 @@ If you login on the deployed result VM `kubectl` is availble to browse the kuber
 
 ### How to build and run SRS
 
+#### Build SRS
+
+The Photon OS OVF virtual machine is build using HashiCorp Packer. There are two ways of building the virtual machine. You can use `packer` with either the [`vmware-iso`](https://www.packer.io/plugins/builders/vmware/iso) builder or the [`vsphere-iso`](https://www.packer.io/plugins/builders/vsphere/vsphere-iso).
+
+[`vmware-iso`](https://www.packer.io/plugins/builders/vmware/iso) requires ESXi host with running SSH service and `GuestIPHack` enabled.
+
+[`vsphere-iso`](https://www.packer.io/plugins/builders/vsphere/vsphere-iso) requires vSphere Server.
+
+##### Packer with vmware-iso
+
 > `packer` builds the OVF on a remote ESXi host via the [`vmware-iso`](https://www.packer.io/docs/builders/vmware-iso.html) builder. This builder requires the SSH service running on the ESXi host, as well as `GuestIPHack` enabled via the command below.
 ```bash
 esxcli system settings advanced set -o /Net/GuestIPHack -i 1
@@ -40,16 +50,46 @@ esxcli system settings advanced set -o /Net/GuestIPHack -i 1
 
 **Note:** If you need to change the initial root password on the SRS appliance, take a look at `photon-version.json` and `http/photon-kickstart.json`. When the OVF is produced, there is no default password, so this does not really matter other than for debugging purposes.
 
-2. Start the build by running the [build.sh script](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/build.sh)  which builds Script Runtime Service containers and then calls `packer` and the respective build files
+2. Start the build by running the [build.sh script](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/build.sh) which builds Script Runtime Service containers and then calls `packer` and the respective build files
 
-```
+```bash
 ./build.sh <PowerCLI Modules path>
-````
+```
 
-3. Deploy SRS from OVF on vSphere with [deploy.ps1](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/appliance/deploy.ps1) PowerShell script which basically edits the OvfConfig settings by given parameters and deploys a VM from the OVA.
+##### Packer with vsphere-iso
 
-4. Test SRS API is available on `https://<SRS VM IP>/swagger`.
+1. Edit the `photon-builder-vsphere.json` file to configure the vSphere endpoint for building the SRS appliance
 
+```json
+{
+  "builder_vcenter": "192.168.30.10",
+  "builder_vcenter_username": "administrator@vsphere.local",
+  "builder_vcenter_password": "VMware1!",
+  "builder_vcenter_datacenter": "DC",
+  "builder_vcenter_folder": "",
+  "builder_vcenter_host": "192.168.30.20",
+  "builder_vcenter_cluster": "Cluster",
+  "builder_vcenter_resource_pool": "",
+  "builder_vcenter_datastore": "vsanDatastore",
+  "builder_vcenter_network": "VM Network"
+}
+```
+
+**Note:** If you need to change the initial root password on the SRS appliance, take a look at `photon-version.json` and `http/photon-kickstart.json`. When the OVF is produced, there is no default password, so this does not really matter other than for debugging purposes.
+
+2. Start the build by running the [build.sh script](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/build.sh) which builds Script Runtime Service containers and then calls `packer` and the respective build files
+
+```bash
+./build.sh <PowerCLI Modules path> vsphere
+```
+
+#### Deploy SRS
+
+Deploy SRS from OVF on vSphere with [deploy.ps1](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/appliance/deploy.ps1) PowerShell script which basically edits the OvfConfig settings by given parameters and deploys a VM from the OVA.
+
+#### Run SRS
+
+Test SRS API is available on `https://<SRS VM IP>/swagger`.
 
 ## Contributing
 
@@ -61,9 +101,10 @@ The repo is in very early stage for contributors. A lot of documentation is pend
 
 1. Join [VMware Code](https://code.vmware.com/web/code/join)
 2. Join the following channel:
-    ```
-    script-runtime-service-assist
-    ```
+
+```
+script-runtime-service-assist
+```
 
 ## License
 Script Runtime Service for vSphere is distributed under the [Apache 2.0](https://github.com/vmware/script-runtime-service-for-vsphere/blob/master/LICENSE.txt).
