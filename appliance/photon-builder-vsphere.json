@@ -7,6 +7,7 @@
   "builder_vcenter_host": "",
   "builder_vcenter_cluster": "",
   "builder_vcenter_resource_pool": "",
-  "builder_vcenter_datastore": ""
+  "builder_vcenter_datastore": "",
+  "builder_vcenter_network": ""
 }
 

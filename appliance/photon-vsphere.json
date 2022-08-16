@@ -29,7 +29,7 @@
       "RAM": "{{ user `ramsize`  }}",
       "network_adapters": [
          {
-            "network": "{{ user `guest_network` }}",
+            "network": "{{ user `builder_vcenter_network` }}",
             "network_card": "vmxnet3"
          }
       ],

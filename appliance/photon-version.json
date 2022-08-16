@@ -10,6 +10,5 @@
   "ramsize": "8192",
   "guest_username": "root",
   "guest_password": "Srsa!23",
-  "guest_network": "VMNetwork",
   "output_directory": "./output-iso"
 }
