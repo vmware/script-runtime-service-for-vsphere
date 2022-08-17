@@ -27,7 +27,7 @@ The Photon OS OVF virtual machine is build using HashiCorp Packer. There are two
 
 [`vmware-iso`](https://www.packer.io/plugins/builders/vmware/iso) requires ESXi host with running SSH service and `GuestIPHack` enabled.
 
-[`vsphere-iso`](https://www.packer.io/plugins/builders/vsphere/vsphere-iso) requires vSphere Server.
+[`vsphere-iso`](https://www.packer.io/plugins/builders/vsphere/vsphere-iso) requires vCenter Server.
 
 ##### Packer with vmware-iso
 
