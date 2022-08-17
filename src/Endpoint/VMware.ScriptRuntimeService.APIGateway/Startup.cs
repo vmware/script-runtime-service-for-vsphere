@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -46,6 +46,7 @@ namespace VMware.ScriptRuntimeService.APIGateway
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
             .AddNewtonsoftJson(options => {
                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+               options.SerializerSettings.MaxDepth = int.MaxValue;
             });
 
 
@@ -71,7 +72,7 @@ namespace VMware.ScriptRuntimeService.APIGateway
                      Title = APIGatewayResources.ProductName,
                      Version = APIGatewayResources.ProductVersion,
                      Contact = new OpenApiContact() {
-                        Name = "Script Runtime Service for vSphere",                        
+                        Name = "Script Runtime Service for vSphere",
                         Url = new Uri(@"https://github.com/vmware/script-runtime-service-for-vsphere"),
                      },
                      Extensions = {
@@ -100,6 +101,27 @@ namespace VMware.ScriptRuntimeService.APIGateway
       public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory) {
          // Get logger for Startup class
          _logger = loggerFactory.CreateLogger(typeof(Startup));
+
+         // Override Newtonsoft.Json MaxDepth de/serialization because
+         // as of version 13.0.1 the default MaxDepth is 64
+         // this keeps pre 13.0.1 behaviour
+         Func<Newtonsoft.Json.JsonSerializerSettings> defaultSettingsFunc =
+            Newtonsoft.Json.JsonConvert.DefaultSettings;
+         if (null == Newtonsoft.Json.JsonConvert.DefaultSettings) {
+            defaultSettingsFunc =
+               () => new Newtonsoft.Json.JsonSerializerSettings() {
+                  MaxDepth = int.MaxValue
+               };
+         } else {
+            var settings = defaultSettingsFunc();
+            defaultSettingsFunc =
+               () => {
+                  settings.MaxDepth = int.MaxValue;
+                  return settings;
+               };
+         }
+
+         Newtonsoft.Json.JsonConvert.DefaultSettings = defaultSettingsFunc;
 
          // Get from app settings
          RunspaceProviderSingleton.Instance.CreateRunspaceProvider(

@@ -5,6 +5,6 @@ using System.Threading.Tasks;
 
 namespace VMware.ScriptRuntimeService.APIGateway.Authentication {
    public static class SrsAuthenticationScheme {
-      public const string SessionAuthenticationScheme = "srs-session-atuhentication";
+      public const string SessionAuthenticationScheme = "srs-session-authentication";
    }
 }

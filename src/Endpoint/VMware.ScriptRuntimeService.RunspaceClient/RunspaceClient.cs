@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -17,7 +17,30 @@ namespace VMware.ScriptRuntimeService.RunspaceClient {
    /// Runspace Endpoint API Client
    /// </summary>
    public class RunspaceClient : IRunspace {
-      private ScriptApi _scriptsApiClient;
+      private readonly ScriptApi _scriptsApiClient;
+
+      static RunspaceClient() {
+         // Override Newtonsoft.Json MaxDepth de/serialization because
+         // as of version 13.0.1 the default MaxDepth is 64
+         // this keeps pre 13.0.1 behaviour
+         Func<Newtonsoft.Json.JsonSerializerSettings> defaultSettingsFunc =
+            Newtonsoft.Json.JsonConvert.DefaultSettings;
+         if (null == Newtonsoft.Json.JsonConvert.DefaultSettings) {
+            defaultSettingsFunc =
+               () => new Newtonsoft.Json.JsonSerializerSettings() {
+                  MaxDepth = int.MaxValue
+               };
+         } else {
+            var settings = defaultSettingsFunc();
+            defaultSettingsFunc =
+               () => {
+                  settings.MaxDepth = int.MaxValue;
+                  return settings;
+               };
+         }
+
+         Newtonsoft.Json.JsonConvert.DefaultSettings = defaultSettingsFunc;
+      }
 
       public RunspaceClient(IPEndPoint endpoint) {
          var runspaceEndpoint = string.Format($"http://{endpoint.Address}:{endpoint.Port}");

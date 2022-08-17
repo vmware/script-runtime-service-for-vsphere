@@ -10,7 +10,7 @@ src/vSphereIntegrationLibraries/VMware.Http.Sso.Authentication/bin/
 /test/integration/openapi-clients/java/srsclient/client/target
 /test/integration/openapi-clients/java/srsclient/clientsdk/gradle/wrapper
 /srs-appliance/packer_cache
-srs-appliance/output-vmware-iso
+srs-appliance/output-iso
 srs-appliance/files/pclirunspace-docker-image.tar
 srs-appliance/files/srs-apigateway-docker-image.tar
 srs-appliance/files/srs-base-docker-image.tar
@@ -74,7 +74,7 @@ srs-appliance/files/srs-setup-docker-image.tar
 /test/integration/openapi-clients/dotnet/SrsClient/SrsClient/bin
 /test/integration/openapi-clients/dotnet/SrsClient/SrsClient/obj
 /appliance/files/*.tar
-/appliance/output-vmware-iso
+/appliance/output-iso
 /appliance/packer_cache
 /src/Endpoint/VMware.ScriptRuntimeService.RunspaceClient/bin
 /src/Endpoint/VMware.ScriptRuntimeService.RunspaceClient/obj

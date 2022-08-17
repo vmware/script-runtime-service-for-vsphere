@@ -1,8 +1,8 @@
-FROM ubuntu:18.04
-RUN apt-get update && apt-get install -y autoconf automake curl cmake git libtool make \
+FROM ubuntu:18.04 AS ttydBuilder
+RUN apt-get update && apt-get install -y autoconf automake curl cmake git libtool make python3 \
     && git clone https://github.com/tsl0922/ttyd.git /ttyd \
     && cd /ttyd \
-    && git reset --hard 3b174dac3b81072e7ac5259c844f300d5af2e955 \
+    && git reset --hard e11e7849692f9741dea550adf2924460b3f4d96c \
     && env BUILD_TARGET=x86_64 WITH_SSL=true ./scripts/cross-build.sh
 
 # Base layer image$
@@ -25,7 +25,7 @@ ENV PSModulePath="${PSModulePath}:/app/PowerCLIModules"
 ENV ASPNETCORE_URLS http://+:5550
 EXPOSE 5550
 
-COPY --from=0 /ttyd/build/ttyd /usr/bin/ttyd
+COPY --from=ttydBuilder /ttyd/build/ttyd /usr/bin/ttyd
 
 
 ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini /sbin/tini

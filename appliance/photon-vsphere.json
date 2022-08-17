@@ -7,47 +7,48 @@
   },
   "builders": [
     {
-      "type": "vmware-iso",
-      "vm_name": "{{ user `vm_name` }}",
-      "vnc_over_websocket": true,
-      "insecure_connection": true,
-      "guest_os_type": "Other",
-      "version": "13",
-      "disk_size": "20480",
+
+      "type": "vsphere-iso",
+      "guest_os_type": "vmwarePhoton64Guest",
       "boot_command": [
         "<esc><wait>",
-        "vmlinuz initrd=initrd.img root=/dev/ram0 loglevel=3 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/photon-kickstart.json photon.media=cdrom",
+        "vmlinuz initrd=initrd.img root=/dev/ram0 loglevel=3 insecure_installation=1 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/photon-kickstart.json photon.media=cdrom",
         "<enter>"
       ],
       "boot_wait": "10s",
-      "headless": false,
-      "vnc_disable_password": true,
       "iso_url": "{{ user `iso_url` }}",
       "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
       "http_directory": "http",
-      "remote_type": "esx5",
-      "remote_host": "{{ user `builder_host` }}",
-      "remote_datastore": "{{ user `builder_host_datastore` }}",
-      "remote_username": "{{ user `builder_host_username` }}",
-      "remote_password": "{{ user `builder_host_password` }}",
       "ssh_username": "{{ user `guest_username` }}",
       "ssh_password": "{{ user `guest_password` }}",
       "ssh_port": 22,
       "ssh_wait_timeout": "60m",
-      "format": "ovf",
       "shutdown_command": "/sbin/shutdown -h now",
       "shutdown_timeout": "1000s",
-      "vmx_data": {
-        "numvcpus": "{{ user `numvcpus` }}",
-        "memsize": "{{ user `ramsize` }}",
-        "ethernet0.networkName": "{{ user `builder_host_portgroup` }}",
-        "ethernet0.present": "TRUE",
-        "ethernet0.startConnected": "TRUE",
-        "ethernet0.virtualDev": "vmxnet3",
-        "ethernet0.addressType": "generated",
-        "ethernet0.wakeOnPcktRcv": "FALSE",
-        "annotation": "Version: {{ user `version` }}"
-      },
+      "CPUs": "{{ user `numvcpus` }}",
+      "RAM": "{{ user `ramsize`  }}",
+      "network_adapters": [
+         {
+            "network": "{{ user `builder_vcenter_network` }}",
+            "network_card": "vmxnet3"
+         }
+      ],
+      "storage": [
+         {
+           "disk_size": 20480
+         }
+      ],
+      "vcenter_server": "{{ user `builder_vcenter` }}",
+      "username": "{{ user `builder_vcenter_username` }}",
+      "password": "{{ user `builder_vcenter_password` }}",
+      "insecure_connection": true,
+      "datacenter": "{{ user `builder_vcenter_datacenter` }}",
+      "vm_name": "{{ user `vm_name` }}",
+      "folder": "{{ user `builder_vcenter_folder` }}",
+      "host": "{{ user `builder_vcenter_host` }}",
+      "cluster": "{{ user `builder_vcenter_cluster` }}",
+      "resource_pool": "{{ user `builder_vcenter_resource_pool` }}",
+      "datastore": "{{ user `builder_vcenter_datastore` }}",
       "export": {
          "output_directory": "{{ user `output_directory` }}"
       }
@@ -111,7 +112,7 @@
   "post-processors": [
     {
       "type": "shell-local",
-      "environment_vars": ["PHOTON_VERSION={{ user `version` }}", "PHOTON_APPLIANCE_NAME={{ user `vm_name` }}", "FINAL_PHOTON_APPLIANCE_NAME={{ user `vm_name` }}_{{user `version`}}", "PHOTON_OVF_TEMPLATE={{ user `photon_ovf_template` }}"],
+      "environment_vars": ["PHOTON_VERSION={{ user `version` }}", "PHOTON_APPLIANCE_NAME={{ user `vm_name` }}", "FINAL_PHOTON_APPLIANCE_NAME={{ user `vm_name` }}_{{user `version`}}", "PHOTON_OVF_TEMPLATE={{ user `photon_ovf_template` }}", "OUTPUT_DIRECTORY={{ user `output_directory` }}"],
       "inline": [
         "cd manual",
         "./add_ovf_properties.sh"
