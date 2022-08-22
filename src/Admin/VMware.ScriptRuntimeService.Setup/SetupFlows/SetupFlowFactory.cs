@@ -1,12 +1,9 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace VMware.ScriptRuntimeService.Setup.SetupFlows
 {
@@ -15,6 +12,9 @@ namespace VMware.ScriptRuntimeService.Setup.SetupFlows
          ISetupFlow result = null;
          switch (setupFlowType) {
             default:
+            case SetupFlowType.InitialSetup:
+               result = new InitialSetupFlow(loggerFactory);
+               break;
             case SetupFlowType.RegisterWithVC:
                result = new RegisterWithVCSetupFlow(loggerFactory);
                break;

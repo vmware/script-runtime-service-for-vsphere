@@ -69,6 +69,8 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  labels:
+    app: srs-setup
   name: srs-setup
   namespace: script-runtime-service
 spec:
@@ -134,6 +136,66 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app: srs-adminapi
+  name: srs-adminapi
+  namespace: script-runtime-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: srs-adminapi
+  template:
+    metadata:
+      labels:
+        app: srs-adminapi
+    spec:
+      serviceAccountName: srs-runspace-provider
+      containers:
+        - image: "srs-adminapi:1.0"
+          imagePullPolicy: IfNotPresent
+          name: srs-adminapi
+          volumeMounts:
+            - name: service-settings
+              mountPath: "/app/service/settings/settings.json"
+              subPath: "settings.json"
+              readOnly: true
+            - name: sts-settings
+              mountPath: "/app/service/settings/sts-settings.json"
+              subPath: "sts-settings.json"
+              readOnly: true
+            - name: trusted-ca-certs
+              mountPath: "/app/service/trusted-ca-certs"
+              readOnly: true
+            - name: sign-certificate
+              mountPath: "/app/service/settings/certs"
+              readOnly: true
+          ports:
+            - containerPort: 5555
+              protocol: TCP
+      volumes:
+        - name: sign-certificate
+          secret:
+            secretName: sign-cert
+        - name: trusted-ca-certs
+          configMap:
+            name: trusted-ca-certs
+        - name: service-settings
+          configMap:
+            name: service-settings
+            items:
+            - key: settings.json
+              path: settings.json
+        - name: sts-settings
+          configMap:
+            name: sts-settings
+            items:
+            - key: sts-settings.json
+              path: sts-settings.json
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
     app: srs-apigateway
   name: srs-apigateway
   namespace: script-runtime-service
@@ -193,6 +255,21 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: srs-adminapi
+  namespace: script-runtime-service
+spec:
+  ports:
+  - port: 5555
+    protocol: TCP
+    targetPort: 5555
+  selector:
+    app: srs-adminapi
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: srs-apigateway
   namespace: script-runtime-service
 spec:
@@ -223,3 +300,9 @@ spec:
         backend:
           serviceName: srs-apigateway
           servicePort: 5050
+  - http:
+      paths:
+      - path: /admin
+        backend:
+          serviceName: srs-adminapi
+          servicePort: 5555

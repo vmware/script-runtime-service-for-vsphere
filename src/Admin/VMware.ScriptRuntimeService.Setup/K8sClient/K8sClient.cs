@@ -1,16 +1,15 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using k8s;
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Linq;
-using Org.BouncyCastle.Asn1.Cmp;
+using k8s.Models;
 
 namespace VMware.ScriptRuntimeService.Setup.K8sClient
 {
@@ -187,8 +186,47 @@ namespace VMware.ScriptRuntimeService.Setup.K8sClient
          return status.Status;
       }
 
-      public k8s.Models.V1SecretList ListSecrets() {
+      public V1SecretList ListSecrets() {
          return _k8sClient.ListNamespacedSecret(_namespace);
+      }
+      public V1Pod GetPod(string label) {
+         var podList = _k8sClient.ListNamespacedPod(_namespace, labelSelector: label);
+
+         return podList?.Items?.FirstOrDefault<V1Pod>();
+      }
+
+      public void DeletePod(V1Pod pod) {
+         _k8sClient.DeleteNamespacedPodAsync(pod.Metadata.Name, _namespace);
+      }
+
+      public IEnumerable<string> ReadPodLog(
+         V1Pod pod,
+         int? sinceSeconds = null) {
+
+         var stream = _k8sClient.ReadNamespacedPodLog(
+            pod.Metadata.Name,
+            _namespace, 
+            follow: true, 
+            sinceSeconds: sinceSeconds);
+
+         var buffer = new byte[8192];
+
+         var count = 0;
+
+         do {
+            count = stream.Read(buffer, 0, buffer.Length);
+            if (count != 0) {
+               var tmpString = Encoding.Default.GetString(buffer, 0, count);
+
+               yield return tmpString
+                  .Replace("\u001b[40m\u001b[37mtrce\u001b[39m\u001b[22m\u001b[49m", "trce")
+                  .Replace("\u001b[40m\u001b[37mdbug\u001b[39m\u001b[22m\u001b[49m", "dbug")
+                  .Replace("\u001b[40m\u001b[32minfo\u001b[39m\u001b[22m\u001b[49m", "info")
+                  .Replace("\u001b[40m\u001b[1m\u001b[33mwarn\u001b[39m\u001b[22m\u001b[49m", "warn")
+                  .Replace("\u001b[41m\u001b[30mfail\u001b[39m\u001b[22m\u001b[49m", "fail")
+                  .Replace("\u001b[41m\u001b[1m\u001b[37mcrit\u001b[39m\u001b[22m\u001b[49m", "crit");
+            }
+         } while (count > 0);
       }
    }
 }

@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -40,6 +40,10 @@ namespace VMware.ScriptRuntimeService.Setup {
 
       public void AddStsSettings(StsSettings stsSettings) {
           _settingsJson.StsSettings = JToken.FromObject(stsSettings);
+      }
+
+      public void AddSettings(object settings) {
+         _settingsJson = JToken.FromObject(settings);
       }
 
       public StsSettings GetStsSettings() {         

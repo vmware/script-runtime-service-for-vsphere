@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -56,6 +56,11 @@ namespace VMware.ScriptRuntimeService.Setup.ConfigFileWriters
          _k8sClient.RecreateConfigMap(Constants.TrustedCACertificatesConfigMapName, data);
       }
 
+      public void DeleteTrustedCACertificates() {
+         _logger.LogInformation($"Delete k8s config map with Trusted CA certificates");
+         DeleteSettings(Constants.TrustedCACertificatesConfigMapName);
+      }
+
       public void WriteSetupSettings(SetupServiceSettings setupServiceSettings) {
          _logger.LogInformation($"Writing k8s config map with setup settings");
          _k8sClient.RecreateConfigMap("setup-settings", new Dictionary<string, string> {
@@ -74,6 +79,46 @@ namespace VMware.ScriptRuntimeService.Setup.ConfigFileWriters
          _k8sClient.RecreateConfigMap(configMapName, new Dictionary<string, string> {
             { configMapDataKey, settingsJson }
          });
+      }
+
+      public void WriteSettings(string settingsName, object settingsObject) {
+         string configMapName = settingsName;
+         string configMapDataKey = $"{settingsName}.json";
+
+         _logger.LogInformation($"Writing k8s config map with settingsName settings");
+         var settingsEditor = new SettingsEditor();
+         settingsEditor.AddSettings(settingsObject);
+         var settingsJson = settingsEditor.GetSettingsJsonContent();
+         _k8sClient.RecreateConfigMap(configMapName, new Dictionary<string, string> {
+            { configMapDataKey, settingsJson }
+         });
+      }
+
+      public T ReadSettings<T>(string settingsName) {
+         string configMapName = settingsName;
+         string configMapDataKey = $"{settingsName}.json";
+
+         try {
+            _logger.LogInformation($"Reading k8s config map with settingsName settings");
+            var rawCondifgMapData = _k8sClient.GetConfigMapData(configMapName, configMapDataKey);
+            var result = JsonConvert.DeserializeObject(rawCondifgMapData, typeof(T));
+            return (T) result;
+         } catch (Exception exc) {
+            _logger.LogError($"Reading k8s config map {settingsName} failed: {exc.ToString()}");
+         }
+
+         return default(T);
+      }
+
+      public void DeleteSettings(string settingsName) {
+         string configMapName = settingsName;
+
+         try {
+            _logger.LogInformation($"Deleting k8s config map with settingsName settings");
+            _k8sClient.DeleteConfigMap(configMapName);
+         } catch (Exception exc) {
+            _logger.LogError($"Delete k8s config map {settingsName} failed: {exc.ToString()}");
+         }
       }
    }
 }

@@ -30,7 +30,6 @@ namespace VMware.ScriptRuntimeService.Setup {
                      MaxDepth = int.MaxValue
                   };
             } else {
-
                var settings = defaultSettingsFunc();
                defaultSettingsFunc =
                   () => {
@@ -46,7 +45,7 @@ namespace VMware.ScriptRuntimeService.Setup {
                var setupFlow = SetupFlowFactory.Create(loggerFactory, userInput.Run);
                return setupFlow.Run(userInput);
             } catch (Exception exc) {
-               logger.LogError(exc, "No valid input is extracted from environment variables and commandline arguments");
+               logger.LogError(exc, "No valid input is extracted from environment variables and command line arguments");
                return 1;
             }
          }
