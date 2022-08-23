@@ -186,12 +186,14 @@ EOF
     echo -e "\e[92mLoad srs docker images in docker" > /dev/console
     docker load < /root/srs-base-docker-image.tar
     docker load < /root/srs-setup-docker-image.tar
+    docker load < /root/srs-adminapi-docker-image.tar
     docker load < /root/srs-apigateway-docker-image.tar
     docker load < /root/pclirunspace-docker-image.tar
 
     echo -e "\e[92mPre-pull srs docker images in kind k8s node" > /dev/console
     SRS_IMAGES_VERSION=1.0
     kind load docker-image srs-setup:$SRS_IMAGES_VERSION
+    kind load docker-image srs-adminapi:$SRS_IMAGES_VERSION
     kind load docker-image srs-apigateway:$SRS_IMAGES_VERSION
     kind load docker-image pclirunspace:latest
 
@@ -221,15 +223,17 @@ EOF
     kubectl apply -f /root/srs-app.yaml
 
     echo -e"\e[92mWait srs-setup status to become running" > /dev/console
-    SRS_SETUP_STATUS=$(kubectl -n script-runtime-service get pod -l app=srs-apigateway -o jsonpath={.items[0].status.phase})
+    SRS_APIGATEWAY_STATUS=$(kubectl -n script-runtime-service get pod -l app=srs-apigateway -o jsonpath={.items[0].status.phase})
+    SRS_ADMINAPI_STATUS=$(kubectl -n script-runtime-service get pod -l app=srs-adminapi -o jsonpath={.items[0].status.phase})
     RETRY_COUNT=0
 
-    while [[ $SRS_SETUP_STATUS != "Running" ]] && [[ $RETRY_COUNT -lt 10 ]]
+    while [[ $SRS_APIGATEWAY_STATUS != "Running" ]] && [[ $SRS_ADMINAPI_STATUS != "Running" ]] && [[ $RETRY_COUNT -lt 10 ]]
     do
         sleep 10
         let "RETRY_COUNT+=1"
         SRS_SETUP_STATUS=$(kubectl -n script-runtime-service get pod -l app=srs-apigateway -o jsonpath={.items[0].status.phase})
-        echo "DEBUG: Srs ApiGateway Status '${SRS_SETUP_STATUS}', Retry count '$RETRY_COUNT'" > /dev/console
+        SRS_ADMINAPI_STATUS=$(kubectl -n script-runtime-service get pod -l app=srs-adminapi -o jsonpath={.items[0].status.phase})
+        echo "DEBUG: Srs ApiGateway Status '${SRS_APIGATEWAY_STATUS}',  Srs AdminApi Status '${SRS_ADMINAPI_STATUS}', Retry count '$RETRY_COUNT'" > /dev/console
     done
 
     # Ensure we don't run customization again
