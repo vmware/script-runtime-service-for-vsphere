@@ -10,9 +10,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Security;
 using VMware.ScriptRuntimeService.AdminApi.DataTypes;
-using VMware.ScriptRuntimeService.Setup.ConfigFileWriters;
-using VMware.ScriptRuntimeService.Setup.K8sClient;
-using VMware.ScriptRuntimeService.Setup.VCRegistration;
+using VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters;
+using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
+using VMware.ScriptRuntimeService.AdminEngine.VCRegistration;
 
 namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
    [ApiController]

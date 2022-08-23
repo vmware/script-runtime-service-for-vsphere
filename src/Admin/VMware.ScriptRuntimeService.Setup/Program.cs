@@ -4,9 +4,8 @@
 // **************************************************************************
 
 using System;
-using k8s.KubeConfigModels;
 using Microsoft.Extensions.Logging;
-using VMware.ScriptRuntimeService.Setup.SetupFlows;
+using VMware.ScriptRuntimeService.AdminEngine.SetupFlows;
 
 namespace VMware.ScriptRuntimeService.Setup {
    internal class Program {

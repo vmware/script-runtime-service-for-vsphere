@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using VMware.ScriptRuntimeService.AdminApi.DataTypes;
 using VMware.ScriptRuntimeService.AdminApi.Exceptions;
-using VMware.ScriptRuntimeService.Setup.K8sClient;
+using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
 
 namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
    public class K8sController : IK8sController {

@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 using VMware.ScriptRuntimeService.AdminApi.DataTypes;
-using VMware.ScriptRuntimeService.Setup.K8sClient;
+using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
 
 namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
    public interface IK8sController {
