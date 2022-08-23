@@ -14,7 +14,7 @@ SERVICE_DESTINATION_DIR="$APP_DESTINATION_DIR/service"
 SERVICE_SRC_DIR="$SCRIPT_DIR/../"
 
 if [ -z "$IMAGE_NAME" ];then
-	IMAGE_NAME="srs-admin-api"
+	IMAGE_NAME="srs-adminapi"
 fi
 
 if [ -z "$DOTNET_COMMAND" ];then
