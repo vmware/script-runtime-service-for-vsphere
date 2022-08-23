@@ -382,7 +382,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
       }
 
       public X509Certificate2 GetOrGenerateTlsCertificate(string tlsCertificatePath, string certificatesCommonName) {
-         return GetOrGenerateCertificate<SigningCertificateGenerator>(
+         return GetOrGenerateCertificate<TlsCertificateGenerator>(
             tlsCertificatePath,
             certificatesCommonName,
             Constants.TlsCertificateSecretName);
