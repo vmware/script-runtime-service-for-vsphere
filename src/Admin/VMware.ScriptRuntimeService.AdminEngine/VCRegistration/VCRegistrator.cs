@@ -337,7 +337,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             signingCertificatePath,
             hostname);
 
-         X509Certificate2 tlsCertificate = GetOrGenerateSigningCertificate(
+         X509Certificate2 tlsCertificate = GetOrGenerateTlsCertificate(
             tlsCertificatePath,
             hostname);
 
