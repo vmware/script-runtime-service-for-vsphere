@@ -389,6 +389,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
       }
 
       private X509Certificate2 GetOrGenerateCertificate<T>(string certificatePath, string commonName, string certificateName) where T : ISelfSignedCertificateGenerator {
+         _logger.LogDebug($"GetOrGenerateCertificate<{typeof(T)}>('{certificatePath}', '{commonName}', '{certificateName}')");
          X509Certificate2 certificate = null;
          if (!string.IsNullOrEmpty(certificatePath) &&
                File.Exists(certificatePath)) {
