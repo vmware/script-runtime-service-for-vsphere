@@ -77,6 +77,11 @@
     },
     {
       "type": "file",
+      "source": "files/srs-adminapi-docker-image.tar",
+      "destination": "/root/srs-adminapi-docker-image.tar"
+    },
+    {
+      "type": "file",
       "source": "files/srs-apigateway-docker-image.tar",
       "destination": "/root/srs-apigateway-docker-image.tar"
     },
