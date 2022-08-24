@@ -355,10 +355,6 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          _configWriter.WriteSettings(Constants.StsSettingsConfigMapName, new StsSettings());
          // --- Write empty STS  Settings ---
 
-         // --- Write empty trusted CA certificates ---
-         _configWriter.WriteTrustedCACertificates(new string[] { string.Empty });
-         // ---Write empty trusted CA certificates ---
-
          _logger.LogInformation("Setting up certificates successful");
 
          return new CertificatePair(signCertificate, tlsCertificate);
