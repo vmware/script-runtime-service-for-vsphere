@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <noWarn>1591</noWarn>
   </PropertyGroup>
