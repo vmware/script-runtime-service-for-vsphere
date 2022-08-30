@@ -40,6 +40,12 @@ data:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: srs-admin
+  namespace: script-runtime-service
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   name: srs-setup
   namespace: script-runtime-service
 ---
@@ -65,6 +71,8 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: srs-setup
+- kind: ServiceAccount
+  name: srs-admin
 ---
 apiVersion: batch/v1
 kind: Job
@@ -109,7 +117,7 @@ metadata:
   namespace: script-runtime-service
 rules:
 - apiGroups: [""]
-  resources: ["pods", "pods/log", "configmaps","services"]
+  resources: ["pods", "pods/log", "configmaps", "services"]
   verbs: ["get", "list", "watch", "create", "delete"]
 - apiGroups: ["apps"]
   resources: ["deployments"]
@@ -131,6 +139,9 @@ subjects:
 - kind: ServiceAccount
   name: srs-runspace-provider
   namespace: script-runtime-service
+- kind: ServiceAccount
+  name: srs-admin
+  namespace: script-runtime-service
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -149,7 +160,7 @@ spec:
       labels:
         app: srs-adminapi
     spec:
-      serviceAccountName: srs-runspace-provider
+      serviceAccountName: srs-admin
       containers:
         - image: "srs-adminapi:1.0"
           imagePullPolicy: IfNotPresent
