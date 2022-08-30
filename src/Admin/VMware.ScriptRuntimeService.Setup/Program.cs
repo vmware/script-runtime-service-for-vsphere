@@ -11,9 +11,11 @@ namespace VMware.ScriptRuntimeService.Setup {
    internal class Program {
       private static int Main(string[] args) {
          using (var loggerFactory = LoggerFactory.Create(builder => {
-            builder.AddFilter("Microsoft", LogLevel.Warning)
-                   .AddFilter("System", LogLevel.Warning)
-                   .AddFilter("VMware.ScriptRuntimeService.Setup", LogLevel.Debug)
+            builder
+                   .AddFilter("Default", LogLevel.Trace)
+                   .AddFilter("Microsoft", LogLevel.Trace)
+                   .AddFilter("System", LogLevel.Trace)
+                   .AddFilter("VMware.ScriptRuntimeService.Setup", LogLevel.Trace)
                    .AddConsole();})) {
 
             var logger = loggerFactory.CreateLogger(typeof(Program));
