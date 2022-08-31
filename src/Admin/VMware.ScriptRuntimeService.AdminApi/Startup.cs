@@ -65,6 +65,8 @@ namespace VMware.ScriptRuntimeService.AdminApi
          // Get logger for Startup class
          _logger = loggerFactory.CreateLogger(typeof(Startup));
 
+         app.UsePathBase("/admin");
+
          // Enable middleware to serve generated Swagger as a JSON endpoint.
          app.UseSwagger();
 
