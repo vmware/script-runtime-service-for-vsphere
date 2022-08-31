@@ -299,6 +299,8 @@ spec:
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
   name: srs-ingress
   namespace: script-runtime-service
 spec:
@@ -310,14 +312,21 @@ spec:
   - host: ${SRSA_HOSTNAME}
   - http:
       paths:
-      - path: /admin/
+      - path: /admin/(.*)
         pathType: Prefix
         backend:
           serviceName: srs-adminapi
           servicePort: 5555
   - http:
       paths:
-      - path: /
+      - path: /(swagger/admin/swagger.json)
+        pathType: Prefix
+        backend:
+          serviceName: srs-adminapi
+          servicePort: 5555
+  - http:
+      paths:
+      - path: /(.*)
         pathType: Prefix
         backend:
           serviceName: srs-apigateway
