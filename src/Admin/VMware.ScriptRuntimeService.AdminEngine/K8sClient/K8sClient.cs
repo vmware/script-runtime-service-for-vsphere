@@ -13,9 +13,9 @@ using k8s.Models;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
    public class K8sClient {
-      private ILogger _logger;
-      private string _namespace;
-      private IKubernetes _k8sClient;
+      private readonly ILogger _logger;
+      private readonly string _namespace;
+      private readonly IKubernetes _k8sClient;
 
       public K8sClient(
          ILoggerFactory loggerFactory,

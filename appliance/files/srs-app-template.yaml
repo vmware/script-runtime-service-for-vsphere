@@ -319,7 +319,21 @@ spec:
           servicePort: 5555
   - http:
       paths:
-      - path: /(swagger/admin/swagger.json)
+      - path: /(VCenterRegistration.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-adminapi
+          servicePort: 5555
+  - http:
+      paths:
+      - path: /(PodLog.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-adminapi
+          servicePort: 5555
+  - http:
+      paths:
+      - path: /(swagger/admin/swagger\.json)
         pathType: Prefix
         backend:
           serviceName: srs-adminapi

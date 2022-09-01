@@ -5,8 +5,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using VMware.ScriptRuntimeService.AdminApi.DataTypes;
 using VMware.ScriptRuntimeService.AdminApi.Exceptions;
 using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
@@ -25,6 +27,15 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
          _k8sSettings = _configuration.
                GetSection("K8sSettings").
                Get<K8sSettings>();
+
+         //if (null == _k8sSettings) {
+         //   _logger.LogDebug("Trying to get k8s settings from file.");
+
+         //   if (userInput.K8sSettings != null && File.Exists(userInput.K8sSettings)) {
+         //      k8sSettings = JsonConvert.DeserializeObject<K8sSettings>(File.ReadAllText(userInput.K8sSettings));
+         //   }
+         //}
+
          _loggerFactory = loggerFactory;
          _logger = loggerFactory.CreateLogger(typeof(K8sController).FullName);
          _logger.LogDebug("K8sServiceController created");
