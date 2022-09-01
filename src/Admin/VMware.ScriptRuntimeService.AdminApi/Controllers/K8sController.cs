@@ -72,17 +72,17 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
          }
       }
 
-      private static Dictionary<PodType, string> _podTypeToLableMap = new Dictionary<PodType, string>() {
+      private static readonly Dictionary<PodType, string> _podTypeToLableMap = new Dictionary<PodType, string>() {
          { PodType.ApiGateway, "app=srs-apigateway" },
          { PodType.AdminApi, "app=srs-adminapi" },
-         { PodType.Setup, "app=srs-setup" },
+         { PodType.Setup, "job-name=srs-setup" },
       };
 
       public IDictionary<PodType, IEnumerable<string>> GetPodLog(PodType podType) {
          try {
             var result = new Dictionary<PodType, IEnumerable<string>>();
             foreach (var type in _podTypeToLableMap) {
-               if ((podType & type.Key) == type.Key) {
+               if (podType == type.Key) {
                   var srsApiGatewayPod = _k8sClient.GetPod(label: type.Value);
                   if (srsApiGatewayPod != null) {
                      result.Add(type.Key, _k8sClient.ReadPodLog(srsApiGatewayPod));
