@@ -11,7 +11,7 @@ using Newtonsoft.Json.Converters;
 
 namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
    [JsonConverter(typeof(StringEnumConverter))]
-   [DataContract(Name = "webconsole_state")]
+   [DataContract(Name = "pod_type")]
    [ReadOnly(true)]
    public enum PodType {
       [EnumMember(Value = "setup")]

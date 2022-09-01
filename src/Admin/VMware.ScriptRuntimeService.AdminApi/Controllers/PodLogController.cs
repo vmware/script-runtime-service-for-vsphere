@@ -25,15 +25,15 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
          _logger = _loggerFactory.CreateLogger(typeof(PodLogController));
       }
 
-      [HttpGet]
+      [HttpGet("{type}", Name = "get-podlog")]
       [ProducesResponseType(typeof(VCInfo), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<IDictionary<PodType, IEnumerable<string>>> Get([FromQuery] PodType podType) {
+      public ActionResult<IDictionary<PodType, IEnumerable<string>>> Get([FromQuery] PodType type) {
          ActionResult<IDictionary<PodType, IEnumerable<string>>> result;
-         _logger.LogDebug($"Getting logs for {podType}");
+         _logger.LogDebug($"Getting logs for {type}");
          try {
-            result = Ok(_k8sController.GetPodLog(podType));
+            result = Ok(_k8sController.GetPodLog(type));
          } catch (PodNotFoundException ex) {
             result = StatusCode(404, new ErrorDetails(ex));
          } catch (Exception ex) {
