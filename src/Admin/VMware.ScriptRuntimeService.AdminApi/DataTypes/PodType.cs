@@ -13,14 +13,21 @@ namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
    [JsonConverter(typeof(StringEnumConverter))]
    [DataContract(Name = "pod_type")]
    [ReadOnly(true)]
+   [Flags]
    public enum PodType {
+      [EnumMember(Value = "none")]
+      None = 0,
+      
       [EnumMember(Value = "setup")]
-      Setup = 0,
+      Setup = 1,
 
       [EnumMember(Value = "api-gateway")]
-      ApiGateway = 1,
+      ApiGateway = 2,
 
       [EnumMember(Value = "admin-api")]
-      AdminApi = 2
+      AdminApi = 4,
+
+      [EnumMember(Value = "all")]
+      All = 255
    }
 }

@@ -28,14 +28,6 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
                GetSection("K8sSettings").
                Get<K8sSettings>();
 
-         //if (null == _k8sSettings) {
-         //   _logger.LogDebug("Trying to get k8s settings from file.");
-
-         //   if (userInput.K8sSettings != null && File.Exists(userInput.K8sSettings)) {
-         //      k8sSettings = JsonConvert.DeserializeObject<K8sSettings>(File.ReadAllText(userInput.K8sSettings));
-         //   }
-         //}
-
          _loggerFactory = loggerFactory;
          _logger = loggerFactory.CreateLogger(typeof(K8sController).FullName);
          _logger.LogDebug("K8sServiceController created");
@@ -82,7 +74,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
          try {
             var result = new Dictionary<PodType, IEnumerable<string>>();
             foreach (var type in _podTypeToLableMap) {
-               if (podType == type.Key) {
+               if ((podType & type.Key) == type.Key) {
                   var srsApiGatewayPod = _k8sClient.GetPod(label: type.Value);
                   if (srsApiGatewayPod != null) {
                      result.Add(type.Key, _k8sClient.ReadPodLog(srsApiGatewayPod));
