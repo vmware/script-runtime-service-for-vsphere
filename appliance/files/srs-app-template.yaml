@@ -312,14 +312,21 @@ spec:
   - host: ${SRSA_HOSTNAME}
   - http:
       paths:
-      - path: /(admin/.*)
+      - path: /(swagger/admin.*)
         pathType: Prefix
         backend:
           serviceName: srs-adminapi
           servicePort: 5555
   - http:
       paths:
-      - path: /(swagger/admin/swagger\.json)
+      - path: /admin/(swagger.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-adminapi
+          servicePort: 5555
+  - http:
+      paths:
+      - path: /(admin/.*)
         pathType: Prefix
         backend:
           serviceName: srs-adminapi
