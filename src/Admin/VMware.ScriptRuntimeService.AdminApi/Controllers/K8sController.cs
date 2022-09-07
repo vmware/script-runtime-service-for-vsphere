@@ -48,30 +48,16 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
          }
       }
 
-      public IEnumerable<string> GetApiGatewayLog() {
-         try {
-            var srsApiGatewayPod = _k8sClient.GetPod(label: "app=srs-apigateway");
-            if (srsApiGatewayPod != null) {
-               return _k8sClient.ReadPodLog(srsApiGatewayPod);
-            } else {
-               throw new Exception("Pod with label srs-apigateway not found.");
-            }
-         } catch (Exception ex) {
-            _logger.LogError($"RestartSrsService failed: {ex}");
-            throw;
-         }
-      }
-
       private static readonly Dictionary<LogType, string> _podTypeToLableMap = new Dictionary<LogType, string>() {
          { LogType.ApiGateway, "app=srs-apigateway" },
          { LogType.AdminApi, "app=srs-adminapi" },
          { LogType.Setup, "job-name=srs-setup" },
       };
 
-      public IDictionary<LogType, IEnumerable<string>> GetPodLog(LogType logType) {
+      public IDictionary<LogType, string> GetPodLog(LogType logType) {
          _logger.LogInformation($"Getting {logType} log");
          try {
-            var result = new Dictionary<LogType, IEnumerable<string>>();
+            var result = new Dictionary<LogType, string>();
             foreach (var type in _podTypeToLableMap) {
                if ((logType & type.Key) == type.Key) {
                   var srsApiGatewayPod = _k8sClient.GetPod(label: type.Value);
