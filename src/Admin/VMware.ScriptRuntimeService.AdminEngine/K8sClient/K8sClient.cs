@@ -45,7 +45,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
       }
 
       public k8s.Models.V1ConfigMap CreateConfigMap(string name, Dictionary<string, string> data) {
-         var result = _k8sClient.CreateNamespacedConfigMap(
+         var result = _k8sClient.CoreV1.CreateNamespacedConfigMap(
             new k8s.Models.V1ConfigMap(
                   data: data,
                   metadata: new k8s.Models.V1ObjectMeta(name: name)
@@ -56,7 +56,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
       }
 
       public k8s.Models.V1ConfigMap GetConfigMap(string name) {
-         var allConfigMaps = _k8sClient.ListNamespacedConfigMap(_namespace);
+         var allConfigMaps = _k8sClient.CoreV1.ListNamespacedConfigMap(_namespace);
          return allConfigMaps?.Items?.Where<k8s.Models.V1ConfigMap>(c => c.Metadata.Name == name).FirstOrDefault();
       }
 
@@ -68,7 +68,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
       /// <returns>Value represeting the data for specified parameters. In case configmap or key doesn't exists returns null.</returns>
       public string GetConfigMapData(string name, string key) {
          string result = null;
-         var allConfigMaps = _k8sClient.ListNamespacedConfigMap(_namespace);
+         var allConfigMaps = _k8sClient.CoreV1.ListNamespacedConfigMap(_namespace);
          var cmap = allConfigMaps?.Items?.Where<k8s.Models.V1ConfigMap>(c => c.Metadata.Name == name).FirstOrDefault();
          if (cmap != null && !string.IsNullOrEmpty(key)) {
             cmap.Data.TryGetValue(key, out result);
@@ -96,7 +96,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
 
 
       public string DeleteConfigMap(string name) {
-         var status = _k8sClient.DeleteNamespacedConfigMap(
+         var status = _k8sClient.CoreV1.DeleteNamespacedConfigMap(
                name,
                _namespace
             );
@@ -104,7 +104,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
       }
 
       public k8s.Models.V1ConfigMapList ListConfigMap() {
-         return _k8sClient.ListNamespacedConfigMap(_namespace);
+         return _k8sClient.CoreV1.ListNamespacedConfigMap(_namespace);
       }
 
       public k8s.Models.V1Secret CreateTlsSecret(string name, string crtFilePath, string keyFilePath) {
@@ -148,7 +148,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
          k8s.Models.V1Secret result = null;
 
          if (secretData.Count > 0) {
-            result = _k8sClient.CreateNamespacedSecret(
+            result = _k8sClient.CoreV1.CreateNamespacedSecret(
             new k8s.Models.V1Secret(
                   stringData: secretData,
                   metadata: new k8s.Models.V1ObjectMeta(name: name),
@@ -164,7 +164,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
          k8s.Models.V1Secret result = null;
 
          if (secretData.Count > 0) {
-            result = _k8sClient.CreateNamespacedSecret(
+            result = _k8sClient.CoreV1.CreateNamespacedSecret(
             new k8s.Models.V1Secret(
                   data: secretData,
                   metadata: new k8s.Models.V1ObjectMeta(name: name),
@@ -177,7 +177,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
       }
 
       public string DeleteSecret(string name) {
-         var status = _k8sClient.DeleteNamespacedSecret(
+         var status = _k8sClient.CoreV1.DeleteNamespacedSecret(
                name,
                _namespace
             );
@@ -185,48 +185,52 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
       }
 
       public V1SecretList ListSecrets() {
-         return _k8sClient.ListNamespacedSecret(_namespace);
+         return _k8sClient.CoreV1.ListNamespacedSecret(_namespace);
       }
       public V1Pod GetPod(string label) {
-         var podList = _k8sClient.ListNamespacedPod(_namespace, labelSelector: label);
+         var podList = _k8sClient.CoreV1.ListNamespacedPod(_namespace, labelSelector: label);
 
          return podList?.Items?.FirstOrDefault<V1Pod>();
       }
 
       public void DeletePod(V1Pod pod) {
-         _k8sClient.DeleteNamespacedPodAsync(pod.Metadata.Name, _namespace);
+         _k8sClient.CoreV1.DeleteNamespacedPodAsync(pod.Metadata.Name, _namespace);
       }
 
-      public IEnumerable<string> ReadPodLog(
+      public string ReadPodLog(
          V1Pod pod,
          int? sinceSeconds = null) {
 
-         var stream = _k8sClient.ReadNamespacedPodLog(
+         using (var stream = _k8sClient.CoreV1.ReadNamespacedPodLog(
             pod.Metadata.Name,
             _namespace,
             follow: true,
-            sinceSeconds: sinceSeconds);
-
-         var buffer = new byte[8192];
-
-         int count;
-         do {
-            count = stream.Read(buffer, 0, buffer.Length);
-            _logger.LogDebug($"{count} bytes read from {pod.Metadata.Name} log.");
-
-            if (count > 0) {
-               var tmpString = Encoding.Default.GetString(buffer, 0, count);
-
-               yield return tmpString
-                  .Trim()
-                  .Replace("\u001b[40m\u001b[37mtrce\u001b[39m\u001b[22m\u001b[49m", "trce")
-                  .Replace("\u001b[40m\u001b[37mdbug\u001b[39m\u001b[22m\u001b[49m", "dbug")
-                  .Replace("\u001b[40m\u001b[32minfo\u001b[39m\u001b[22m\u001b[49m", "info")
-                  .Replace("\u001b[40m\u001b[1m\u001b[33mwarn\u001b[39m\u001b[22m\u001b[49m", "warn")
-                  .Replace("\u001b[41m\u001b[30mfail\u001b[39m\u001b[22m\u001b[49m", "fail")
-                  .Replace("\u001b[41m\u001b[1m\u001b[37mcrit\u001b[39m\u001b[22m\u001b[49m", "crit");
+            sinceSeconds: sinceSeconds)) {
+            using (var reader = new StreamReader(stream)) {
+               return reader.ReadToEnd();
             }
-         } while (count > 0);
+         }
+
+         //   var buffer = new byte[8192];
+
+         //int count;
+         //do {
+         //   count = stream.Read(buffer, 0, buffer.Length);
+         //   _logger.LogDebug($"{count} bytes read from {pod.Metadata.Name} log.");
+
+         //   if (count > 0) {
+         //      var tmpString = Encoding.Default.GetString(buffer, 0, count);
+
+         //      yield return tmpString
+         //         .Trim()
+         //         .Replace("\u001b[40m\u001b[37mtrce\u001b[39m\u001b[22m\u001b[49m", "trce")
+         //         .Replace("\u001b[40m\u001b[37mdbug\u001b[39m\u001b[22m\u001b[49m", "dbug")
+         //         .Replace("\u001b[40m\u001b[32minfo\u001b[39m\u001b[22m\u001b[49m", "info")
+         //         .Replace("\u001b[40m\u001b[1m\u001b[33mwarn\u001b[39m\u001b[22m\u001b[49m", "warn")
+         //         .Replace("\u001b[41m\u001b[30mfail\u001b[39m\u001b[22m\u001b[49m", "fail")
+         //         .Replace("\u001b[41m\u001b[1m\u001b[37mcrit\u001b[39m\u001b[22m\u001b[49m", "crit");
+         //   }
+         //} while (count > 0);
       }
    }
 }
