@@ -11,6 +11,6 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
    public interface IK8sController {
       void RestartSrsService();
       IK8sController WithUpdateK8sSettings(K8sSettings k8sSettings);
-      IDictionary<PodType, IEnumerable<string>> GetPodLog(PodType podType);
+      IDictionary<LogType, IEnumerable<string>> GetPodLog(LogType podType);
    }
 }

@@ -11,10 +11,10 @@ using Newtonsoft.Json.Converters;
 
 namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
    [JsonConverter(typeof(StringEnumConverter))]
-   [DataContract(Name = "pod_type")]
+   [DataContract(Name = "log_type")]
    [ReadOnly(true)]
    [Flags]
-   public enum PodType {
+   public enum LogType {
       [EnumMember(Value = "none")]
       None = 0,
       

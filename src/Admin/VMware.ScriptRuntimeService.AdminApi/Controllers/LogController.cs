@@ -14,23 +14,23 @@ using VMware.ScriptRuntimeService.AdminApi.Exceptions;
 namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
    [ApiController]
    [Route("[controller]")]
-   public class PodLogController : ControllerBase {
+   public class LogController : ControllerBase {
       private readonly ILoggerFactory _loggerFactory;
       private readonly IK8sController _k8sController;
       private readonly ILogger _logger;
 
-      public PodLogController(ILoggerFactory loggerFactory, IK8sController k8sController) {
+      public LogController(ILoggerFactory loggerFactory, IK8sController k8sController) {
          _loggerFactory = loggerFactory;
          _k8sController = k8sController;
-         _logger = _loggerFactory.CreateLogger(typeof(PodLogController));
+         _logger = _loggerFactory.CreateLogger(typeof(LogController));
       }
 
       [HttpGet("{type}", Name = "get-podlog")]
       [ProducesResponseType(typeof(VCInfo), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<IDictionary<PodType, IEnumerable<string>>> Get([FromQuery] PodType type) {
-         ActionResult<IDictionary<PodType, IEnumerable<string>>> result;
+      public ActionResult<IDictionary<LogType, IEnumerable<string>>> Get([FromQuery] LogType type) {
+         ActionResult<IDictionary<LogType, IEnumerable<string>>> result;
          _logger.LogDebug($"Getting logs for {type}");
          try {
             result = Ok(_k8sController.GetPodLog(type));

@@ -5,10 +5,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using VMware.ScriptRuntimeService.AdminApi.DataTypes;
 using VMware.ScriptRuntimeService.AdminApi.Exceptions;
 using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
@@ -64,19 +62,23 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
          }
       }
 
-      private static readonly Dictionary<PodType, string> _podTypeToLableMap = new Dictionary<PodType, string>() {
-         { PodType.ApiGateway, "app=srs-apigateway" },
-         { PodType.AdminApi, "app=srs-adminapi" },
-         { PodType.Setup, "job-name=srs-setup" },
+      private static readonly Dictionary<LogType, string> _podTypeToLableMap = new Dictionary<LogType, string>() {
+         { LogType.ApiGateway, "app=srs-apigateway" },
+         { LogType.AdminApi, "app=srs-adminapi" },
+         { LogType.Setup, "job-name=srs-setup" },
       };
 
-      public IDictionary<PodType, IEnumerable<string>> GetPodLog(PodType podType) {
+      public IDictionary<LogType, IEnumerable<string>> GetPodLog(LogType logType) {
+         _logger.LogInformation($"Getting {logType} log");
          try {
-            var result = new Dictionary<PodType, IEnumerable<string>>();
+            var result = new Dictionary<LogType, IEnumerable<string>>();
             foreach (var type in _podTypeToLableMap) {
-               if ((podType & type.Key) == type.Key) {
+               if ((logType & type.Key) == type.Key) {
                   var srsApiGatewayPod = _k8sClient.GetPod(label: type.Value);
+                  
                   if (srsApiGatewayPod != null) {
+                     _logger.LogDebug($"Getting {logType} log for pod {srsApiGatewayPod.Metadata.Name}");
+
                      result.Add(type.Key, _k8sClient.ReadPodLog(srsApiGatewayPod));
                   } else {
                      throw new PodNotFoundException(type.Key, type.Value);

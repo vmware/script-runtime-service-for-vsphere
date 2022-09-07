@@ -209,14 +209,16 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
 
          var buffer = new byte[8192];
 
-         var count = 0;
-
+         int count;
          do {
             count = stream.Read(buffer, 0, buffer.Length);
-            if (count != 0) {
+            _logger.LogDebug($"{count} bytes read from {pod.Metadata.Name} log.");
+
+            if (count > 0) {
                var tmpString = Encoding.Default.GetString(buffer, 0, count);
 
                yield return tmpString
+                  .Trim()
                   .Replace("\u001b[40m\u001b[37mtrce\u001b[39m\u001b[22m\u001b[49m", "trce")
                   .Replace("\u001b[40m\u001b[37mdbug\u001b[39m\u001b[22m\u001b[49m", "dbug")
                   .Replace("\u001b[40m\u001b[32minfo\u001b[39m\u001b[22m\u001b[49m", "info")

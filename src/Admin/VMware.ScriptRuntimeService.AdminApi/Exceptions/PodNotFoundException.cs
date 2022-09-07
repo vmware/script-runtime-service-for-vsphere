@@ -10,7 +10,7 @@ using VMware.ScriptRuntimeService.AdminApi.DataTypes;
 namespace VMware.ScriptRuntimeService.AdminApi.Exceptions {
    [Serializable]
    internal class PodNotFoundException : Exception {
-      private PodType _podType;
+      private LogType _podType;
       private string _label;
 
       public PodNotFoundException() {
@@ -22,7 +22,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Exceptions {
       public PodNotFoundException(string message, Exception innerException) : base(message, innerException) {
       }
 
-      public PodNotFoundException(PodType podType, string label) {
+      public PodNotFoundException(LogType podType, string label) {
          _podType = podType;
          _label = label;
       }
