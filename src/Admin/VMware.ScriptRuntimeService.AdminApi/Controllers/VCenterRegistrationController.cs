@@ -16,7 +16,9 @@ using VMware.ScriptRuntimeService.AdminEngine.VCRegistration;
 
 namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
    [ApiController]
-   [Route("[controller]")]
+   [Route("admin/vc-registration")]
+   [Produces("application/json")]
+   [Consumes("application/json")]
    public class VCenterRegistrationController : ControllerBase {
       private readonly ILoggerFactory _loggerFactory;
       private readonly IK8sController _k8sController;

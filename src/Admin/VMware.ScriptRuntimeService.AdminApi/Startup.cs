@@ -71,7 +71,7 @@ namespace VMware.ScriptRuntimeService.AdminApi
          // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
          // specifying the Swagger JSON endpoint.
          app.UseSwaggerUI(c => {
-            c.SwaggerEndpoint("/swagger/admin/swagger.json", "Script Runtime Service Admin API");
+            c.SwaggerEndpoint("/admin/swagger.json", "Script Runtime Service Admin API");
          });
 
          app.UseStaticFiles();

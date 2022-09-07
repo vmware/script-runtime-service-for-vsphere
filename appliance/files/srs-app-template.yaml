@@ -312,21 +312,7 @@ spec:
   - host: ${SRSA_HOSTNAME}
   - http:
       paths:
-      - path: /admin/(.*)
-        pathType: Prefix
-        backend:
-          serviceName: srs-adminapi
-          servicePort: 5555
-  - http:
-      paths:
-      - path: /(VCenterRegistration.*)
-        pathType: Prefix
-        backend:
-          serviceName: srs-adminapi
-          servicePort: 5555
-  - http:
-      paths:
-      - path: /(PodLog.*)
+      - path: /(admin/.*)
         pathType: Prefix
         backend:
           serviceName: srs-adminapi

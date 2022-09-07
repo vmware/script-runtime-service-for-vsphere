@@ -13,7 +13,9 @@ using VMware.ScriptRuntimeService.AdminApi.Exceptions;
 
 namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
    [ApiController]
-   [Route("[controller]")]
+   [Route("admin/logs")]
+   [Produces("application/json")]
+   [Consumes("application/json")]
    public class LogController : ControllerBase {
       private readonly ILoggerFactory _loggerFactory;
       private readonly IK8sController _k8sController;
@@ -25,7 +27,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
          _logger = _loggerFactory.CreateLogger(typeof(LogController));
       }
 
-      [HttpGet("{type}", Name = "get-podlog")]
+      [HttpGet(Name = "get-log")]
       [ProducesResponseType(typeof(VCInfo), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]

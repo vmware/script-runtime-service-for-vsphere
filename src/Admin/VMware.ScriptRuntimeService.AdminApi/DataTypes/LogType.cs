@@ -6,11 +6,15 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
-   [JsonConverter(typeof(StringEnumConverter))]
+   [System.Text.Json.Serialization.JsonConverter(typeof(StringEnumConverter))]
+   [ModelBinder(typeof(LogTypeJsonModelBinder))]
    [DataContract(Name = "log_type")]
    [ReadOnly(true)]
    [Flags]
@@ -29,5 +33,20 @@ namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
 
       [EnumMember(Value = "all")]
       All = 255
+   }
+
+   public class LogTypeJsonModelBinder : IModelBinder {
+      public Task BindModelAsync(ModelBindingContext bindingContext) {
+         string rawData = bindingContext.ValueProvider.GetValue(bindingContext.ModelName).FirstValue;
+         rawData = JsonConvert.SerializeObject(rawData); //turns value to valid json
+         try {
+            LogType result = JsonConvert.DeserializeObject<LogType>(rawData); //manually deserializing value
+            bindingContext.Result = ModelBindingResult.Success(result);
+         } catch (JsonSerializationException ex) {
+            //do nothing since "failed" result is set by default
+         }
+
+         return Task.CompletedTask;
+      }
    }
 }
