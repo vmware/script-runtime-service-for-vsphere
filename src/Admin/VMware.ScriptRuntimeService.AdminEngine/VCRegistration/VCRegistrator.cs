@@ -9,7 +9,6 @@ using System.IO;
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging;
-using VMware.ScriptRuntimeService.AdminEngine;
 using VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters;
 using VMware.ScriptRuntimeService.AdminEngine.SelfSignedCertificates;
 using VMware.ScriptRuntimeService.AdminEngine.TlsTrustValidators;
@@ -239,6 +238,10 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             setupServiceSettings,
             lookupServiceClient);
          lsRegistration.Deregister(username, password);
+
+         // --- Write empty STS Settings ---
+         _configWriter.WriteSettings(Constants.StsSettingsConfigMapName, new StsSettings());
+         // --- Write empty STS  Settings ---
       }
 
       public void Register(
@@ -354,8 +357,8 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          // --- Write Common Settings ---
          var commonSettings = new CommonSettings {
             Hostname = hostname,
-            TlsCertificatePath = $"/app/service/settings/certs/tls/tls.crt",
-            SolutionUserSigningCertificatePath = $"/app/service/settings/certs/sign/{Constants.SignCertificateSecretName}.p12",
+            TlsCertificatePath = tlsCertificatePath,
+            SolutionUserSigningCertificatePath = signingCertificatePath,
             ConfigMap = "vcregistration-settings"
          };
          _configWriter.WriteSettings(Constants.InitialRegSettingsConfigMapName, commonSettings);
