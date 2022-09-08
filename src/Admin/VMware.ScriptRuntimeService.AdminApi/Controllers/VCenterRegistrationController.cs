@@ -49,6 +49,9 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
             var vcRegistrator = new VCRegistrator(_loggerFactory, configWriter);
 
             vcRegistrator.Register(
+               Environment.GetEnvironmentVariable("SERVICE_HOSTNAME"),
+               Environment.GetEnvironmentVariable("SERVICE_SIGNING_CERTIFICATE_PATH"),
+               Environment.GetEnvironmentVariable("SERVICE_TLS_CERTIFICATE_PATH"),
                vcInfo.Address,
                vcInfo.UserName,
                SecurePassword(vcInfo.Password),
@@ -80,7 +83,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
                Address = vcRegistrator.GetRegisteredVC()
             });
          } catch (SrsNotRegisteredException ex) {
-            result = StatusCode(404, new ErrorDetails(ex));
+            result = StatusCode(404, new ErrorDetails(ex) { Code = 404 });
          } catch (Exception ex) {
             result = StatusCode(500, new ErrorDetails(ex));
          }

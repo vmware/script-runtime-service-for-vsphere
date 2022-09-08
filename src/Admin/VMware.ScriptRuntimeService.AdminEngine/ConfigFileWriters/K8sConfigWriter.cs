@@ -9,13 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using VMware.ScriptRuntimeService.AdminEngine;
 using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
    public class K8sConfigWriter : IConfigWriter {
-      K8sClient.K8sClient _k8sClient;
-      ILogger _logger;
+      private readonly K8sClient.K8sClient _k8sClient;
+      private readonly ILogger _logger;
       public K8sConfigWriter(ILoggerFactory loggerFactory, K8sSettings k8sSettings) {
          _k8sClient = new K8sClient.K8sClient(
             loggerFactory,

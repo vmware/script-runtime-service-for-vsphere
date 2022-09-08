@@ -244,24 +244,23 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          // --- Write empty STS  Settings ---
       }
 
-      public void Register(
-         string psc,
-         string username,
-         SecureString password,
-         string thumbprint,
-         bool force) {
+      //public void Register(
+      //   string psc,
+      //   string username,
+      //   SecureString password,
+      //   string thumbprint,
+      //   bool force) {
 
-         var commonSettings = _configWriter.ReadSettings<CommonSettings>(Constants.InitialRegSettingsConfigMapName);
-         Register(
-            commonSettings.Hostname,
-            commonSettings.SolutionUserSigningCertificatePath,
-            commonSettings.TlsCertificatePath,
-            psc,
-            username,
-            password,
-            thumbprint,
-            force);
-      }
+      //   Register(
+      //      commonSettings.Hostname,
+      //      commonSettings.SolutionUserSigningCertificatePath,
+      //      commonSettings.TlsCertificatePath,
+      //      psc,
+      //      username,
+      //      password,
+      //      thumbprint,
+      //      force);
+      //}
 
       public void Register(
          string hostname,
@@ -353,16 +352,6 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          X509Certificate2 tlsCertificate = GetOrGenerateTlsCertificate(
             tlsCertificatePath,
             hostname);
-
-         // --- Write Common Settings ---
-         var commonSettings = new CommonSettings {
-            Hostname = hostname,
-            TlsCertificatePath = tlsCertificatePath,
-            SolutionUserSigningCertificatePath = signingCertificatePath,
-            ConfigMap = "vcregistration-settings"
-         };
-         _configWriter.WriteSettings(Constants.InitialRegSettingsConfigMapName, commonSettings);
-         // --- Write Common Settings ---
 
          // --- Write empty STS Settings ---
          _configWriter.WriteSettings(Constants.StsSettingsConfigMapName, new StsSettings());

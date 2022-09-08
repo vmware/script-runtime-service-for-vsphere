@@ -169,39 +169,56 @@ spec:
             - name: service-settings
               mountPath: "/app/service/settings/settings.json"
               subPath: "settings.json"
-              readOnly: true
+              readOnly: false
             - name: sts-settings
               mountPath: "/app/service/settings/sts-settings.json"
               subPath: "sts-settings.json"
-              readOnly: true
+              readOnly: false
             - name: trusted-ca-certs
               mountPath: "/app/service/trusted-ca-certs"
-              readOnly: true
+              readOnly: false
             - name: sign-certificate
               mountPath: "/app/service/settings/certs"
-              readOnly: true
+              readOnly: false
+            - name: tls-certificate
+              mountPath: "/app/service/settings/certs"
+              readOnly: false
           ports:
             - containerPort: 5555
               protocol: TCP
           env:
             - name: DOTNET_SYSTEM_GLOBALIZATION_INVARIANT
               value: "1"
+            - name: SERVICE_SIGNING_CERTIFICATE_PATH
+              value: "/app/service/settings/certs/srs-sign.p12"
+            - name: SERVICE_TLS_CERTIFICATE_PATH
+              value: "/app/service/settings/certs/srs-tls.crt"
+            - name: SERVICE_HOSTNAME
+              value: "${SRSA_HOSTNAME}"
       volumes:
         - name: sign-certificate
           secret:
             secretName: sign-cert
+            optional: true
+        - name: tls-certificate
+          secret:
+            secretName: tls-cert
+            optional: true
         - name: trusted-ca-certs
           configMap:
             name: trusted-ca-certs
+            optional: true
         - name: service-settings
           configMap:
             name: service-settings
+            optional: true
             items:
             - key: settings.json
               path: settings.json
         - name: sts-settings
           configMap:
             name: sts-settings
+            optional: true
             items:
             - key: sts-settings.json
               path: sts-settings.json
