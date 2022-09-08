@@ -24,14 +24,10 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       private readonly IK8sController _k8sController;
       private readonly ILogger _logger;
       private readonly IConfiguration _configuration;
-      private readonly Settings _settings;
       private readonly K8sSettings _k8sSettings;
 
       public VCenterRegistrationController(IConfiguration Configuration, ILoggerFactory loggerFactory, IK8sController k8sController) {
          _configuration = Configuration;
-         _settings = _configuration.
-               GetSection("Settings").
-               Get<Settings>();
          _k8sSettings = _configuration.
                GetSection("K8sSettings").
                Get<K8sSettings>();
@@ -78,10 +74,13 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
          ActionResult<VCInfo> result;
          try {
             var configWriter = new K8sConfigWriter(_loggerFactory, _k8sSettings);
-            var vcRegSettings = configWriter.ReadSettings<VCenterStsSettings>(_settings.ConfigMap);
+            var vcRegistrator = new VCRegistrator(_loggerFactory, configWriter);
+
             result = Ok(new VCInfo() {
-               Address = vcRegSettings?.VCenterAddress
+               Address = vcRegistrator.GetRegisteredVC()
             });
+         } catch (SrsNotRegisteredException ex) {
+            result = StatusCode(404, new ErrorDetails(ex));
          } catch (Exception ex) {
             result = StatusCode(500, new ErrorDetails(ex));
          }
@@ -105,9 +104,10 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
             var configWriter = new K8sConfigWriter(_loggerFactory, _k8sSettings);
             var vcRegistrator = new VCRegistrator(_loggerFactory, configWriter);
 
-            var vcSettings = configWriter.ReadSettings<VCenterStsSettings>(_settings.ConfigMap);
-            if (vcSettings != null &&
-                vcSettings.VCenterAddress == vcInfo.Address) {
+            var vCenterAddress = vcRegistrator.GetRegisteredVC();
+
+            if (!string.IsNullOrEmpty(vCenterAddress) &&
+                vCenterAddress == vcInfo.Address) {
 
                if (clean) {
                   vcRegistrator.Clean(vcInfo.Address, vcInfo.UserName, secureVcPassword, vcInfo.Thumbprint, false);

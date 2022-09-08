@@ -103,7 +103,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
             var result = JsonConvert.DeserializeObject(rawCondifgMapData, typeof(T));
             return (T) result;
          } catch (Exception exc) {
-            _logger.LogError($"Reading k8s config map {settingsName} failed: {exc.ToString()}");
+            _logger.LogError($"Reading k8s config map {settingsName} failed: {exc}");
          }
 
          return default(T);

@@ -29,6 +29,16 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          _configWriter = configWriter ?? throw new ArgumentNullException(nameof(configWriter));
       }
 
+      public string GetRegisteredVC() {
+         var stsSettings = _configWriter.ReadSettings<StsSettings>(Constants.StsSettingsConfigMapName);
+
+         if (null == stsSettings || string.IsNullOrEmpty(stsSettings.VCenterAddress)) {
+            throw new SrsNotRegisteredException();
+         }
+
+         return stsSettings.VCenterAddress;
+      }
+
       public void UpdateTlsCertificate(
          string psc,
          string username,
