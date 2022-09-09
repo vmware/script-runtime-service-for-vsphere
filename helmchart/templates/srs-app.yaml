@@ -175,7 +175,7 @@ spec:
             - name: SERVICE_SIGNING_CERTIFICATE_PATH
               value: "/app/service/settings/sign-certs/srs-sign.p12"
             - name: SERVICE_TLS_CERTIFICATE_PATH
-              value: "/app/service/settings/tls-certs/srs-tls.crt"
+              value: "/app/service/settings/tls-certs/tls.crt"
             - name: SERVICE_HOSTNAME
               value: "${SRSA_HOSTNAME}"
       volumes:
