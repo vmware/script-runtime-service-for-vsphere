@@ -72,7 +72,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.SelfSignedCertificates {
 
             if (actionResult) {
                // Output certificate
-               _certificateFileWriter.WriteBinaryFile("sign-cert", Path.Combine(_assemblyDir, signCertDir, $"{signCertName}.{signCertFormat}"));
+               _certificateFileWriter.WriteBinaryFile(certName, Path.Combine(_assemblyDir, signCertDir, $"{signCertName}.{signCertFormat}"));
                result = new X509Certificate2(Path.Combine(_assemblyDir, signCertDir, $"{signCertName}.{signCertFormat}"));
                DeleteLocalFiles();
             }

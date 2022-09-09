@@ -198,11 +198,11 @@ spec:
       volumes:
         - name: sign-certificate
           secret:
-            secretName: sign-cert
+            secretName: srs-sign
             optional: true
         - name: tls-certificate
           secret:
-            secretName: tls-cert
+            secretName: srs-tls
             optional: true
         - name: trusted-ca-certs
           configMap:
@@ -266,7 +266,7 @@ spec:
       volumes:
         - name: sign-certificate
           secret:
-            secretName: sign-cert
+            secretName: srs-sign
         - name: trusted-ca-certs
           configMap:
             name: trusted-ca-certs

@@ -72,7 +72,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.SelfSignedCertificates {
             if (actionResult) {
                // Output certificate
                _certificateFileWriter.WriteTlsCertificate(
-                  "srs-tls",
+                  certName,
                   Path.Combine(_assemblyDir, tlsCertDir, $"{tlsCertName}.crt"),
                   Path.Combine(_assemblyDir, tlsCertDir, $"{tlsCertName}.key"));
 

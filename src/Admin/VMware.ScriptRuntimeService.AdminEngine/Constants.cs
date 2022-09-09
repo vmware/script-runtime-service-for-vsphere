@@ -18,6 +18,5 @@ namespace VMware.ScriptRuntimeService.AdminEngine {
       public const string TrustedCACertificatesConfigMapName = "trusted-ca-certs";
       public const string StsSettingsConfigMapName = "sts-settings";
       public const string StsSettingsConfigMapDataKey = "sts-settings.json";
-      public const string InitialRegSettingsConfigMapName = "initial-registration-settings";
    }
 }
