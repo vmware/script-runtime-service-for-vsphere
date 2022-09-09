@@ -244,24 +244,6 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          // --- Write empty STS  Settings ---
       }
 
-      //public void Register(
-      //   string psc,
-      //   string username,
-      //   SecureString password,
-      //   string thumbprint,
-      //   bool force) {
-
-      //   Register(
-      //      commonSettings.Hostname,
-      //      commonSettings.SolutionUserSigningCertificatePath,
-      //      commonSettings.TlsCertificatePath,
-      //      psc,
-      //      username,
-      //      password,
-      //      thumbprint,
-      //      force);
-      //}
-
       public void Register(
          string hostname,
          string signingCertificatePath,

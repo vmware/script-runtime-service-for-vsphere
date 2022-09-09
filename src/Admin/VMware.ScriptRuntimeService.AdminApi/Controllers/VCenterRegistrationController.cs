@@ -71,16 +71,16 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       }
 
       [HttpGet]
-      [ProducesResponseType(typeof(VCInfo), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(RegisteredVC), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<VCInfo> Get() {
-         ActionResult<VCInfo> result;
+      public ActionResult<RegisteredVC> Get() {
+         ActionResult<RegisteredVC> result;
          try {
             var configWriter = new K8sConfigWriter(_loggerFactory, _k8sSettings);
             var vcRegistrator = new VCRegistrator(_loggerFactory, configWriter);
 
-            result = Ok(new VCInfo() {
-               Address = vcRegistrator.GetRegisteredVC()
+            result = Ok(new RegisteredVC() {
+               VCAddress = vcRegistrator.GetRegisteredVC()
             });
          } catch (SrsNotRegisteredException ex) {
             result = StatusCode(404, new ErrorDetails(ex) { Code = 404 });
