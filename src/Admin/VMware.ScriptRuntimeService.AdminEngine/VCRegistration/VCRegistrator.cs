@@ -311,7 +311,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             VCenterAddress = psc
          };
 
-         _configWriter.WriteSettings(Constants.StsSettingsConfigMapName, stsSettings);
+         _configWriter.WriteServiceStsSettings(stsSettings);
 
          _logger.LogInformation("Registring with VC successful");
       }
