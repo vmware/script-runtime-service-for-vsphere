@@ -52,6 +52,7 @@ namespace VMware.ScriptRuntimeService.APIGateway
                {
                   var settingsPath = Path.Combine(AssemblyDirectory, "settings", "settings.json");
                   if (File.Exists(settingsPath)) {
+                     Console.WriteLine($"info: Applying config file {settingsPath}.");
                      config.AddContentBasedUpdateJsonFileConfiguration(
                         settingsPath);
                   } else {
@@ -60,6 +61,7 @@ namespace VMware.ScriptRuntimeService.APIGateway
 
                   var stsSettingsPath = Path.Combine(AssemblyDirectory, "settings", "sts-settings.json");
                   if (File.Exists(stsSettingsPath)) {
+                     Console.WriteLine($"info: Applying config file {stsSettingsPath}.");
                      config.AddContentBasedUpdateJsonFileConfiguration(
                         stsSettingsPath);
                   } else {

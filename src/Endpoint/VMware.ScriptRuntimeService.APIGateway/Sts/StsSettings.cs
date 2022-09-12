@@ -10,10 +10,15 @@ namespace VMware.ScriptRuntimeService.APIGateway.Sts {
       public StsSettings() { }
 
       public string VCenterAddress { get; set; }
+
       public string Realm { get; set; }
+      
       public string StsServiceEndpoint { get; set; }
+      
       public string SolutionServiceId { get; set; }
+      
       public string SolutionOwnerId { get; set; }
+      
       public string SolutionUserSigningCertificatePath { get; set; }
    }
 }
