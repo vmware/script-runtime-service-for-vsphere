@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -54,13 +54,17 @@ namespace VMware.ScriptRuntimeService.APIGateway
                   if (File.Exists(settingsPath)) {
                      config.AddContentBasedUpdateJsonFileConfiguration(
                         settingsPath);
+                  } else {
+                     Console.WriteLine($"info: Unable to find config file {settingsPath}.");
                   }
 
                   var stsSettingsPath = Path.Combine(AssemblyDirectory, "settings", "sts-settings.json");
                   if (File.Exists(stsSettingsPath)) {
                      config.AddContentBasedUpdateJsonFileConfiguration(
                         stsSettingsPath);
-                  }                  
+                  } else {
+                     Console.WriteLine($"info: Unable to find config file {stsSettingsPath}.");
+                  }
                })
                .ConfigureLogging(logging => {
                   logging.ClearProviders();
