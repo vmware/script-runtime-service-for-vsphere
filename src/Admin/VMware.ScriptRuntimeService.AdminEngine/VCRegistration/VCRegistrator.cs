@@ -240,7 +240,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          lsRegistration.Deregister(username, password);
 
          // --- Write empty STS Settings ---
-         _configWriter.WriteSettings(Constants.StsSettingsConfigMapName, new StsSettings());
+         _configWriter.WriteServiceStsSettings(new StsSettings());
          // --- Write empty STS  Settings ---
       }
 
@@ -336,7 +336,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             hostname);
 
          // --- Write empty STS Settings ---
-         _configWriter.WriteSettings(Constants.StsSettingsConfigMapName, new StsSettings());
+         _configWriter.WriteServiceStsSettings(new StsSettings());
          // --- Write empty STS  Settings ---
 
          _logger.LogInformation("Setting up certificates successful");
