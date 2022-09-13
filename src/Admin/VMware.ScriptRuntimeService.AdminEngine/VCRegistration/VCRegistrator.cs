@@ -20,16 +20,18 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
    public class VCRegistrator {
       private readonly ILoggerFactory _loggerFactory;
       private readonly IConfigWriter _configWriter;
+      private readonly IConfigReader _configReader;
       private readonly ILogger _logger;
 
-      public VCRegistrator(ILoggerFactory loggerFactory, IConfigWriter configWriter) {
+      public VCRegistrator(ILoggerFactory loggerFactory, IConfigWriter configWriter, IConfigReader configReader) {
          _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
          _logger = loggerFactory.CreateLogger(typeof(VCRegistrator));
          _configWriter = configWriter ?? throw new ArgumentNullException(nameof(configWriter));
+         _configReader = configReader ?? throw new ArgumentNullException(nameof(configReader));
       }
 
       public string GetRegisteredVC() {
-         var stsSettings = _configWriter.ReadSettings<StsSettings>(Constants.StsSettingsConfigMapName);
+         var stsSettings = _configReader.ReadServiceStsSettings();
 
          if (null == stsSettings || string.IsNullOrEmpty(stsSettings.VCenterAddress)) {
             throw new SrsNotRegisteredException();
@@ -145,7 +147,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          string thumbprint,
          bool force) {
 
-         var stsSettings = _configWriter.ReadSettings<StsSettings>(Constants.StsSettingsConfigMapName);
+         var stsSettings = _configReader.ReadServiceStsSettings();
 
          UnregisterInternal(
             psc,

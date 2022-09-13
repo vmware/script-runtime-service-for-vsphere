@@ -12,16 +12,16 @@ using System.Text;
 using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
-   public class K8sConfigWriter : IConfigWriter {
+   public class K8sConfigRepository : IConfigWriter, IConfigReader {
       private readonly K8sClient.K8sClient _k8sClient;
       private readonly ILogger _logger;
-      public K8sConfigWriter(ILoggerFactory loggerFactory, K8sSettings k8sSettings) {
+      public K8sConfigRepository(ILoggerFactory loggerFactory, K8sSettings k8sSettings) {
          _k8sClient = new K8sClient.K8sClient(
             loggerFactory,
             k8sSettings?.ClusterEndpoint,
             k8sSettings?.AccessToken,
             k8sSettings?.Namespace);
-         _logger = loggerFactory.CreateLogger(typeof(K8sConfigWriter).FullName);
+         _logger = loggerFactory.CreateLogger(typeof(K8sConfigRepository).FullName);
          _logger.LogDebug("K8s ConfigFileWriter created");
       }
 
@@ -77,6 +77,17 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
          _k8sClient.RecreateConfigMap(configMapName, new Dictionary<string, string> {
             { configMapDataKey, settingsJson }
          });
+      }
+
+      public StsSettings ReadServiceStsSettings() {
+         const string configMapName = Constants.StsSettingsConfigMapName;
+         const string configMapDataKey = Constants.StsSettingsConfigMapDataKey;
+
+         _logger.LogInformation($"Reading k8s config map with service settings");
+         var settingsJson = _k8sClient.GetConfigMapData(configMapName, configMapDataKey);
+
+         var result = JsonConvert.DeserializeObject(settingsJson, typeof(StsSettings));
+         return (StsSettings) result;
       }
 
       public void WriteSettings(string settingsName, object settingsObject) {

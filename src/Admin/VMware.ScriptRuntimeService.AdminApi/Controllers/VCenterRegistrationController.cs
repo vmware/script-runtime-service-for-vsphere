@@ -45,8 +45,8 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
 
          try {
 
-            var configWriter = new K8sConfigWriter(_loggerFactory, _k8sSettings);
-            var vcRegistrator = new VCRegistrator(_loggerFactory, configWriter);
+            var configProxy = new K8sConfigRepository(_loggerFactory, _k8sSettings);
+            var vcRegistrator = new VCRegistrator(_loggerFactory, configProxy, configProxy);
 
             vcRegistrator.Register(
                Environment.GetEnvironmentVariable("SERVICE_HOSTNAME"),
@@ -76,8 +76,8 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       public ActionResult<RegisteredVC> Get() {
          ActionResult<RegisteredVC> result;
          try {
-            var configWriter = new K8sConfigWriter(_loggerFactory, _k8sSettings);
-            var vcRegistrator = new VCRegistrator(_loggerFactory, configWriter);
+            var configProxy = new K8sConfigRepository(_loggerFactory, _k8sSettings);
+            var vcRegistrator = new VCRegistrator(_loggerFactory, configProxy, configProxy);
 
             result = Ok(new RegisteredVC() {
                VCAddress = vcRegistrator.GetRegisteredVC()
@@ -104,8 +104,8 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
 
             var secureVcPassword = SecurePassword(vcInfo.Password);
 
-            var configWriter = new K8sConfigWriter(_loggerFactory, _k8sSettings);
-            var vcRegistrator = new VCRegistrator(_loggerFactory, configWriter);
+            var configProxy = new K8sConfigRepository(_loggerFactory, _k8sSettings);
+            var vcRegistrator = new VCRegistrator(_loggerFactory, configProxy, configProxy);
 
             var vCenterAddress = vcRegistrator.GetRegisteredVC();
 

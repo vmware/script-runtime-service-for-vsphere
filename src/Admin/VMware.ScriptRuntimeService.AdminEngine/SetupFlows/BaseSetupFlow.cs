@@ -29,8 +29,8 @@ namespace VMware.ScriptRuntimeService.AdminEngine.SetupFlows {
                k8sSettings = JsonConvert.DeserializeObject<K8sSettings>(File.ReadAllText(userInput.K8sSettings));
             }
 
-            var configWriter = new K8sConfigWriter(_loggerFactory, k8sSettings);
-            var vcRegistrator = new VCRegistration.VCRegistrator(_loggerFactory, configWriter);
+            var configProxy = new K8sConfigRepository(_loggerFactory, k8sSettings);
+            var vcRegistrator = new VCRegistration.VCRegistrator(_loggerFactory, configProxy, configProxy);
             RunInternal(vcRegistrator, userInput);
          } catch (InvalidUserInputException exc) {
             _logger.LogError(exc, exc.Message);

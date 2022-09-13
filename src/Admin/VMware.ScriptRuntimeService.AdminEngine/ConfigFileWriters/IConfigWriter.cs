@@ -4,7 +4,6 @@
 // **************************************************************************
 
 using System.Collections.Generic;
-using VMware.ScriptRuntimeService.AdminEngine;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
    public interface IConfigWriter {
@@ -15,7 +14,6 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
       void WriteSetupSettings(SetupServiceSettings setupServiceSettings);
       void WriteServiceStsSettings(StsSettings stsSettings);
       void WriteSettings(string settingsName, object settingsObject);
-      T ReadSettings<T>(string settingsName);
       void DeleteSettings(string settingsName);
    }
 }
