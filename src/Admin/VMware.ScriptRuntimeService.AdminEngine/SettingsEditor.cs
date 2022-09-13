@@ -48,6 +48,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine {
 
       public StsSettings GetStsSettings() {
          return new StsSettings {
+            VCenterAddress = _settingsJson?["StsSettings"]?["VCenterAddress"]?.ToString(),
             SolutionOwnerId = _settingsJson?["StsSettings"]?["SolutionOwnerId"]?.ToString(),
             SolutionServiceId = _settingsJson?["StsSettings"]?["SolutionServiceId"]?.ToString(),
             Realm = _settingsJson?["StsSettings"]?["Realm"]?.ToString(),

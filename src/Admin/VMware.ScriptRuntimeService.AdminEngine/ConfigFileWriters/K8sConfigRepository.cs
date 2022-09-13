@@ -86,8 +86,9 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
          _logger.LogInformation($"Reading k8s config map with service settings");
          var settingsJson = _k8sClient.GetConfigMapData(configMapName, configMapDataKey);
 
-         var result = JsonConvert.DeserializeObject(settingsJson, typeof(StsSettings));
-         return (StsSettings) result;
+         var stsSettingsEditor = new SettingsEditor(settingsJson);
+
+         return stsSettingsEditor.GetStsSettings();
       }
 
       public void WriteSettings(string settingsName, object settingsObject) {
@@ -126,7 +127,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
             _logger.LogInformation($"Deleting k8s config map with settingsName settings");
             _k8sClient.DeleteConfigMap(configMapName);
          } catch (Exception exc) {
-            _logger.LogError($"Delete k8s config map {settingsName} failed: {exc.ToString()}");
+            _logger.LogError($"Delete k8s config map {settingsName} failed: {exc}");
          }
       }
    }
