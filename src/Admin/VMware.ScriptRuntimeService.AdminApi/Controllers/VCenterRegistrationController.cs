@@ -107,24 +107,16 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
             var configProxy = new K8sConfigRepository(_loggerFactory, _k8sSettings);
             var vcRegistrator = new VCRegistrator(_loggerFactory, configProxy, configProxy);
 
-            var vCenterAddress = vcRegistrator.GetRegisteredVC();
-
-            if (!string.IsNullOrEmpty(vCenterAddress) &&
-                vCenterAddress == vcInfo.Address) {
-
-               if (clean) {
-                  vcRegistrator.Clean(vcInfo.Address, vcInfo.UserName, secureVcPassword, vcInfo.Thumbprint, false);
-               } else {
-                  vcRegistrator.Unregister(vcInfo.Address, vcInfo.UserName, secureVcPassword, vcInfo.Thumbprint, false);
-               }
-
-               // --- Restart SRS API Gateway ---
-               _k8sController.WithUpdateK8sSettings(_k8sSettings).RestartSrsService();
-               // --- Restart SRS API Gateway ---
-               result = Ok();
+            if (clean) {
+               vcRegistrator.Clean(vcInfo.Address, vcInfo.UserName, secureVcPassword, vcInfo.Thumbprint, false);
             } else {
-               result = StatusCode(StatusCodes.Status404NotFound, new ErrorDetails(new Exception($"No SRS registration found for vCenter Server: {vcInfo.Address}")));
+               vcRegistrator.Unregister(vcInfo.Address, vcInfo.UserName, secureVcPassword, vcInfo.Thumbprint, false);
             }
+
+            // --- Restart SRS API Gateway ---
+            _k8sController.WithUpdateK8sSettings(_k8sSettings).RestartSrsService();
+            // --- Restart SRS API Gateway ---
+            result = Ok();
          } catch (Exception ex) {
             result = StatusCode(500, new ErrorDetails(ex));
          }
