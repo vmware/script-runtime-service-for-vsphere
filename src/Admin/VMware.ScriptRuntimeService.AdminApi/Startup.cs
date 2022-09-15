@@ -13,6 +13,8 @@ using System;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using VMware.ScriptRuntimeService.AdminApi.Controllers;
+using VMware.ScriptRuntimeService.APIGateway.Authentication.Basic;
+using Microsoft.AspNetCore.Authentication;
 
 namespace VMware.ScriptRuntimeService.AdminApi
 {
@@ -40,6 +42,10 @@ namespace VMware.ScriptRuntimeService.AdminApi
 
          services.AddScoped<IK8sController, K8sController>();
 
+         // configure basic authentication 
+         services.AddAuthentication("BasicAuthentication")
+             .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
          var packageNameExtension = new OpenApiObject();
          packageNameExtension.Add("package-name", new OpenApiString("com.vmware.srs.admin"));
          services.AddSwaggerGen(
@@ -57,6 +63,7 @@ namespace VMware.ScriptRuntimeService.AdminApi
                   });
             });
          services.AddSwaggerGenNewtonsoftSupport();
+
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

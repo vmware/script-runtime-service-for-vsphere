@@ -3,6 +3,7 @@
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using VMware.ScriptRuntimeService.AdminApi.DataTypes;
 using VMware.ScriptRuntimeService.AdminApi.Exceptions;
 
 namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
+   [Authorize]
    [ApiController]
    [Route("admin/logs")]
    [Produces("application/json")]

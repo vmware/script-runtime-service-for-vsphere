@@ -42,7 +42,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
          try {
             LogType result = JsonConvert.DeserializeObject<LogType>(rawData); //manually deserializing value
             bindingContext.Result = ModelBindingResult.Success(result);
-         } catch (JsonSerializationException ex) {
+         } catch (JsonSerializationException) {
             //do nothing since "failed" result is set by default
          }
 

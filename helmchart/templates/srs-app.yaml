@@ -126,6 +126,15 @@ spec:
 {{ end }}
 {{ end }}
 {{ end }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: srs-adminapi-credentials
+type: Opaque
+data:
+  ADMIN_USER: "${ADMIN_USER}"
+  ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -178,6 +187,10 @@ spec:
               value: "/app/service/settings/tls-certs/tls.crt"
             - name: SERVICE_HOSTNAME
               value: "${SRSA_HOSTNAME}"
+          envFrom:
+            - secretRef:
+              name: srs-adminapi-credentials
+              optional: true
       volumes:
         - name: sign-certificate
           secret:

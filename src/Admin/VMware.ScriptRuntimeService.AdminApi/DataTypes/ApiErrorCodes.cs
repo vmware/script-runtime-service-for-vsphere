@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
    public static class ApiErrorCodes {
-      private static Dictionary<string, int> ErrorMessageToErrorCode = new Dictionary<string, int> {
+      private static readonly Dictionary<string, int> ErrorMessageToErrorCode = new Dictionary<string, int> {
       };
 
       public static int GetErrorCode(string errorRsourceMessage) {

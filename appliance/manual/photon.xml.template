@@ -57,6 +57,14 @@
             <Label>VCThumbprint</Label>
             <Description>VC Tls certificate thumbprint SRS installation will trust to perform SRS registration</Description>
         </Property>
+        <Property ovf:key="srs.adminuser" ovf:type="string" ovf:userConfigurable="true" ovf:value="false">
+            <Label>AdminUser</Label>
+            <Description>Username for administration service access</Description>
+        </Property>
+        <Property ovf:key="srs.adminpassword" ovf:type="string" ovf:userConfigurable="true" ovf:value="false">
+            <Label>AdminPassword</Label>
+            <Description>Password for administration service access</Description>
+        </Property>
         <Property ovf:key="srs.dockeruser" ovf:type="string" ovf:userConfigurable="true" ovf:value="false">
             <Label>DockerUser</Label>
             <Description>Docker Username to login to dockerhub.io to avoid anonymous docker pull limits</Description>
