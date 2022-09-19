@@ -189,8 +189,8 @@ spec:
               value: "${SRSA_HOSTNAME}"
           envFrom:
             - secretRef:
-              name: srs-adminapi-credentials
-              optional: true
+                name: srs-adminapi-credentials
+                optional: true
       volumes:
         - name: sign-certificate
           secret:

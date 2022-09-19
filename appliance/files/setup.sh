@@ -211,9 +211,9 @@ EOF
     VC_THUMBPRINT_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.vcthumbprint")
     VC_TLS_THUMBPRINT=$(echo $VC_THUMBPRINT_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
     ADMIN_USER_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.adminuser")
-    ADMIN_USER=$(echo $ADMIN_USER_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
+    ADMIN_USER=$(echo $ADMIN_USER_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}' | base64)
     ADMIN_PASSWORD_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.adminpassword")
-    ADMIN_PASSWORD=$(echo $ADMIN_PASSWORD_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
+    ADMIN_PASSWORD=$(echo $ADMIN_PASSWORD_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}' | base64)
     SRSA_HOSTNAME=""
     if [ -z ${HOSTNAME} ]; then
       echo "Hostname not specified, setting default"
