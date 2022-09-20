@@ -47,11 +47,13 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                var username = credentials[0];
                var password = credentials[1];
 
-               if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ADMIN_USER")) ||
-                  string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ADMIN_PASSWORD"))) {
+               var adminUser = Environment.GetEnvironmentVariable("ADMIN_USER")?.Trim();
+               var adminPass = Environment.GetEnvironmentVariable("ADMIN_PASSWORD")?.Trim();
+               if (string.IsNullOrEmpty(adminUser) ||
+                  string.IsNullOrEmpty(adminPass)) {
                   result = AuthenticateResult.Fail("Script Runtime Service admin credentials are not setted up correctly");
-               } else if ((!username?.Equals(Environment.GetEnvironmentVariable("ADMIN_USER")) ?? true) ||
-                  (!password?.Equals(Environment.GetEnvironmentVariable("ADMIN_PASSWORD")) ?? true)) {
+               } else if ((!username?.Equals(adminUser) ?? true) ||
+                  (!password?.Equals(adminPass) ?? true)) {
                   result = AuthenticateResult.Fail("Invalid username or password");
                } else {
                   var claims = new[] {

@@ -130,6 +130,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: srs-adminapi-credentials
+  namespace: script-runtime-service
 type: Opaque
 data:
   ADMIN_USER: "${ADMIN_USER}"
