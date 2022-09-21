@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -266,7 +266,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
          // Path to add
          dynamic pathRule = new ExpandoObject();
-         pathRule.path = $"/{id}";
+         pathRule.path = $"/({id})";
          pathRule.pathType = "ImplementationSpecific";
          dynamic backend = new ExpandoObject();
          backend.serviceName = id;

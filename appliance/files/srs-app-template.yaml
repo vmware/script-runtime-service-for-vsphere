@@ -348,23 +348,27 @@ spec:
         backend:
           serviceName: srs-adminapi
           servicePort: 5555
-  - http:
-      paths:
       - path: /admin/(swagger.*)
         pathType: Prefix
         backend:
           serviceName: srs-adminapi
           servicePort: 5555
-  - http:
-      paths:
       - path: /(admin/.*)
         pathType: Prefix
         backend:
           serviceName: srs-adminapi
           servicePort: 5555
-  - http:
-      paths:
-      - path: /(.*)
+      - path: /(swagger/srs.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-apigateway
+          servicePort: 5050
+      - path: /api/(swagger.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-apigateway
+          servicePort: 5050
+      - path: /(api/.*)
         pathType: Prefix
         backend:
           serviceName: srs-apigateway
