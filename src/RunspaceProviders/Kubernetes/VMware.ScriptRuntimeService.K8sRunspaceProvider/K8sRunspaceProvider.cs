@@ -266,7 +266,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
          // Path to add
          dynamic pathRule = new ExpandoObject();
-         pathRule.path = $"/({id})";
+         pathRule.path = $"/({id}/?)";
          pathRule.pathType = "ImplementationSpecific";
          dynamic backend = new ExpandoObject();
          backend.serviceName = id;
