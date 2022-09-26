@@ -49,13 +49,12 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
 
                var adminUser = Environment.GetEnvironmentVariable("ADMIN_USER")?.Trim();
                var adminPass = Environment.GetEnvironmentVariable("ADMIN_PASSWORD")?.Trim();
-               if (string.IsNullOrEmpty(adminUser) ||
-                  string.IsNullOrEmpty(adminPass)) {
-                  result = AuthenticateResult.Fail("Script Runtime Service admin credentials are not setted up correctly");
-               } else if ((!username?.Equals(adminUser) ?? true) ||
-                  (!password?.Equals(adminPass) ?? true)) {
-                  result = AuthenticateResult.Fail("Invalid username or password");
-               } else {
+
+               if ((username?.Equals(adminUser) ?? false) &&
+                  (password?.Equals(adminPass) ?? false)) {
+
+                  // Successful authnetication
+
                   var claims = new[] {
                      new Claim(ClaimTypes.Name, username),
                   };
@@ -64,6 +63,17 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
 
                   result = AuthenticateResult.Success(
                      new AuthenticationTicket(principal, AuthenticationScheme));
+               } else {
+
+                  // Unsuccessful authentication
+
+                  if (string.IsNullOrEmpty(adminUser) ||
+                  string.IsNullOrEmpty(adminPass)) {
+                     result = AuthenticateResult.Fail("Script Runtime Service admin credentials are not setted up correctly");
+                  } else if ((!username?.Equals(adminUser) ?? true) ||
+                     (!password?.Equals(adminPass) ?? true)) {
+                     result = AuthenticateResult.Fail("Invalid username or password");
+                  }
                }
             } catch (Exception exc) {
                _logger.Log(LogLevel.Error, $"Basic Authorization failure: {exc}");
