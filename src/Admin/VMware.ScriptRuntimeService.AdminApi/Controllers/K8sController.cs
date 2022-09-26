@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using VMware.ScriptRuntimeService.AdminApi.DataTypes;
@@ -55,25 +56,23 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
          { LogType.Setup, "job-name=srs-setup" },
       };
 
-      public IDictionary<LogType, string> GetPodLog(LogType logType) {
+      public Stream GetPodLogReader(LogType logType) {
          _logger.LogInformation($"Getting {logType} log");
          try {
-            var result = new Dictionary<LogType, string>();
             foreach (var type in _podTypeToLableMap) {
-               if ((logType & type.Key) == type.Key) {
-                  var srsApiGatewayPod = _k8sClient.GetPod(label: type.Value);
+               if (logType == type.Key) {
+                  var pod = _k8sClient.GetPod(label: type.Value);
                   
-                  if (srsApiGatewayPod != null) {
-                     _logger.LogDebug($"Getting {logType} log for pod {srsApiGatewayPod.Metadata.Name}");
-
-                     result.Add(type.Key, _k8sClient.ReadPodLog(srsApiGatewayPod));
+                  if (pod != null) {
+                     _logger.LogDebug($"Getting {logType} log for pod {pod.Metadata.Name}");
+                     return _k8sClient.GetPodLogReader(pod);
                   } else {
-                     throw new PodNotFoundException(type.Key, type.Value);
+                     throw new LogSourceNotFoundException(type.Key, type.Value);
                   }
                }
             }
 
-            return result;
+            throw new UnknownLogTypeException(logType);
          } catch (Exception ex) {
             _logger.LogError($"RestartSrsService failed: {ex}");
             throw;

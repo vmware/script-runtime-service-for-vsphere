@@ -17,22 +17,15 @@ namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
    [ModelBinder(typeof(LogTypeJsonModelBinder))]
    [DataContract(Name = "log_type")]
    [ReadOnly(true)]
-   [Flags]
-   public enum LogType {
-      [EnumMember(Value = "none")]
-      None = 0,
-      
+   public enum LogType {      
       [EnumMember(Value = "setup")]
-      Setup = 1,
+      Setup = 0,
 
       [EnumMember(Value = "api-gateway")]
-      ApiGateway = 2,
+      ApiGateway = 1,
 
       [EnumMember(Value = "admin-api")]
-      AdminApi = 4,
-
-      [EnumMember(Value = "all")]
-      All = 255
+      AdminApi = 2
    }
 
    public class LogTypeJsonModelBinder : IModelBinder {

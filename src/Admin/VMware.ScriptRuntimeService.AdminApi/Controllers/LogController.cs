@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using VMware.ScriptRuntimeService.AdminApi.DataTypes;
 using VMware.ScriptRuntimeService.AdminApi.Exceptions;
 
@@ -30,15 +31,15 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       }
 
       [HttpGet(Name = "get-log")]
-      [ProducesResponseType(typeof(VCInfo), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<IDictionary<LogType, IEnumerable<string>>> Get([FromQuery] LogType type) {
-         ActionResult<IDictionary<LogType, IEnumerable<string>>> result;
+      public ActionResult Get([FromQuery] LogType type) {
+         ActionResult result;
          _logger.LogDebug($"Getting logs for {type}");
          try {
-            result = Ok(_k8sController.GetPodLog(type));
-         } catch (PodNotFoundException ex) {
+            result = File(_k8sController.GetPodLogReader(type), "text/plain");
+         } catch (LogSourceNotFoundException ex) {
             result = StatusCode(404, new ErrorDetails(ex));
          } catch (Exception ex) {
             result = StatusCode(500, new ErrorDetails(ex));
