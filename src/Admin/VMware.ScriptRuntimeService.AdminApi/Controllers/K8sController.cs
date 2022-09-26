@@ -38,6 +38,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       }
 
       public void RestartSrsService() {
+         _logger.LogInformation("K8sServiceController restarting the SRS Api gateway.");
          try {
             var srsApiGatewayPod = _k8sClient.GetPod(label: "app=srs-apigateway");
             if (srsApiGatewayPod != null) {
