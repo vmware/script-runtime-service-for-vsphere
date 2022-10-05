@@ -221,7 +221,9 @@ EOF
     else
        SRSA_HOSTNAME=$HOSTNAME
     fi
-    sed -e "s/\${VC_SERVER}/$VC_IP/" -e "s/\${VC_USER}/$VC_USER/" -e "s/\${VC_PASSWORD}/$VC_PASSWORD/" -e "s/\${VC_THUMBPRINT}/$VC_TLS_THUMBPRINT/" -e "s/\${ADMIN_USER}/$ADMIN_USER/" -e "s/\${ADMIN_PASSWORD}/$ADMIN_PASSWORD/" -e "s/\${SRSA_HOSTNAME}/$SRSA_HOSTNAME/" /root/srs-app-template.yaml > /root/srs-app.yaml
+    ADMIN_PASSWORD_SALT=$(openssl rand -base64 12)
+    ADMIN_PASSWORD=$(echo -n "$ADMIN_PASSWORD_SALT$ADMIN_PASSWORD" | sha256sum | cut -d' ' -f 1)
+    sed -e "s/\${VC_SERVER}/$VC_IP/" -e "s/\${VC_USER}/$VC_USER/" -e "s/\${VC_PASSWORD}/$VC_PASSWORD/" -e "s/\${VC_THUMBPRINT}/$VC_TLS_THUMBPRINT/" -e "s/\${ADMIN_USER}/$ADMIN_USER/" -e "s/\${ADMIN_PASSWORD}/$ADMIN_PASSWORD/" -e "s/\${ADMIN_PASSWORD_SALT}/$ADMIN_PASSWORD_SALT/" -e "s/\${SRSA_HOSTNAME}/$SRSA_HOSTNAME/" /root/srs-app-template.yaml > /root/srs-app.yaml
 
     echo -e "\e[92mDeploy SRS on K8s Cluster" > /dev/console
     kubectl apply -f /root/srs-app.yaml

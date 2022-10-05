@@ -152,6 +152,7 @@ type: Opaque
 data:
   ADMIN_USER: "${ADMIN_USER}"
   ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+  ADMIN_PASSWORD_SALT: "${ADMIN_PASSWORD_SALT}"
 ---
 apiVersion: apps/v1
 kind: Deployment
