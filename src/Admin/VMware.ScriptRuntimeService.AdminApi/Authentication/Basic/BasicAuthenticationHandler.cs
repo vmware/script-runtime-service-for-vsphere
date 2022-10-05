@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Security;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -50,8 +51,16 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                var adminUser = Environment.GetEnvironmentVariable("ADMIN_USER")?.Trim();
                var adminPass = Environment.GetEnvironmentVariable("ADMIN_PASSWORD")?.Trim();
 
-               if ((username?.Equals(adminUser) ?? false) &&
-                  (password?.Equals(adminPass) ?? false)) {
+               if (!string.IsNullOrEmpty(username) &&
+                  !string.IsNullOrEmpty(password) &&
+                  !string.IsNullOrEmpty(adminUser) &&
+                  !string.IsNullOrEmpty(adminPass) &&
+                  CryptographicOperations.FixedTimeEquals(
+                     Encoding.UTF8.GetBytes(username),
+                     Encoding.UTF8.GetBytes(adminUser)) &&
+                  CryptographicOperations.FixedTimeEquals(
+                     Encoding.UTF8.GetBytes(password),
+                     Encoding.UTF8.GetBytes(adminPass))) {
 
                   // Successful authnetication
 
