@@ -59,7 +59,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                      Encoding.UTF8.GetBytes(adminUser)) &&
                   CryptographicOperations.FixedTimeEquals(
                      sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(adminPassSalt + password)),
-                     Encoding.UTF8.GetBytes(adminPass))) {
+                     Convert.FromBase64String(adminPass))) {
 
                      // Successful authnetication
 
