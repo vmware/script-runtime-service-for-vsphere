@@ -49,43 +49,36 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                var adminPass = Environment.GetEnvironmentVariable("ADMIN_PASSWORD")?.Trim();
                var adminPassSalt = Environment.GetEnvironmentVariable("ADMIN_PASSWORD_SALT")?.Trim();
 
-               using (SHA256 sha256Hash = SHA256.Create()) {
-                  if (!string.IsNullOrEmpty(username) &&
-                     !string.IsNullOrEmpty(password) &&
-                     !string.IsNullOrEmpty(adminUser) &&
-                     !string.IsNullOrEmpty(adminPass) &&
-                     !string.IsNullOrEmpty(adminPassSalt) &&
-                     CryptographicOperations.FixedTimeEquals(
-                        Encoding.UTF8.GetBytes(username),
-                        Encoding.UTF8.GetBytes(adminUser)) &&
-                     CryptographicOperations.FixedTimeEquals(
-                        sha256Hash.ComputeHash(
-                           Encoding.UTF8.GetBytes(
-                              adminPassSalt + 
-                              password)),
-                        Encoding.UTF8.GetBytes(adminPass))) {
+               if (!string.IsNullOrEmpty(username) &&
+                  !string.IsNullOrEmpty(password) &&
+                  !string.IsNullOrEmpty(adminUser) &&
+                  !string.IsNullOrEmpty(adminPass) &&
+                  !string.IsNullOrEmpty(adminPassSalt) &&
+                  FixedTimeEquals(username, adminUser) &&
+                  FixedTimeEquals(
+                     GetSha256Hash(adminPassSalt + password),
+                     adminPass)) {
 
-                     // Successful authnetication
+                  // Successful authnetication
 
-                     var claims = new[] {
-                        new Claim(ClaimTypes.Name, username),
-                     };
-                     var identity = new ClaimsIdentity(claims, AuthenticationScheme);
-                     var principal = new ClaimsPrincipal(identity);
+                  var claims = new[] {
+                     new Claim(ClaimTypes.Name, username),
+                  };
+                  var identity = new ClaimsIdentity(claims, AuthenticationScheme);
+                  var principal = new ClaimsPrincipal(identity);
 
-                     result = AuthenticateResult.Success(
-                        new AuthenticationTicket(principal, AuthenticationScheme));
-                  } else {
+                  result = AuthenticateResult.Success(
+                     new AuthenticationTicket(principal, AuthenticationScheme));
+               } else {
 
-                     // Unsuccessful authentication
+                  // Unsuccessful authentication
 
-                     if (string.IsNullOrEmpty(adminUser) ||
-                        string.IsNullOrEmpty(adminPass)) {
-                        result = AuthenticateResult.Fail("Script Runtime Service admin credentials are not setted up correctly");
-                     } else if ((!username?.Equals(adminUser) ?? true) ||
-                        (!password?.Equals(adminPass) ?? true)) {
-                        result = AuthenticateResult.Fail("Invalid username or password");
-                     }
+                  if (string.IsNullOrEmpty(adminUser) ||
+                     string.IsNullOrEmpty(adminPass)) {
+                     result = AuthenticateResult.Fail("Script Runtime Service admin credentials are not setted up correctly");
+                  } else if ((!username?.Equals(adminUser) ?? true) ||
+                     (!password?.Equals(adminPass) ?? true)) {
+                     result = AuthenticateResult.Fail("Invalid username or password");
                   }
                }
             } catch (Exception exc) {
@@ -95,6 +88,23 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
 
             return result;
          });
+      }
+
+      private string GetSha256Hash(string str) {
+         using(SHA256 sha = SHA256.Create()) {
+            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(str));
+            var strBuilder = new StringBuilder(bytes.Length);
+            for (var i = 0; i < bytes.Length; i++) {
+               strBuilder.Append(bytes[i].ToString("x2"));
+            }
+            return strBuilder.ToString();
+         }
+      }
+
+      private bool FixedTimeEquals(string left, string right) {
+         return CryptographicOperations.FixedTimeEquals(
+            Encoding.UTF8.GetBytes(left),
+            Encoding.UTF8.GetBytes(right));
       }
 
       protected override async Task HandleChallengeAsync(AuthenticationProperties properties) {
