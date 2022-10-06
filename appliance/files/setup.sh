@@ -213,7 +213,7 @@ EOF
     ADMIN_USER_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.adminuser")
     ADMIN_USER=$(echo $ADMIN_USER_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}' | base64)
     ADMIN_PASSWORD_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.adminpassword")
-    ADMIN_PASSWORD=$(echo $ADMIN_PASSWORD_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}' | base64)
+    ADMIN_PASSWORD=$(echo $ADMIN_PASSWORD_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
     SRSA_HOSTNAME=""
     if [ -z ${HOSTNAME} ]; then
       echo "Hostname not specified, setting default"
@@ -222,7 +222,8 @@ EOF
        SRSA_HOSTNAME=$HOSTNAME
     fi
     ADMIN_PASSWORD_SALT=$(openssl rand -base64 12)
-    ADMIN_PASSWORD=$(echo -n "$ADMIN_PASSWORD_SALT$ADMIN_PASSWORD"  | openssl dgst -binary -sha256 | openssl base64)
+    ADMIN_PASSWORD=$(echo -n "$ADMIN_PASSWORD_SALT$ADMIN_PASSWORD" | openssl dgst -binary -sha256 | openssl base64)
+
     sed -e "s/\${VC_SERVER}/$VC_IP/" -e "s/\${VC_USER}/$VC_USER/" -e "s/\${VC_PASSWORD}/$VC_PASSWORD/" -e "s/\${VC_THUMBPRINT}/$VC_TLS_THUMBPRINT/" -e "s/\${ADMIN_USER}/$ADMIN_USER/" -e "s/\${ADMIN_PASSWORD}/$ADMIN_PASSWORD/" -e "s/\${ADMIN_PASSWORD_SALT}/$ADMIN_PASSWORD_SALT/" -e "s/\${SRSA_HOSTNAME}/$SRSA_HOSTNAME/" /root/srs-app-template.yaml > /root/srs-app.yaml
 
     echo -e "\e[92mDeploy SRS on K8s Cluster" > /dev/console
