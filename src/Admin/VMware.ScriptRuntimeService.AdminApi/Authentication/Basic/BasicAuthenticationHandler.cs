@@ -48,18 +48,22 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                var adminUser = Environment.GetEnvironmentVariable("ADMIN_USER")?.Trim();
                var adminPass = Environment.GetEnvironmentVariable("ADMIN_PASSWORD")?.Trim();
                var adminPassSalt = Environment.GetEnvironmentVariable("ADMIN_PASSWORD_SALT")?.Trim();
+
                using (SHA256 sha256Hash = SHA256.Create()) {
                   if (!string.IsNullOrEmpty(username) &&
-                  !string.IsNullOrEmpty(password) &&
-                  !string.IsNullOrEmpty(adminUser) &&
-                  !string.IsNullOrEmpty(adminPass) &&
-                  !string.IsNullOrEmpty(adminPassSalt) &&
-                  CryptographicOperations.FixedTimeEquals(
-                     Encoding.UTF8.GetBytes(username),
-                     Encoding.UTF8.GetBytes(adminUser)) &&
-                  CryptographicOperations.FixedTimeEquals(
-                     sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(adminPassSalt + password)),
-                     Convert.FromBase64String(adminPass))) {
+                     !string.IsNullOrEmpty(password) &&
+                     !string.IsNullOrEmpty(adminUser) &&
+                     !string.IsNullOrEmpty(adminPass) &&
+                     !string.IsNullOrEmpty(adminPassSalt) &&
+                     CryptographicOperations.FixedTimeEquals(
+                        Encoding.UTF8.GetBytes(username),
+                        Convert.FromBase64String(adminUser)) &&
+                     CryptographicOperations.FixedTimeEquals(
+                        sha256Hash.ComputeHash(
+                           Encoding.UTF8.GetBytes(
+                              adminPassSalt + 
+                              password)),
+                        Convert.FromBase64String(adminPass))) {
 
                      // Successful authnetication
 
