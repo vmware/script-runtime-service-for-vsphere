@@ -65,11 +65,11 @@
             <Label>AdminPassword</Label>
             <Description>Password for administration service access</Description>
         </Property>
-        <Property ovf:key="srs.dockeruser" ovf:type="string" ovf:userConfigurable="true" ovf:value="false">
+        <Property ovf:key="srs.dockeruser" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
             <Label>DockerUser</Label>
             <Description>Docker Username to login to dockerhub.io to avoid anonymous docker pull limits</Description>
         </Property>
-        <Property ovf:key="srs.dockerpassword" ovf:type="string" ovf:userConfigurable="true" ovf:value="false">
+        <Property ovf:key="srs.dockerpassword" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
             <Label>DockerPassword</Label>
             <Description>Docker Password to login to dockerhub.io to avoid anonymous docker pull limits</Description>
         </Property>

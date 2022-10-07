@@ -107,6 +107,7 @@ __CUSTOMIZE_PHOTON__
     if [ -z ${DOCKER_USER} ]; then
       echo "Docker user not specified"
     else
+      echo "Using Docker user ${DOCKER_USER}"
       docker login --username=$DOCKER_USER --password=$DOCKER_PASS
     fi
 
