@@ -54,40 +54,15 @@
     }
   ],
   "provisioners": [
-    {
+   {
       "type": "file",
       "source": "files/rc.local",
       "destination": "/etc/rc.d/rc.local"
     },
     {
       "type": "file",
-      "source": "files/ingress-controller.yaml",
-      "destination": "/root/ingress-controller.yaml"
-    },
-    {
-      "type": "file",
-      "source": "files/srs-base-docker-image.tar",
-      "destination": "/root/srs-base-docker-image.tar"
-    },
-    {
-      "type": "file",
-      "source": "files/srs-setup-docker-image.tar",
-      "destination": "/root/srs-setup-docker-image.tar"
-    },
-    {
-      "type": "file",
-      "source": "files/srs-apigateway-docker-image.tar",
-      "destination": "/root/srs-apigateway-docker-image.tar"
-    },
-    {
-      "type": "file",
-      "source": "files/pclirunspace-docker-image.tar",
-      "destination": "/root/pclirunspace-docker-image.tar"
-    },
-    {
-      "type": "file",
-      "source": "files/srs-app-template.yaml",
-      "destination": "/root/srs-app-template.yaml"
+      "source": "files/",
+      "destination": "/root"
     },
     {
       "type": "shell",
@@ -96,16 +71,6 @@
         "scripts/install-kind.sh",
         "scripts/photon-cleanup.sh"
       ]
-    },
-    {
-      "type": "file",
-      "source": "files/setup.sh",
-      "destination": "/root/setup.sh"
-    },
-    {
-      "type": "file",
-      "source": "files/update-pclirunspace-image.sh",
-      "destination": "/root/update-pclirunspace-image.sh"
     }
   ],
   "post-processors": [

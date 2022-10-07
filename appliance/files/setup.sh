@@ -184,11 +184,7 @@ EOF
 
     echo -e "\e[92mStep 2: Pull images from local store" > /dev/console
     echo -e "\e[92mLoad srs docker images in docker" > /dev/console
-    docker load < /root/srs-base-docker-image.tar
-    docker load < /root/srs-setup-docker-image.tar
-    docker load < /root/srs-adminapi-docker-image.tar
-    docker load < /root/srs-apigateway-docker-image.tar
-    docker load < /root/pclirunspace-docker-image.tar
+    cat *.tar | docker load # issue the load command to try and load all images at once
 
     echo -e "\e[92mPre-pull srs docker images in kind k8s node" > /dev/console
     SRS_IMAGES_VERSION=1.0
