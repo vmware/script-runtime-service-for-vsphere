@@ -11,9 +11,20 @@ DOCKER_COMMAND=$4
 PRODUCT_VERSION=$5
 PRODUCT_VERSION_SUFFIX=$6
 
+PARAM_7="${7,,}"
+PARAM_8="${8,,}"
 
-EXPORT_ALL_NEEDED_CONTAINERS="${7,,}"
-EXPORT_ALL_IN_ONE_ARCHIVE="${8,,}"
+if [ "$PARAM_7" = "one-archive" ];then
+   EXPORT_ALL_IN_ONE_ARCHIVE="one-archive"
+elif [ "$PARAM_7" = "export-all-containers" ];then
+   EXPORT_ALL_NEEDED_CONTAINERS="export-all-containers"
+fi
+
+if [ "$PARAM_8" = "one-archive" ];then
+   EXPORT_ALL_IN_ONE_ARCHIVE="one-archive"
+elif [ "$PARAM_8" = "export-all-containers" ];then
+   EXPORT_ALL_NEEDED_CONTAINERS="export-all-containers"
+fi
 
 if [ -z "$PCLI_SOURCE_DIR" ];then
 	echo -e "\e[31mERROR: Specify source PowerCLI Modules directory as first argument of this script.\e[0m"
