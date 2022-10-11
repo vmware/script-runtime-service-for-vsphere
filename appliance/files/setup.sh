@@ -112,7 +112,7 @@ __CUSTOMIZE_PHOTON__
     fi
 
     echo -e "\e[92mLoad supplied docker images" > /dev/console
-    cat *.tar | docker load # issue the load command to try and load all images at once
+    cat /root/*.tar | docker load # issue the load command to try and load all images at once
 
     echo "Create Cluster with ingress ready. Configures host port forwarding to ingress" > /dev/console
     cat <<EOF | kind create cluster --config=-
@@ -135,8 +135,12 @@ nodes:
     protocol: TCP
 EOF
      echo "Pull nginx docker images"
-     docker pull docker.io/jettech/kube-webhook-certgen:v1.2.2
-     docker pull us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1
+     if [ "$(docker images "jettech/kube-webhook-certgen:v1.2.2" -q)" = "" ]; then
+         docker pull docker.io/jettech/kube-webhook-certgen:v1.2.2
+     fi
+     if [ "$(docker images "us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1" -q)" = "" ]; then
+         docker pull us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1
+     fi
 
      echo "Load nginx docker image to kind node"
      kind load docker-image jettech/kube-webhook-certgen:v1.2.2
