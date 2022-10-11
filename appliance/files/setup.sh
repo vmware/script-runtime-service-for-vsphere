@@ -111,6 +111,9 @@ __CUSTOMIZE_PHOTON__
       docker login --username=$DOCKER_USER --password=$DOCKER_PASS
     fi
 
+    echo -e "\e[92mLoad supplied docker images" > /dev/console
+    cat *.tar | docker load # issue the load command to try and load all images at once
+
     echo "Create Cluster with ingress ready. Configures host port forwarding to ingress" > /dev/console
     cat <<EOF | kind create cluster --config=-
 kind: Cluster
@@ -184,8 +187,6 @@ EOF
     fi
 
     echo -e "\e[92mStep 2: Pull images from local store" > /dev/console
-    echo -e "\e[92mLoad srs docker images in docker" > /dev/console
-    cat *.tar | docker load # issue the load command to try and load all images at once
 
     echo -e "\e[92mPre-pull srs docker images in kind k8s node" > /dev/console
     SRS_IMAGES_VERSION=1.0

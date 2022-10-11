@@ -63,6 +63,14 @@ SRS_ADMINAPI_CONTAINER_BUILD="$SRC_DIR/Admin/VMware.ScriptRuntimeService.AdminAp
 SRS_APIGATEWAY_CONTAINER_BUILD="$SRC_DIR/Endpoint/VMware.ScriptRuntimeService.APIGateway/docker/build.sh"
 PCLI_RUNSPACE_CONTAINER_BUILD="$SRC_DIR/Runspace/VMware.ScriptRuntimeService.RunspaceEndpoint/docker/pclirunspace/build.sh"
 
+echo "INFO: Clean existing docker images"
+$DOCKER_COMMAND rmi $($DOCKER_COMMAND images --filter "dangling=true" -q --no-trunc)
+$DOCKER_COMMAND images -a | grep "$PCLI_RUNSPACE_IMAGE_NAME" | awk '{print $3}' | xargs docker rmi
+$DOCKER_COMMAND images -a | grep "$APIGATEWAY_IMAGE_NAME:$CONTAINER_VERSION_LABEL" | awk '{print $3}' | xargs docker rmi
+$DOCKER_COMMAND images -a | grep "$ADMINAPI_IMAGE_NAME:$CONTAINER_VERSION_LABEL" | awk '{print $3}' | xargs docker rmi
+$DOCKER_COMMAND images -a | grep "$SETUP_IMAGE_NAME:$CONTAINER_VERSION_LABEL" | awk '{print $3}' | xargs docker rmi
+$DOCKER_COMMAND images -a | grep "$BASE_LAYER_IMAGE_NAME:$CONTAINER_VERSION_LABEL" | awk '{print $3}' | xargs docker rmi
+
 echo "INFO: Build Base Layer Container '$BASE_LAYER_BUILD'"
 $BASE_LAYER_BUILD $BASE_LAYER_IMAGE_NAME $DOTNET_COMMAND $DOCKER_COMMAND
 
@@ -96,6 +104,17 @@ if test -f "$CONTAINERS_EXPORT_DIR/$PCLI_RUNSPACE_IMAGE_NAME-$IMAGE_EXPORT_FILE"
 fi
 if test -f "$CONTAINERS_EXPORT_DIR/$ONE_ARCHIVE_NAME"; then
 	rm -f $CONTAINERS_EXPORT_DIR/$ONE_ARCHIVE_NAME
+fi
+if test -f "$CONTAINERS_EXPORT_DIR/$CERT_GEN_PRETTY_IMAGE_NAME-$IMAGE_EXPORT_FILE"; then
+	rm -f $CONTAINERS_EXPORT_DIR/$CERT_GEN_PRETTY_IMAGE_NAME-$IMAGE_EXPORT_FILE
+fi
+if test -f "$CONTAINERS_EXPORT_DIR/$NGINX_PRETTY_IMAGE_NAME-$IMAGE_EXPORT_FILE"; then
+	rm -f $CONTAINERS_EXPORT_DIR/$NGINX_PRETTY_IMAGE_NAME-$IMAGE_EXPORT_FILE
+fi
+
+if [ "$EXPORT_ALL_NEEDED_CONTAINERS" = "export-all-containers" ];then
+   $DOCKER_COMMAND pull $CERT_GEN_IMAGE_NAME:$CERT_GEN_IMAGE_VERSION
+   $DOCKER_COMMAND pull $NGINX_IMAGE_NAME:$NGINX_IMAGE_VERSION
 fi
 
 if [ "$EXPORT_ALL_IN_ONE_ARCHIVE" = "one-archive" ];then
