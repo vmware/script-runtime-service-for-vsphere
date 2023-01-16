@@ -75,7 +75,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
 
                   if (string.IsNullOrEmpty(adminUser) ||
                      string.IsNullOrEmpty(adminPass)) {
-                     result = AuthenticateResult.Fail("Script Runtime Service admin credentials are not setted up correctly");
+                     result = AuthenticateResult.Fail("Script Runtime Service admin credentials are not set up correctly");
                   } else if ((!username?.Equals(adminUser) ?? true) ||
                      (!password?.Equals(adminPass) ?? true)) {
                      result = AuthenticateResult.Fail("Invalid username or password");
@@ -83,7 +83,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                }
             } catch (Exception exc) {
                _logger.Log(LogLevel.Error, $"Basic Authorization failure: {exc}");
-               result = AuthenticateResult.Fail(exc.Message);
+               result = AuthenticateResult.Fail("Authentication failed, see the administrative log for error details.");
             }
 
             return result;

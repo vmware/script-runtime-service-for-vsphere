@@ -80,7 +80,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
       public override long Seek(long offset, SeekOrigin origin) {
          var result = _baseStreamReader.BaseStream.Seek(offset, origin);
          _baseStreamReader.DiscardBufferedData();
-         
+
          return result;
       }
 
@@ -101,7 +101,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
       protected override void Dispose(bool disposing) {
          try {
             if (_baseStreamReader != null) {
-               _baseStreamReader.Close();
+               _baseStreamReader.Dispose();
             }
          } finally {
             if (_baseStreamReader != null) {

@@ -92,6 +92,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
       }
 
       public void WriteSettings(string settingsName, object settingsObject) {
+
+         if (string.IsNullOrEmpty(settingsName)) {
+            throw new ArgumentNullException(nameof(settingsName));
+         }
+
          var configMapName = settingsName;
          var configMapDataKey = $"{settingsName}.json";
 
@@ -105,6 +110,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
       }
 
       public T ReadSettings<T>(string settingsName) {
+
+         if (string.IsNullOrEmpty(settingsName)) {
+            throw new ArgumentNullException(nameof(settingsName));
+         }
+
          var configMapName = settingsName;
          var configMapDataKey = $"{settingsName}.json";
 
@@ -115,12 +125,16 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
             return (T) result;
          } catch (Exception exc) {
             _logger.LogError($"Reading k8s config map {settingsName} failed: {exc}");
+            throw;
          }
-
-         return default(T);
       }
 
       public void DeleteSettings(string settingsName) {
+
+         if (string.IsNullOrEmpty(settingsName)) {
+            throw new ArgumentNullException(nameof(settingsName));
+         }
+
          var configMapName = settingsName;
 
          try {
@@ -128,6 +142,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
             _k8sClient.DeleteConfigMap(configMapName);
          } catch (Exception exc) {
             _logger.LogError($"Delete k8s config map {settingsName} failed: {exc}");
+            throw;
          }
       }
    }

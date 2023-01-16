@@ -17,7 +17,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
    [ModelBinder(typeof(LogTypeJsonModelBinder))]
    [DataContract(Name = "log_type")]
    [ReadOnly(true)]
-   public enum LogType {      
+   public enum LogType {
       [EnumMember(Value = "setup")]
       Setup = 0,
 

@@ -73,15 +73,15 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       [HttpGet]
       [ProducesResponseType(typeof(RegisteredVC), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<RegisteredVC> Get() {
-         ActionResult<RegisteredVC> result;
+      public ActionResult<RegisteredVC[]> Get() {
+         ActionResult<RegisteredVC[]> result;
          try {
             var configProxy = new K8sConfigRepository(_loggerFactory, _k8sSettings);
             var vcRegistrator = new VCRegistrator(_loggerFactory, configProxy, configProxy);
 
-            result = Ok(new RegisteredVC() {
+            result = Ok(new [] { new RegisteredVC() {
                VCAddress = vcRegistrator.GetRegisteredVC()
-            });
+            }});
          } catch (SrsNotRegisteredException ex) {
             result = StatusCode(404, new ErrorDetails(ex) { Code = 404 });
          } catch (Exception ex) {

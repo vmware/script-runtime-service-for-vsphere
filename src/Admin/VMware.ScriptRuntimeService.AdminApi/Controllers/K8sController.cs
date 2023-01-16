@@ -41,7 +41,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       public void RestartSrsService() {
          _logger.LogInformation("K8sServiceController restarting the SRS Api gateway.");
          try {
-            var srsApiGatewayPod = _k8sClient.GetPod(label: "app=srs-apigateway");
+            var srsApiGatewayPod = _k8sClient.GetPod(label: _podTypeToLableMap[LogType.ApiGateway]);
             if (srsApiGatewayPod != null) {
                _k8sClient.DeletePod(srsApiGatewayPod);
             }
@@ -62,7 +62,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
             foreach (var type in _podTypeToLableMap) {
                if (logType == type.Key) {
                   var pod = _k8sClient.GetPod(label: type.Value);
-                  
+
                   if (pod != null) {
                      _logger.LogDebug($"Getting {logType} log for pod {pod.Metadata.Name}");
                      return _k8sClient.GetPodLogReader(pod);

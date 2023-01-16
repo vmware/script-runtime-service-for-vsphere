@@ -32,6 +32,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
 
       [HttpGet(Name = "get-log")]
       [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status404NotFound)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
       public ActionResult Get([FromQuery] LogType type) {

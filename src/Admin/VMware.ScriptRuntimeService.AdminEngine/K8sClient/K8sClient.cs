@@ -5,6 +5,7 @@
 
 using k8s;
 using System.Collections.Generic;
+using System;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using System.IO;
@@ -200,6 +201,10 @@ namespace VMware.ScriptRuntimeService.AdminEngine.K8sClient {
       public Stream GetPodLogReader(
          V1Pod pod,
          int? sinceSeconds = null) {
+
+         if (pod is null) {
+            throw new ArgumentNullException(nameof(pod));
+         }
 
          return new PodLogReader(_k8sClient.CoreV1.ReadNamespacedPodLog(
             pod.Metadata.Name,

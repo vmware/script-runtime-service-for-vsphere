@@ -15,10 +15,10 @@ namespace VMware.ScriptRuntimeService.AdminApi.Exceptions {
       public UnknownLogTypeException() {
       }
 
-      public UnknownLogTypeException(LogType logType) {
+      public UnknownLogTypeException(LogType logType) : base($"The {logType} is not recognized by the system.") {
          _logType = logType;
       }
-      
+
       public UnknownLogTypeException(LogType logType, string message) : base(message) {
          _logType = logType;
       }

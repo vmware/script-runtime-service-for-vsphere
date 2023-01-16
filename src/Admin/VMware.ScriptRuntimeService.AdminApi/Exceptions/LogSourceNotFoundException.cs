@@ -22,7 +22,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Exceptions {
       public LogSourceNotFoundException(string message, Exception innerException) : base(message, innerException) {
       }
 
-      public LogSourceNotFoundException(LogType podType, string label) {
+      public LogSourceNotFoundException(LogType podType, string label) : base($"Pod with label {label} and type {podType} was not found") {
          _podType = podType;
          _label = label;
       }
