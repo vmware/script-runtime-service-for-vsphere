@@ -11,6 +11,9 @@ using VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters;
 using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.SetupFlows {
+   /// <summary>
+   /// Base class to encapsulate complete specific setup flow implementation
+   /// </summary>
    public abstract class BaseSetupFlow {
       protected readonly ILoggerFactory _loggerFactory;
       protected ILogger _logger;

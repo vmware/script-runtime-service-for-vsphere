@@ -6,6 +6,9 @@
 using Microsoft.Extensions.Logging;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.SetupFlows {
+   /// <summary>
+   /// Setup flow that updates Tls certificates
+   /// </summary>
    public class UpdateTlsCertificateSetupFlow : BaseSetupFlow, ISetupFlow {
       protected override SetupFlowType Type => SetupFlowType.UpdateTlsCertificate;
       public UpdateTlsCertificateSetupFlow(ILoggerFactory loggerFactory) : base(loggerFactory) {

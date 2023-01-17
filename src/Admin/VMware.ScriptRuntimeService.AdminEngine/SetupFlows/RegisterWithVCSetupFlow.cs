@@ -6,6 +6,9 @@
 using Microsoft.Extensions.Logging;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.SetupFlows {
+   /// <summary>
+   /// Setup flow to register SRS to a VC
+   /// </summary>
    public class RegisterWithVCSetupFlow : BaseSetupFlow, ISetupFlow {
       protected override SetupFlowType Type => SetupFlowType.RegisterWithVC;
       public RegisterWithVCSetupFlow(ILoggerFactory loggerFactory) : base(loggerFactory) {

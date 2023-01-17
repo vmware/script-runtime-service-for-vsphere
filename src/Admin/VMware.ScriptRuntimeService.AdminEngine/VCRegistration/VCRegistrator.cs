@@ -17,6 +17,9 @@ using VMware.ScriptRuntimeService.Ls;
 using VMware.ScriptRuntimeService.SsoAdmin;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
+   /// <summary>
+   /// Service like class that runs specific setup flows
+   /// </summary>
    public class VCRegistrator {
       private readonly ILoggerFactory _loggerFactory;
       private readonly IConfigWriter _configWriter;

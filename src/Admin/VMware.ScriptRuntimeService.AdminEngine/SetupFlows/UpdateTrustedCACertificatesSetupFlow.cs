@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 using VMware.ScriptRuntimeService.AdminEngine.VCRegistration;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.SetupFlows {
+   /// <summary>
+   /// Setup flow that updates trusted CA certificates
+   /// </summary>
    public class UpdateTrustedCACertificatesSetupFlow : BaseSetupFlow, ISetupFlow {
       protected override SetupFlowType Type => SetupFlowType.UpdateTrustedCACertificates;
 

@@ -6,6 +6,9 @@
 using Microsoft.Extensions.Logging;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.SetupFlows {
+   /// <summary>
+   /// Factory class to create specific setup flows
+   /// </summary>
    public static class SetupFlowFactory {
       public static ISetupFlow Create(ILoggerFactory loggerFactory, SetupFlowType setupFlowType) {
          ISetupFlow result = null;

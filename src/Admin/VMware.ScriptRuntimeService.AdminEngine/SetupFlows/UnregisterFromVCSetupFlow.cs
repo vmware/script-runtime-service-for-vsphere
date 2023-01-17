@@ -6,6 +6,9 @@
 using Microsoft.Extensions.Logging;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.SetupFlows {
+   /// <summary>
+   /// Setup flow that de-registers SRS from a VC
+   /// </summary>
    public class UnregisterFromVCSetupFlow : BaseSetupFlow, ISetupFlow {
       protected override SetupFlowType Type => SetupFlowType.UnregisterFromVC;
 
