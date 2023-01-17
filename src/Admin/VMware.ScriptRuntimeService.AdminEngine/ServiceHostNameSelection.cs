@@ -52,9 +52,15 @@ namespace VMware.ScriptRuntimeService.AdminEngine {
                throw new InvalidDataException("Invalid IP address option was provided.");
             }
 
+            if (intAnswer < 0 || intAnswer >= ipAddresses.Count) {
+               throw new ArgumentOutOfRangeException("Selected IP not within valid range.");
+            }
+
             hostname = ipAddresses[intAnswer - 1];
-         } else {
+         } else if (ipAddresses.Count == 1) {
             hostname = ipAddresses[0];
+         } else {
+            throw new ArgumentException("Unable to get service IP addresses.");
          }
 
          // IP or Hostname has been selected
