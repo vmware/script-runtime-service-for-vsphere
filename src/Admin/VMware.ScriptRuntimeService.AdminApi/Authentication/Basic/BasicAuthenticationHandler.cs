@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using VMware.ScriptRuntimeService.AdminApi;
 
 namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
    public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions> {
@@ -21,14 +22,17 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
 
       private readonly ILogger _logger;
       private readonly ILoggerFactory _loggerFactory;
+      private readonly IEnvironment _environment;
 
       public BasicAuthenticationHandler(
          IOptionsMonitor<AuthenticationSchemeOptions> options,
          ILoggerFactory loggerFactory,
          UrlEncoder encoder,
-         ISystemClock clock)
+         ISystemClock clock,
+         IEnvironment environment)
          : base(options, loggerFactory, encoder, clock) {
          _loggerFactory = loggerFactory;
+         _environment = environment ?? throw new ArgumentNullException(nameof(environment));
          _logger = _loggerFactory.CreateLogger(typeof(BasicAuthenticationHandler));
       }
 
@@ -45,9 +49,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                var username = credentials[0];
                var password = credentials[1];
 
-               var adminUser = Environment.GetEnvironmentVariable("ADMIN_USER")?.Trim();
-               var adminPass = Environment.GetEnvironmentVariable("ADMIN_PASSWORD")?.Trim();
-               var adminPassSalt = Environment.GetEnvironmentVariable("ADMIN_PASSWORD_SALT")?.Trim();
+               var adminUser = _environment.GetEnvironmentVariable("ADMIN_USER")?.Trim();
+               var adminPass = _environment.GetEnvironmentVariable("ADMIN_PASSWORD")?.Trim();
+               var adminPassSalt = _environment.GetEnvironmentVariable("ADMIN_PASSWORD_SALT")?.Trim();
 
                if (!string.IsNullOrEmpty(username) &&
                   !string.IsNullOrEmpty(password) &&

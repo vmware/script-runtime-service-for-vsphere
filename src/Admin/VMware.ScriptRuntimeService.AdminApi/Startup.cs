@@ -41,6 +41,7 @@ namespace VMware.ScriptRuntimeService.AdminApi
             });
 
          services.AddScoped<IK8sController, K8sController>();
+         services.AddSingleton<IEnvironment, EnvironmentWrapper>();
 
          // configure basic authentication 
          services.AddAuthentication("BasicAuthentication")
