@@ -4,17 +4,18 @@
 // **************************************************************************
 
 using System;
-using k8s.KubeConfigModels;
 using Microsoft.Extensions.Logging;
-using VMware.ScriptRuntimeService.Setup.SetupFlows;
+using VMware.ScriptRuntimeService.AdminEngine.SetupFlows;
 
 namespace VMware.ScriptRuntimeService.Setup {
    internal class Program {
       private static int Main(string[] args) {
          using (var loggerFactory = LoggerFactory.Create(builder => {
-            builder.AddFilter("Microsoft", LogLevel.Warning)
-                   .AddFilter("System", LogLevel.Warning)
-                   .AddFilter("VMware.ScriptRuntimeService.Setup", LogLevel.Debug)
+            builder
+                   .AddFilter("Default", LogLevel.Trace)
+                   .AddFilter("Microsoft", LogLevel.Trace)
+                   .AddFilter("System", LogLevel.Trace)
+                   .AddFilter("VMware.ScriptRuntimeService.Setup", LogLevel.Trace)
                    .AddConsole();})) {
 
             var logger = loggerFactory.CreateLogger(typeof(Program));
@@ -30,7 +31,6 @@ namespace VMware.ScriptRuntimeService.Setup {
                      MaxDepth = int.MaxValue
                   };
             } else {
-
                var settings = defaultSettingsFunc();
                defaultSettingsFunc =
                   () => {
@@ -46,7 +46,7 @@ namespace VMware.ScriptRuntimeService.Setup {
                var setupFlow = SetupFlowFactory.Create(loggerFactory, userInput.Run);
                return setupFlow.Run(userInput);
             } catch (Exception exc) {
-               logger.LogError(exc, "No valid input is extracted from environment variables and commandline arguments");
+               logger.LogError(exc, "No valid input is extracted from environment variables and command line arguments");
                return 1;
             }
          }

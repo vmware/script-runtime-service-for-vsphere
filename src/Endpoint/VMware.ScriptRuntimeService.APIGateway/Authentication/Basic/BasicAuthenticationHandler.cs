@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -13,12 +13,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using System.Xml;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using VMware.Http.Sso.Authentication;
-using VMware.ScriptRuntimeService.APIGateway.Authentication.Sign;
 using VMware.ScriptRuntimeService.APIGateway.Properties;
 using VMware.ScriptRuntimeService.APIGateway.Sts;
 using VMware.ScriptRuntimeService.APIGateway.Sts.Impl;

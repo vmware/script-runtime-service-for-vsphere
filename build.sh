@@ -23,7 +23,7 @@ BUILD_APPLIANCE_SCRIPT="$SCRIPT_DIR/appliance/buildappliance.sh"
 CONTAINERS_OUTPUT_DIR="$SCRIPT_DIR/appliance/files"
 
 echo "[Step 1] Build SRS containers"
-$BUILD_CONTAINERS_SCRIPT $PCLI_SOURCE_DIR $CONTAINERS_OUTPUT_DIR
+$BUILD_CONTAINERS_SCRIPT $PCLI_SOURCE_DIR $CONTAINERS_OUTPUT_DIR "" "" "" "" "${3,,}" "${4,,}"
 
 echo "[Step 2] Build SRS appliance"
 if [ "$PACKER_BUILDER_TYPE" = "vsphere" ];then

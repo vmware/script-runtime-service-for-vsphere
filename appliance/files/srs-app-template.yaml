@@ -40,6 +40,12 @@ data:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: srs-admin
+  namespace: script-runtime-service
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   name: srs-setup
   namespace: script-runtime-service
 ---
@@ -65,10 +71,14 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: srs-setup
+- kind: ServiceAccount
+  name: srs-admin
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
+  labels:
+    app: srs-setup
   name: srs-setup
   namespace: script-runtime-service
 spec:
@@ -107,7 +117,7 @@ metadata:
   namespace: script-runtime-service
 rules:
 - apiGroups: [""]
-  resources: ["pods", "pods/log", "configmaps","services"]
+  resources: ["pods", "pods/log", "configmaps", "services"]
   verbs: ["get", "list", "watch", "create", "delete"]
 - apiGroups: ["apps"]
   resources: ["deployments"]
@@ -129,6 +139,104 @@ subjects:
 - kind: ServiceAccount
   name: srs-runspace-provider
   namespace: script-runtime-service
+- kind: ServiceAccount
+  name: srs-admin
+  namespace: script-runtime-service
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: srs-adminapi-credentials
+  namespace: script-runtime-service
+type: Opaque
+data:
+  ADMIN_USER: "${ADMIN_USER}"
+  ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+  ADMIN_PASSWORD_SALT: "${ADMIN_PASSWORD_SALT}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: srs-adminapi
+  name: srs-adminapi
+  namespace: script-runtime-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: srs-adminapi
+  template:
+    metadata:
+      labels:
+        app: srs-adminapi
+    spec:
+      serviceAccountName: srs-admin
+      containers:
+        - image: "srs-adminapi:1.0"
+          imagePullPolicy: IfNotPresent
+          name: srs-adminapi
+          volumeMounts:
+            - name: service-settings
+              mountPath: "/app/service/settings/settings.json"
+              subPath: "settings.json"
+              readOnly: false
+            - name: sts-settings
+              mountPath: "/app/service/settings/sts-settings.json"
+              subPath: "sts-settings.json"
+              readOnly: false
+            - name: trusted-ca-certs
+              mountPath: "/app/service/trusted-ca-certs"
+              readOnly: false
+            - name: sign-certificate
+              mountPath: "/app/service/settings/sign-certs"
+              readOnly: false
+            - name: tls-certificate
+              mountPath: "/app/service/settings/tls-certs"
+              readOnly: false
+          ports:
+            - containerPort: 5555
+              protocol: TCP
+          env:
+            - name: DOTNET_SYSTEM_GLOBALIZATION_INVARIANT
+              value: "1"
+            - name: SERVICE_SIGNING_CERTIFICATE_PATH
+              value: "/app/service/settings/sign-certs/srs-sign.p12"
+            - name: SERVICE_TLS_CERTIFICATE_PATH
+              value: "/app/service/settings/tls-certs/tls.crt"
+            - name: SERVICE_HOSTNAME
+              value: "${SRSA_HOSTNAME}"
+          envFrom:
+            - secretRef:
+                name: srs-adminapi-credentials
+                optional: true
+      volumes:
+        - name: sign-certificate
+          secret:
+            secretName: srs-sign
+            optional: true
+        - name: tls-certificate
+          secret:
+            secretName: srs-tls
+            optional: true
+        - name: trusted-ca-certs
+          configMap:
+            name: trusted-ca-certs
+            optional: true
+        - name: service-settings
+          configMap:
+            name: service-settings
+            optional: true
+            items:
+            - key: settings.json
+              path: settings.json
+        - name: sts-settings
+          configMap:
+            name: sts-settings
+            optional: true
+            items:
+            - key: sts-settings.json
+              path: sts-settings.json
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -173,7 +281,7 @@ spec:
       volumes:
         - name: sign-certificate
           secret:
-            secretName: sign-cert
+            secretName: srs-sign
         - name: trusted-ca-certs
           configMap:
             name: trusted-ca-certs
@@ -193,6 +301,21 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: srs-adminapi
+  namespace: script-runtime-service
+spec:
+  ports:
+  - port: 5555
+    protocol: TCP
+    targetPort: 5555
+  selector:
+    app: srs-adminapi
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: srs-apigateway
   namespace: script-runtime-service
 spec:
@@ -208,6 +331,8 @@ spec:
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
   name: srs-ingress
   namespace: script-runtime-service
 spec:
@@ -219,7 +344,33 @@ spec:
   - host: ${SRSA_HOSTNAME}
   - http:
       paths:
-      - path: /
+      - path: /(swagger/admin.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-adminapi
+          servicePort: 5555
+      - path: /admin/(swagger.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-adminapi
+          servicePort: 5555
+      - path: /(admin/.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-adminapi
+          servicePort: 5555
+      - path: /(swagger/srs.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-apigateway
+          servicePort: 5050
+      - path: /api/(swagger.*)
+        pathType: Prefix
+        backend:
+          serviceName: srs-apigateway
+          servicePort: 5050
+      - path: /(api/.*)
+        pathType: Prefix
         backend:
           serviceName: srs-apigateway
           servicePort: 5050

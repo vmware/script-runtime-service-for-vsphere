@@ -5,6 +5,7 @@
 
 using System.IO;
 using NUnit.Framework;
+using VMware.ScriptRuntimeService.AdminEngine;
 using VMware.ScriptRuntimeService.Setup;
 
 namespace VMware.ScriptRuntimeService.Setup.Tests

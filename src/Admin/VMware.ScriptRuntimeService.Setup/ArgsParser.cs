@@ -1,15 +1,14 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using VMware.ScriptRuntimeService.AdminEngine;
 
 namespace VMware.ScriptRuntimeService.Setup {
    public class ArgsParser {
-      private string[] _positionalParameters = new string[] { };// { "psc", "user", "password", "configdir" };
+      private readonly string[] _positionalParameters = new string[] { };// { "psc", "user", "password", "configdir" };
 
       private class Token {
          public string Parameter { get; set; }

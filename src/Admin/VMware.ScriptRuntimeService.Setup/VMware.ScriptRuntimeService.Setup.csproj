@@ -11,32 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-   <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.3.0" />
-   <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-   <PackageReference Include="System.IO.Abstractions" Version="6.0.32" />
-   <PackageReference Include="KubernetesClient" Version="1.6.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\vSphereIntegrationLibraries\VMware.ScriptRuntimeService.Ls\VMware.ScriptRuntimeService.Ls.csproj" />
     <ProjectReference Include="..\..\vSphereIntegrationLibraries\VMware.ScriptRuntimeService.SsoAdmin\VMware.ScriptRuntimeService.SsoAdmin.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <ProjectReference Include="..\VMware.ScriptRuntimeService.AdminEngine\VMware.ScriptRuntimeService.AdminEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,12 +27,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="config\SetupServiceSettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="shellscripts\gen-tls-cert.sh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="shellscripts\gen-signing-cert.sh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

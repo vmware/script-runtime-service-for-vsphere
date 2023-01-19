@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -7,6 +7,7 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Text;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using VMware.ScriptRuntimeService.AdminEngine;
 
 namespace VMware.ScriptRuntimeService.Setup.Tests {
    public class SettingsEditorTests {
