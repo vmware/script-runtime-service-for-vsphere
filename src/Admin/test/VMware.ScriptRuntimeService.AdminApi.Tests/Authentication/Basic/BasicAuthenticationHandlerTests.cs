@@ -123,6 +123,28 @@ namespace VMware.ScriptRuntimeService.AdminApi.Tests.Authentication.Basic {
          var username = "administrator@vsphere.local";
          var password = "Admin!23";
          var salt = "g9H6g+AGZOY/uA8+";
+         var saltedPassword = salt + password;
+         var header = FormatAuthorizationHeader(username, saltedPassword);
+
+         _environment.Reset();
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_USER")).Returns(username);
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD")).Returns(GetSha256Hash(saltedPassword));
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD_SALT")).Returns(salt);
+
+         // Act
+         var result = await AuthenticateAsync(header);
+
+         // Assert
+         Assert.IsFalse(result.Succeeded);
+         Assert.AreEqual("Invalid username or password", result.Failure.Message);
+      }
+
+      [Test]
+      public async Task HandleAuthenticateAsync_UseSaltedHashedPasswordDirectly_ReturnsAuthenticateResultSuccess() {
+         // Arrange
+         var username = "administrator@vsphere.local";
+         var password = "Admin!23";
+         var salt = "g9H6g+AGZOY/uA8+";
          var saltedPassword = GetSha256Hash(salt + password);
          var header = FormatAuthorizationHeader(username, saltedPassword);
 
