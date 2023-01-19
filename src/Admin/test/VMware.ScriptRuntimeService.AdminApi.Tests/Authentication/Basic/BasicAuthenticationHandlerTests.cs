@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
@@ -137,6 +138,28 @@ namespace VMware.ScriptRuntimeService.AdminApi.Tests.Authentication.Basic {
          Assert.AreEqual(username, result.Ticket.Principal.Identity.Name);
       }
 
+      [Test]
+      public async Task HandleAuthenticateAsync_CalculateSaltedPassword_ReturnsAuthenticateResultSuccess() {
+         // Arrange
+         var username = "administrator@vsphere.local";
+         var password = "Admin!23";
+         var header = FormatAuthorizationHeader(username, password);
+         var salt = "g9H6g+AGZOY/uA8+";
+
+         _environment.Reset();
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_USER")).Returns(username);
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD")).Returns(GetSha256Hash(salt + password));
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD_SALT")).Returns(salt);
+
+         // Act
+         var result = await AuthenticateAsync(header);
+
+         // Assert
+         Assert.IsTrue(result.Succeeded);
+         Assert.AreEqual(BasicAuthenticationHandler.AuthenticationScheme, result.Ticket.AuthenticationScheme);
+         Assert.AreEqual(username, result.Ticket.Principal.Identity.Name);
+      }
+
       private Task<AuthenticateResult> AuthenticateAsync() {
          var context = new DefaultHttpContext();
 
@@ -159,6 +182,17 @@ namespace VMware.ScriptRuntimeService.AdminApi.Tests.Authentication.Basic {
 
       private string FormatAuthorizationHeader(string username, string password) {
          return "Basic " + Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes($"{username}:{password}"));
+      }
+
+      private string GetSha256Hash(string str) {
+         using (SHA256 sha = SHA256.Create()) {
+            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(str));
+            var strBuilder = new StringBuilder(bytes.Length);
+            for (var i = 0; i < bytes.Length; i++) {
+               strBuilder.Append(bytes[i].ToString("x2"));
+            }
+            return strBuilder.ToString();
+         }
       }
    }
 }
