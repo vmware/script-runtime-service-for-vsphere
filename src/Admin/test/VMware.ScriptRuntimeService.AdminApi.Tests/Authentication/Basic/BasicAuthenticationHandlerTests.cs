@@ -8,7 +8,9 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using System.Threading.Tasks;
+using k8s.KubeConfigModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -17,6 +19,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using Moq;
 using NUnit.Framework;
+using Org.BouncyCastle.Utilities.Encoders;
 using VMware.ScriptRuntimeService.APIGateway.Authentication.Basic;
 
 namespace VMware.ScriptRuntimeService.AdminApi.Tests.Authentication.Basic {
@@ -47,29 +50,32 @@ namespace VMware.ScriptRuntimeService.AdminApi.Tests.Authentication.Basic {
          _clock = new Mock<ISystemClock>();
 
          _handler = new BasicAuthenticationHandler(_options.Object, _loggerFactory.Object, _encoder.Object, _clock.Object, _environment.Object);
-
       }
 
       [Test]
       public async Task HandleAuthenticateAsync_NoAuthorizationHeader_ReturnsAuthenticateResultFail() {
-         var context = new DefaultHttpContext();
+         // Arrange
 
-         await _handler.InitializeAsync(new AuthenticationScheme(BasicAuthenticationHandler.AuthenticationScheme, null, typeof(BasicAuthenticationHandler)), context);
-         var result = await _handler.AuthenticateAsync();
+         // Act
+         var result = await AuthenticateAsync();
 
+         // Assert
          Assert.IsFalse(result.Succeeded);
          Assert.AreEqual("No Authorization header sent", result.Failure.Message);
       }
 
       [Test]
       public async Task HandleAuthenticateAsync_CredentialsTryParseFails_ReturnsAuthenticateResultFail() {
+         // Arrange
          var context = new DefaultHttpContext();
-         var authorizationHeader = new StringValues("Basic YWRtaW5pc3RyYXRvckB2c3BoZXJlLmxvY2FsOkE6ZG1pbiEyMw==");
-         context.Request.Headers.Add(HeaderNames.Authorization, authorizationHeader);
+         var username = "administrator@vsphere.local";
+         var password = "A:dmin!23";
+         var header = FormatAuthorizationHeader(username, password);
 
-         await _handler.InitializeAsync(new AuthenticationScheme(BasicAuthenticationHandler.AuthenticationScheme, null, typeof(BasicAuthenticationHandler)), context);
-         var result = await _handler.AuthenticateAsync();
+         // Act
+         var result = await AuthenticateAsync(header);
 
+         // Assert
          Assert.IsFalse(result.Succeeded);
          Assert.AreEqual("Invalid Authorization header format", result.Failure.Message);
       }
@@ -77,52 +83,82 @@ namespace VMware.ScriptRuntimeService.AdminApi.Tests.Authentication.Basic {
 
       [Test]
       public async Task HandleAuthenticateAsync_AuthenticationNotSetup_ReturnsAuthenticateResultFail() {
-         var context = new DefaultHttpContext();
-         var authorizationHeader = new StringValues("Basic VGVzdFVzZXJOYW1lOlRlc3RQYXNzd29yZA==");
-         context.Request.Headers.Add(HeaderNames.Authorization, authorizationHeader);
+         // Arrange
+         var username = "administrator@vsphere.local";
+         var password = "Admin!23";
+         var header = FormatAuthorizationHeader(username, password);
 
-         await _handler.InitializeAsync(new AuthenticationScheme(BasicAuthenticationHandler.AuthenticationScheme, null, typeof(BasicAuthenticationHandler)), context);
-         var result = await _handler.AuthenticateAsync();
+         // Act
+         var result = await AuthenticateAsync(header);
 
+         // Assert
          Assert.IsFalse(result.Succeeded);
          Assert.AreEqual("Script Runtime Service admin credentials are not set up correctly", result.Failure.Message);
       }
 
       [Test]
       public async Task HandleAuthenticateAsync_InvalidUsernameOrPassword_ReturnsAuthenticateResultFail() {
-         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_USER")).Returns("administrator@vsphere.local");
+         // Arrange
+         var username = "administrator@vsphere.local";
+         var password = "Wrong-Password";
+         var header = FormatAuthorizationHeader(username, password);
+
+         _environment.Reset();
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_USER")).Returns(username);
          _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD")).Returns("078addd7eb7a3548be13e76d7abb62be96c5804c1a8428f4adfe3c4e6ac73e2e");
          _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD_SALT")).Returns("g9H6g+AGZOY/uA8+");
 
-         var context = new DefaultHttpContext();
-         var authorizationHeader = new StringValues("Basic YWRtaW5pc3RyYXRvckB2c3BoZXJlLmxvY2FsOkFEZG1pbiEyMw==");
-         context.Request.Headers.Add(HeaderNames.Authorization, authorizationHeader);
+         // Act
+         var result = await AuthenticateAsync(header);
 
-         await _handler.InitializeAsync(new AuthenticationScheme(BasicAuthenticationHandler.AuthenticationScheme, null, typeof(BasicAuthenticationHandler)), context);
-         var result = await _handler.AuthenticateAsync();
-
+         // Assert
          Assert.IsFalse(result.Succeeded);
          Assert.AreEqual("Invalid username or password", result.Failure.Message);
       }
       
       [Test]
       public async Task HandleAuthenticateAsync_ReturnsAuthenticateResultSuccess() {
+         // Arrange
          var username = "administrator@vsphere.local";
+         var password = "Admin!23";
+         var header = FormatAuthorizationHeader(username, password);
 
-         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_USER")).Returns("administrator@vsphere.local");
+         _environment.Reset();
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_USER")).Returns(username);
          _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD")).Returns("078addd7eb7a3548be13e76d7abb62be96c5804c1a8428f4adfe3c4e6ac73e2e");
          _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD_SALT")).Returns("g9H6g+AGZOY/uA8+");
 
-         var context = new DefaultHttpContext();
-         var authorizationHeader = new StringValues("Basic YWRtaW5pc3RyYXRvckB2c3BoZXJlLmxvY2FsOkFkbWluITIz");
-         context.Request.Headers.Add(HeaderNames.Authorization, authorizationHeader);
+         // Act
+         var result = await AuthenticateAsync(header);
 
-         await _handler.InitializeAsync(new AuthenticationScheme(BasicAuthenticationHandler.AuthenticationScheme, null, typeof(BasicAuthenticationHandler)), context);
-         var result = await _handler.AuthenticateAsync();
-
+         // Assert
          Assert.IsTrue(result.Succeeded);
          Assert.AreEqual(BasicAuthenticationHandler.AuthenticationScheme, result.Ticket.AuthenticationScheme);
          Assert.AreEqual(username, result.Ticket.Principal.Identity.Name);
+      }
+
+      private Task<AuthenticateResult> AuthenticateAsync() {
+         var context = new DefaultHttpContext();
+
+         return AuthenticateAsync(context);
+      }
+
+      private async Task<AuthenticateResult> AuthenticateAsync(DefaultHttpContext context) {
+         await _handler.InitializeAsync(new AuthenticationScheme(BasicAuthenticationHandler.AuthenticationScheme, null, typeof(BasicAuthenticationHandler)), context);
+
+         return await _handler.AuthenticateAsync();
+      }
+
+      private Task<AuthenticateResult> AuthenticateAsync(string authorizationHeaderValue) {
+         var context = new DefaultHttpContext();
+         var authorizationHeader = new StringValues(authorizationHeaderValue);
+         context.Request.Headers.Add(HeaderNames.Authorization, authorizationHeader);
+
+         return AuthenticateAsync(context);
+      }
+
+      private string FormatAuthorizationHeader(string username, string password) {
+         return "Basic " + Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes($"{username}:{password}"));
       }
    }
 }
