@@ -43,9 +43,20 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
             try {
                _logger.Log(LogLevel.Debug, "Handle Basic Authentication Start");
 
+               if(!Request.Headers?.ContainsKey("Authorization") ?? true) {
+                  result = AuthenticateResult.Fail("No Authorization header sent");
+                  return result;
+               } 
+
                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
                var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
-               var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
+               var credString = Encoding.UTF8.GetString(credentialBytes);
+               if (!credString.Contains(":") || credString.IndexOf(":") != credString.LastIndexOf(":")) {
+                  result = AuthenticateResult.Fail("Invalid Authorization header format");
+                  return result;
+               }
+
+               var credentials = credString.Split(new[] { ':' }, 2);
                var username = credentials[0];
                var password = credentials[1];
 

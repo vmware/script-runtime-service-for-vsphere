@@ -58,25 +58,25 @@ namespace VMware.ScriptRuntimeService.AdminApi.Tests.Authentication.Basic {
          var result = await _handler.AuthenticateAsync();
 
          Assert.IsFalse(result.Succeeded);
-         Assert.AreEqual("Authentication failed, see the administrative log for error details.", result.Failure.Message);
+         Assert.AreEqual("No Authorization header sent", result.Failure.Message);
       }
 
       [Test]
       public async Task HandleAuthenticateAsync_CredentialsTryParseFails_ReturnsAuthenticateResultFail() {
          var context = new DefaultHttpContext();
-         var authorizationHeader = new StringValues(String.Empty);
+         var authorizationHeader = new StringValues("Basic YWRtaW5pc3RyYXRvckB2c3BoZXJlLmxvY2FsOkE6ZG1pbiEyMw==");
          context.Request.Headers.Add(HeaderNames.Authorization, authorizationHeader);
 
          await _handler.InitializeAsync(new AuthenticationScheme(BasicAuthenticationHandler.AuthenticationScheme, null, typeof(BasicAuthenticationHandler)), context);
          var result = await _handler.AuthenticateAsync();
 
          Assert.IsFalse(result.Succeeded);
-         Assert.AreEqual("Authentication failed, see the administrative log for error details.", result.Failure.Message);
+         Assert.AreEqual("Invalid Authorization header format", result.Failure.Message);
       }
 
 
       [Test]
-      public async Task HandleAuthenticateAsync_PrincipalIsNull_ReturnsAuthenticateResultFail() {
+      public async Task HandleAuthenticateAsync_AuthenticationNotSetup_ReturnsAuthenticateResultFail() {
          var context = new DefaultHttpContext();
          var authorizationHeader = new StringValues("Basic VGVzdFVzZXJOYW1lOlRlc3RQYXNzd29yZA==");
          context.Request.Headers.Add(HeaderNames.Authorization, authorizationHeader);
@@ -89,7 +89,24 @@ namespace VMware.ScriptRuntimeService.AdminApi.Tests.Authentication.Basic {
       }
 
       [Test]
-      public async Task HandleAuthenticateAsync_PrincipalIsNull_ReturnsAuthenticateResultSuccessWithPrincipalInTicket() {
+      public async Task HandleAuthenticateAsync_InvalidUsernameOrPassword_ReturnsAuthenticateResultFail() {
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_USER")).Returns("administrator@vsphere.local");
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD")).Returns("078addd7eb7a3548be13e76d7abb62be96c5804c1a8428f4adfe3c4e6ac73e2e");
+         _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_PASSWORD_SALT")).Returns("g9H6g+AGZOY/uA8+");
+
+         var context = new DefaultHttpContext();
+         var authorizationHeader = new StringValues("Basic YWRtaW5pc3RyYXRvckB2c3BoZXJlLmxvY2FsOkFEZG1pbiEyMw==");
+         context.Request.Headers.Add(HeaderNames.Authorization, authorizationHeader);
+
+         await _handler.InitializeAsync(new AuthenticationScheme(BasicAuthenticationHandler.AuthenticationScheme, null, typeof(BasicAuthenticationHandler)), context);
+         var result = await _handler.AuthenticateAsync();
+
+         Assert.IsFalse(result.Succeeded);
+         Assert.AreEqual("Invalid username or password", result.Failure.Message);
+      }
+      
+      [Test]
+      public async Task HandleAuthenticateAsync_ReturnsAuthenticateResultSuccess() {
          var username = "administrator@vsphere.local";
 
          _environment.Setup(e => e.GetEnvironmentVariable("ADMIN_USER")).Returns("administrator@vsphere.local");
