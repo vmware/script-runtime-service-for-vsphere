@@ -92,8 +92,10 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                      string.IsNullOrEmpty(adminPass)) {
                      result = AuthenticateResult.Fail("Script Runtime Service admin credentials are not set up correctly");
                   } else if ((!username?.Equals(adminUser) ?? true) ||
-                     (!password?.Equals(adminPass) ?? true)) {
+                     (!(adminPassSalt + password)?.Equals(adminPass) ?? true)) {
                      result = AuthenticateResult.Fail("Invalid username or password");
+                  } else {
+                     throw new Exception("This should not be reached!");
                   }
                }
             } catch (Exception exc) {
