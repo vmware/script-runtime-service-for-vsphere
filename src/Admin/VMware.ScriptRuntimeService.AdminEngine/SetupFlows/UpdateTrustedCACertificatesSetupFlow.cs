@@ -19,6 +19,8 @@ namespace VMware.ScriptRuntimeService.AdminEngine.SetupFlows {
       protected override void RunInternal(VCRegistrator vcRegistrator, UserInput userInput) {
          vcRegistrator.UpdateTrustedCACertificates(
             userInput.Psc,
+            userInput.User,
+            userInput.Password,
             userInput.VcThumbprint,
             userInput.ForceSpecified);
       }

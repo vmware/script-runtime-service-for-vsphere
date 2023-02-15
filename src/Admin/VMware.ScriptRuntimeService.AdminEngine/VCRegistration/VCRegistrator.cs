@@ -79,14 +79,14 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
 
       public void UpdateTrustedCACertificates(
          string psc,
+         string username,
+         SecureString password,
          string thumbprint,
          bool force) {
-         // Create Lookup Service Client
-         X509CertificateValidator certificateValidator = GetCertificateValidator(thumbprint, force);
 
-         var ssoAdminClient = GetSsoAdminClient(psc, certificateValidator);
+         var trustedCertificatesCollector = GetTrustedCertificatesCollector(psc, username, password, thumbprint, force);
 
-         StoreVCCACertificates(ssoAdminClient);
+         StoreVCCACertificates(trustedCertificatesCollector);
       }
 
       public void Clean(
@@ -282,6 +282,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          X509CertificateValidator certificateValidator = GetCertificateValidator(thumbprint, force);
          var lookupServiceClient = GetLookupServiceClient(psc, certificateValidator);
          var ssoAdminClient = GetSsoAdminClient(lookupServiceClient, certificateValidator);
+         var trustedCertificatesCollector = GetTrustedCertificatesCollector(psc, username, password, thumbprint, force);
 
          // --- SSO Solution User Registration ---
          var ssoSolutionRegitration = new SsoSolutionUserRegistration(
@@ -300,7 +301,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          lsRegistration.Register(username, password);
          // --- Lookup Service Registration ---
 
-         StoreVCCACertificates(ssoAdminClient);
+         StoreVCCACertificates(trustedCertificatesCollector);
 
          // === VC Registration Actions ===
 
@@ -434,12 +435,21 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          return new SsoAdminClient(ssoSdkUri, stsUri, certificateValidator);
       }
 
-      private void StoreVCCACertificates(SsoAdminClient ssoAdminClient) {
+      private VCTrustedCertificatesCollector GetTrustedCertificatesCollector(string psc,
+         string username,
+         SecureString password,
+         string thumbprint,
+         bool ignoreServerCertificateValidation) {
+
+         return new VCTrustedCertificatesCollector(_loggerFactory, psc, username, password, thumbprint, ignoreServerCertificateValidation);
+      }
+
+      private void StoreVCCACertificates(VCTrustedCertificatesCollector trustedCertificatesCollector) {
          var trustedCertificatesStore = new TrustedCertificatesStore(
                      _loggerFactory,
-                     ssoAdminClient,
+                     trustedCertificatesCollector,
                      _configWriter);
-         trustedCertificatesStore.SaveVcenterCACertficates();
+         trustedCertificatesStore.SaveVcenterCACertificates();
       }
    }
 }
