@@ -14,6 +14,7 @@ using System.Security;
 using Microsoft.Extensions.Logging.Abstractions;
 using VMware.ScriptRuntimeService.AdminEngine.VCRegistration.Exceptions;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.Tests {
    public class VCTrustedCertificatesCollectorTests {

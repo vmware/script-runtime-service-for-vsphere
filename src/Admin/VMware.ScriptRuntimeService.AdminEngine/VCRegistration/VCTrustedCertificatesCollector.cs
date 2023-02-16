@@ -64,7 +64,8 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
       }
 
       public IEnumerable<string> GetEncodedTrustedCertificates() {
-
+         _logger.LogInformation(
+                  string.Format(Resources.PerofomingOperation, Resources.EncodedTrustedCertificatesRetrieval));
          var task = Task.Run<IEnumerable<string>>(async () => {
             using (var client = GetHttpClient()) {
                await AuthenticateClientAsync(client);
@@ -73,6 +74,8 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
                foreach (var chain in await GetTrustedRootChainsChainsAsync(client)) {
                   foreach (var cert in await GetTrustedCertificateAsync(client, chain)) {
                      certs.Add(cert);
+
+                     _logger.LogDebug($"Trusted CA cert: {cert}");
                   }
                }
 
