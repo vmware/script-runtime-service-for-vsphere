@@ -24,6 +24,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
    /// This class gets trusted certificates from vCenter server.
    /// </summary>
    public class VCTrustedCertificatesCollector {
+      private readonly Func<HttpMessageHandler, HttpMessageHandler> _httpMessageHandlerFactory;
       private readonly ILoggerFactory _loggerFactory;
       private readonly string _psc;
       private readonly string _username;
@@ -38,7 +39,20 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          string username,
          SecureString password,
          string thumbprint,
+         bool ignoreServerCertificateValidation) : this(null, loggerFactory, psc, username, password, thumbprint, ignoreServerCertificateValidation) {
+
+      }
+
+      internal VCTrustedCertificatesCollector(
+         Func<HttpMessageHandler, HttpMessageHandler> httpMessageHandlerFactory,
+         ILoggerFactory loggerFactory,
+         string psc,
+         string username,
+         SecureString password,
+         string thumbprint,
          bool ignoreServerCertificateValidation) {
+
+         _httpMessageHandlerFactory = httpMessageHandlerFactory;
          _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
          _logger = loggerFactory.CreateLogger(typeof(VCRegistrator));
 
@@ -66,12 +80,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             }
          });
 
-         task.Wait();
-
-         if (task.IsCompletedSuccessfully) {
+         try {
+            task.Wait();
             return task.Result;
-         } else {
-            throw new TrustedCertificateRetrievalException("Getting trusted certificates failed", task.Exception);
+         } catch (AggregateException ex) {
+            throw new TrustedCertificateRetrievalException("Getting trusted certificates failed", ex);
          }
       }
 
@@ -80,10 +93,24 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          using (var response = await client.GetAsync($"/api/vcenter/certificate-management/vcenter/trusted-root-chains/{chain}")) {
             response.EnsureSuccessStatusCode();
 
-            dynamic result = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+            var responseStr = await response.Content.ReadAsStringAsync();
+            dynamic json = JsonConvert.DeserializeObject<dynamic>(responseStr);
 
+            List<string> result = new List<string>();
 
-            return Regex.Split(result.cert_chain.cert_chain, @"(\\n)?-----[^-]+-----(\\n)?");
+            string cert_chain = json.cert_chain.cert_chain[0];
+            int startIndex = 0;
+            var beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
+            var endIndex = cert_chain.IndexOf("-----END CERTIFICATE-----", startIndex);
+            while (beginIndex > -1 && endIndex > beginIndex) {
+               result.Add(cert_chain.Substring(beginIndex + 27, endIndex - beginIndex - 27).Trim());
+
+               startIndex = endIndex + 1;
+               beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
+               endIndex = cert_chain.IndexOf("-----END CERTIFICATE-----", startIndex);
+            }
+
+            return result;
          }
 
          //{
@@ -103,7 +130,8 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          using (var response = await client.GetAsync("/api/vcenter/certificate-management/vcenter/trusted-root-chains")) {
             response.EnsureSuccessStatusCode();
 
-            dynamic result = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
+            var responseStr = await response.Content.ReadAsStringAsync();
+            dynamic result = JsonConvert.DeserializeObject<dynamic>(responseStr);
 
             return ((IEnumerable) result).Cast<dynamic>().Select(r => (string) r.chain);
          }
@@ -119,7 +147,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
       private HttpClient GetHttpClient() {
          _logger.LogInformation("Creating http client");
 
-         var clientHandler = new HttpClientHandler() {
+         HttpMessageHandler clientHandler = new HttpClientHandler() {
             ServerCertificateCustomValidationCallback = (message, certificate, chain, policyErrors) => {
 
                if (certificate == null) { throw new ArgumentNullException(nameof(certificate)); }
@@ -143,6 +171,10 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             }
          };
 
+         if (_httpMessageHandlerFactory != null) {
+            clientHandler = _httpMessageHandlerFactory.Invoke(clientHandler);
+         }
+
          return new HttpClient(clientHandler) {
             BaseAddress = new Uri($"https://{_psc}")
          };
@@ -156,7 +188,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          // https://{api_host}/api/session
 
          using (var request = new HttpRequestMessage(HttpMethod.Post, "/api/session")) {
-            request.Headers.Add("Authorization", "Basic " + authHeaderValue);
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authHeaderValue);
             using (var response = await client.SendAsync(request)) {
                if (response.StatusCode != HttpStatusCode.Created) {
                   throw new TrustedCertificateRetrievalException("Unable to create session for getting CA trusted certificates");
