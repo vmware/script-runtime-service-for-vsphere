@@ -103,7 +103,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             var beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
             var endIndex = cert_chain.IndexOf("-----END CERTIFICATE-----", startIndex);
             while (beginIndex > -1 && endIndex > beginIndex) {
-               result.Add(cert_chain.Substring(beginIndex + 27, endIndex - beginIndex - 27).Trim());
+               result.Add(cert_chain.Substring(beginIndex, endIndex + beginIndex + 25).Trim());
 
                startIndex = endIndex + 1;
                beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
