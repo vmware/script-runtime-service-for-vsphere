@@ -24,6 +24,9 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
    /// This class gets trusted certificates from vCenter server.
    /// </summary>
    public class VCTrustedCertificatesCollector {
+      private const string PEM_BEGIN = "\"-----BEGIN CERTIFICATE-----\"";
+      private const string PEM_END = "\"-----END CERTIFICATE-----\"";
+
       private readonly Func<HttpMessageHandler, HttpMessageHandler> _httpMessageHandlerFactory;
       private readonly ILoggerFactory _loggerFactory;
       private readonly string _psc;
@@ -107,14 +110,14 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             if (json?.cert_chain?.cert_chain != null && json.cert_chain.cert_chain.Length > 0) {
                string cert_chain = json.cert_chain.cert_chain[0];
                int startIndex = 0;
-               var beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
-               var endIndex = cert_chain.IndexOf("-----END CERTIFICATE-----", startIndex);
+               var beginIndex = cert_chain.IndexOf(PEM_BEGIN, startIndex);
+               var endIndex = cert_chain.IndexOf(PEM_END, startIndex);
                while (beginIndex > -1 && endIndex > beginIndex) {
                   result.Add(cert_chain.Substring(beginIndex, endIndex + beginIndex + 25).Trim());
 
                   startIndex = endIndex + 1;
-                  beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
-                  endIndex = cert_chain.IndexOf("-----END CERTIFICATE-----", startIndex);
+                  beginIndex = cert_chain.IndexOf(PEM_BEGIN, startIndex);
+                  endIndex = cert_chain.IndexOf(PEM_END, startIndex);
                }
             }
 
