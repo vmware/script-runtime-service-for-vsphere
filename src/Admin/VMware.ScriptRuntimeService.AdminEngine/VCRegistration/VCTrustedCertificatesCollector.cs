@@ -113,7 +113,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
                var beginIndex = cert_chain.IndexOf(PEM_BEGIN, startIndex);
                var endIndex = cert_chain.IndexOf(PEM_END, startIndex);
                while (beginIndex > -1 && endIndex > beginIndex) {
-                  result.Add(cert_chain.Substring(beginIndex, endIndex + beginIndex + 25).Trim());
+                  result.Add(cert_chain.Substring(beginIndex, endIndex + beginIndex + PEM_BEGIN.Length).Trim());
 
                   startIndex = endIndex + 1;
                   beginIndex = cert_chain.IndexOf(PEM_BEGIN, startIndex);
