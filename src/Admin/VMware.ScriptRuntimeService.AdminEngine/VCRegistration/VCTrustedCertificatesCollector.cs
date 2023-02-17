@@ -104,16 +104,18 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
 
             List<string> result = new List<string>();
 
-            string cert_chain = json.cert_chain.cert_chain[0];
-            int startIndex = 0;
-            var beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
-            var endIndex = cert_chain.IndexOf("-----END CERTIFICATE-----", startIndex);
-            while (beginIndex > -1 && endIndex > beginIndex) {
-               result.Add(cert_chain.Substring(beginIndex, endIndex + beginIndex + 25).Trim());
+            if (json?.cert_chain?.cert_chain != null && json.cert_chain.cert_chain.Length > 0) {
+               string cert_chain = json.cert_chain.cert_chain[0];
+               int startIndex = 0;
+               var beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
+               var endIndex = cert_chain.IndexOf("-----END CERTIFICATE-----", startIndex);
+               while (beginIndex > -1 && endIndex > beginIndex) {
+                  result.Add(cert_chain.Substring(beginIndex, endIndex + beginIndex + 25).Trim());
 
-               startIndex = endIndex + 1;
-               beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
-               endIndex = cert_chain.IndexOf("-----END CERTIFICATE-----", startIndex);
+                  startIndex = endIndex + 1;
+                  beginIndex = cert_chain.IndexOf("-----BEGIN CERTIFICATE-----", startIndex);
+                  endIndex = cert_chain.IndexOf("-----END CERTIFICATE-----", startIndex);
+               }
             }
 
             return result;
@@ -127,7 +129,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             var responseStr = await response.Content.ReadAsStringAsync();
             dynamic result = JsonConvert.DeserializeObject<dynamic>(responseStr);
 
-            return ((IEnumerable) result).Cast<dynamic>().Select(r => (string) r.chain);
+            return ((IEnumerable) result).Cast<dynamic>().Select(r => (string) r?.chain).Where(c => !string.IsNullOrEmpty(c));
          } 
       }
 
