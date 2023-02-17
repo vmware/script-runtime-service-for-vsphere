@@ -184,7 +184,9 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
                   throw new TrustedCertificateRetrievalException("Unable to create session for getting CA trusted certificates");
                }
 
-               var sessionId = response.Content.ReadAsStringAsync().Result?.Trim('"');
+               var sessionId = await response.Content.ReadAsStringAsync();
+               sessionId = sessionId?.Trim('"');
+
                if (string.IsNullOrEmpty(sessionId)) {
                   throw new TrustedCertificateRetrievalException("Server returned empty session id for getting CA trusted certificates");
                } else {
