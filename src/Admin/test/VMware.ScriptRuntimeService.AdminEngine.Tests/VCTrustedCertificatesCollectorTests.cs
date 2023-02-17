@@ -229,7 +229,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.Tests {
          Assert.IsNotNull(certs);
          CollectionAssert.IsNotEmpty(certs);
          Assert.AreEqual(certs.Count(), 1);
-         Assert.AreEqual(certs.First(), expectedCert);
+         Assert.AreEqual(expectedCert, certs.First());
       }
    }
 }

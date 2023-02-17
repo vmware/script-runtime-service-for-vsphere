@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SsoAdminServiceReference;
 using VMware.ScriptRuntimeService.AdminEngine.VCRegistration.Exceptions;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
@@ -24,8 +25,8 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
    /// This class gets trusted certificates from vCenter server.
    /// </summary>
    public class VCTrustedCertificatesCollector {
-      private const string PEM_BEGIN = "\"-----BEGIN CERTIFICATE-----\"";
-      private const string PEM_END = "\"-----END CERTIFICATE-----\"";
+      private const string PEM_BEGIN = "-----BEGIN CERTIFICATE-----";
+      private const string PEM_END = "-----END CERTIFICATE-----";
 
       private readonly Func<HttpMessageHandler, HttpMessageHandler> _httpMessageHandlerFactory;
       private readonly ILoggerFactory _loggerFactory;
@@ -99,7 +100,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
       }
 
       private async Task<IEnumerable<string>> GetTrustedCertificateAsync(HttpClient client, string chain) {
-         using (var response = await client.GetAsync(Uri.EscapeDataString($"/api/vcenter/certificate-management/vcenter/trusted-root-chains/{chain}"))) {
+         using (var response = await client.GetAsync($"/api/vcenter/certificate-management/vcenter/trusted-root-chains/{Uri.EscapeDataString(chain)}")) {
             response.EnsureSuccessStatusCode();
 
             var responseStr = await response.Content.ReadAsStringAsync();
@@ -107,13 +108,15 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
 
             List<string> result = new List<string>();
 
-            if (json?.cert_chain?.cert_chain != null && json.cert_chain.cert_chain.Length > 0) {
+            if (json?.cert_chain?.cert_chain != null &&
+               json.cert_chain.cert_chain is IEnumerable &&
+               ((IEnumerable) json.cert_chain.cert_chain).Cast<dynamic>().Any()) {
                string cert_chain = json.cert_chain.cert_chain[0];
                int startIndex = 0;
                var beginIndex = cert_chain.IndexOf(PEM_BEGIN, startIndex);
                var endIndex = cert_chain.IndexOf(PEM_END, startIndex);
                while (beginIndex > -1 && endIndex > beginIndex) {
-                  result.Add(cert_chain.Substring(beginIndex, endIndex + beginIndex + PEM_BEGIN.Length).Trim());
+                  result.Add(cert_chain.Substring(beginIndex, endIndex + beginIndex + PEM_BEGIN.Length - 1).Trim());
 
                   startIndex = endIndex + 1;
                   beginIndex = cert_chain.IndexOf(PEM_BEGIN, startIndex);
@@ -132,7 +135,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             var responseStr = await response.Content.ReadAsStringAsync();
             dynamic result = JsonConvert.DeserializeObject<dynamic>(responseStr);
 
-            return ((IEnumerable) result).Cast<dynamic>().Select(r => (string) r?.chain).Where(c => !string.IsNullOrEmpty(c));
+            if (result is IEnumerable enumerable) {
+               return enumerable.Cast<dynamic>().Where(r => r?.chain != null).Select(c => (string) c.chain);
+            } else {
+               throw new TrustedCertificateRetrievalException("/api/vcenter/certificate-management/vcenter/trusted-root-chains did not return an array");
+            }
          } 
       }
 
