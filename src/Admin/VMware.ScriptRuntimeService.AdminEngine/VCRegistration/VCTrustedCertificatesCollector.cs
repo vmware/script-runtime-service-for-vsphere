@@ -96,7 +96,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
       }
 
       private async Task<IEnumerable<string>> GetTrustedCertificateAsync(HttpClient client, string chain) {
-         using (var response = await client.GetAsync($"/api/vcenter/certificate-management/vcenter/trusted-root-chains/{chain}")) {
+         using (var response = await client.GetAsync(Uri.EscapeDataString($"/api/vcenter/certificate-management/vcenter/trusted-root-chains/{chain}"))) {
             response.EnsureSuccessStatusCode();
 
             var responseStr = await response.Content.ReadAsStringAsync();
