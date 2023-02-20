@@ -50,29 +50,64 @@ namespace VMware.ScriptRuntimeService.APIGateway
                .UseStartup<Startup>()
                .ConfigureAppConfiguration((hostingContext, config) =>
                {
-                  var settingsPath = Path.Combine(AssemblyDirectory, "settings", "settings.json");
-                  if (File.Exists(settingsPath)) {
-                     Console.WriteLine($"info: Applying config file {settingsPath}.");
-                     config.AddContentBasedUpdateJsonFileConfiguration(
-                        settingsPath);
-                  } else {
-                     Console.WriteLine($"info: Unable to find config file {settingsPath}.");
-                  }
-
-                  var stsSettingsPath = Path.Combine(AssemblyDirectory, "settings", "sts-settings.json");
-                  if (File.Exists(stsSettingsPath)) {
-                     Console.WriteLine($"info: Applying config file {stsSettingsPath}.");
-                     config.AddContentBasedUpdateJsonFileConfiguration(
-                        stsSettingsPath);
-                  } else {
-                     Console.WriteLine($"info: Unable to find config file {stsSettingsPath}.");
-                  }
+                  AddContentBasedUpdateJsonFileConfiguration(config, "SERVICE_SETTINGS_LOCATION",Path.Combine(AssemblyDirectory, "settings"), "settings.json");
+                  AddContentBasedUpdateJsonFileConfiguration(config, "SERVICE_STS_SETTINGS_LOCATION",Path.Combine(AssemblyDirectory, "settings"), "sts-settings.json");
                })
                .ConfigureLogging(logging => {
                   logging.ClearProviders();
                   logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                })
                .UseNLog();
+      }
+
+      private static void AddContentBasedUpdateJsonFileConfiguration(IConfigurationBuilder config, string environmentVariableKey, string defaultRootLocation, string defaultFileName) {
+         string environmentVariableValue = Environment.GetEnvironmentVariable(environmentVariableKey);
+
+         if (string.IsNullOrEmpty(environmentVariableValue)) {
+            Console.WriteLine($"warn: The environment variable '{environmentVariableKey}' is not set. Trying to search for file.");
+            if (string.IsNullOrEmpty(defaultRootLocation) || string.IsNullOrEmpty(defaultFileName)) {
+               Console.WriteLine($"error: No root path or default file name specified for '{environmentVariableKey}'. Unable to search for configuration file.");
+            } else {
+               var foundConfigFile = SearchForConfigFile(environmentVariableKey, defaultRootLocation, defaultFileName);
+               if (!string.IsNullOrEmpty(foundConfigFile)) {
+                  if (File.Exists(foundConfigFile)) {
+                     Console.WriteLine($"info: Applying config file for '{environmentVariableKey}' found at '{foundConfigFile}'.");
+                     config.AddContentBasedUpdateJsonFileConfiguration(
+                        foundConfigFile);
+                  } else {
+                     Console.WriteLine($"error: Unable to find config file for '{environmentVariableKey}'.");
+                  }
+               }
+            }
+         } else {
+            if (File.Exists(environmentVariableValue)) {
+               Console.WriteLine($"info: Applying config file for '{environmentVariableKey}' from environment variable '{environmentVariableValue}'.");
+               config.AddContentBasedUpdateJsonFileConfiguration(
+                  environmentVariableValue);
+            } else {
+               Console.WriteLine($"error: Unable to find config file '{environmentVariableValue}' specified in the environment variable '{environmentVariableKey}'.");
+            }
+         }
+      }
+
+      private static string SearchForConfigFile(string environmentVariableKey, string defaultRootLocation, string defaultFileName) {
+         Console.WriteLine($"info: Searching for file '{defaultFileName}' into '{defaultRootLocation}'.");
+         var foundFiles = Directory.GetFiles(defaultRootLocation, defaultFileName, SearchOption.AllDirectories);
+
+         if (foundFiles?.Length == 0) {
+            Console.WriteLine($"error: No configuration file '{defaultFileName}' found into '{defaultRootLocation}'.");
+            return null;
+         } else if (foundFiles?.Length > 1) {
+            Console.WriteLine($"error: {foundFiles?.Length} configuration files '{defaultFileName}' found into '{defaultRootLocation}'. Unable to choose.");
+
+            foreach(var file in foundFiles) {
+               Console.WriteLine($"error:      {file}");
+            }
+            return null;
+         } else {
+            Console.WriteLine($"info: Applying config file for '{environmentVariableKey}' {foundFiles[0]}.");
+            return foundFiles[0];
+         }
       }
 
       public static string AssemblyDirectory {
