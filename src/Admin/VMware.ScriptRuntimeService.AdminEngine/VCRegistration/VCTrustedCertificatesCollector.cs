@@ -111,12 +111,33 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             if (json?.cert_chain?.cert_chain != null &&
                json.cert_chain.cert_chain is IEnumerable &&
                ((IEnumerable) json.cert_chain.cert_chain).Cast<dynamic>().Any()) {
+
                string cert_chain = json.cert_chain.cert_chain[0];
                int startIndex = 0;
-               var beginIndex = cert_chain.IndexOf(PEM_BEGIN, startIndex);
+
+               // Algorithm description:
+               // We get the the index of ------END CERTIFICATE----- and then
+               // the last index of -----BEGIN CERTIFICATE----- smaller than end index.
+               // This way we handle the case where we receive an invalid formated PEM
+               // in the format of *-BEGIN- -BEGIN- -END-*
+
                var endIndex = cert_chain.IndexOf(PEM_END, startIndex);
+               var beginIndex = cert_chain.IndexOf(PEM_BEGIN, startIndex);
+
+               // WORKAROUND: LastIndexOf(str, startIndex, count) fails with count must be positive
+               // and within the string boundaries. count meets both restrictions but still fails.
+
+               var nextBeginIndex = cert_chain.IndexOf(PEM_BEGIN, beginIndex + 1);
+
+               while(nextBeginIndex < endIndex && nextBeginIndex > -1) {
+                  beginIndex = nextBeginIndex;
+                  nextBeginIndex = cert_chain.IndexOf(PEM_BEGIN, beginIndex + 1);
+               }
+
+               // END WORKAROUND
+               
                while (beginIndex > -1 && endIndex > beginIndex) {
-                  result.Add(cert_chain.Substring(beginIndex, endIndex + beginIndex + PEM_BEGIN.Length - 1).Trim());
+                  result.Add(cert_chain.Substring(beginIndex, endIndex - beginIndex + PEM_BEGIN.Length - 2).Trim());
 
                   startIndex = endIndex + 1;
                   beginIndex = cert_chain.IndexOf(PEM_BEGIN, startIndex);
