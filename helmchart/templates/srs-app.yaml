@@ -160,12 +160,10 @@ spec:
           name: srs-adminapi
           volumeMounts:
             - name: service-settings
-              mountPath: "/app/service/settings/settings.json"
-              subPath: "settings.json"
+              mountPath: "/app/service/settings/settings"
               readOnly: false
             - name: sts-settings
-              mountPath: "/app/service/settings/sts-settings.json"
-              subPath: "sts-settings.json"
+              mountPath: "/app/service/settings/sts-settings"
               readOnly: false
             - name: trusted-ca-certs
               mountPath: "/app/service/trusted-ca-certs"
