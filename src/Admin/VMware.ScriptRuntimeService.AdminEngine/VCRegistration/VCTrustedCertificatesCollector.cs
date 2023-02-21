@@ -14,6 +14,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -30,12 +31,42 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
 
       private readonly Func<HttpMessageHandler, HttpMessageHandler> _httpMessageHandlerFactory;
       private readonly ILoggerFactory _loggerFactory;
+      private readonly ILogger _logger;
       private readonly string _psc;
       private readonly string _username;
       private readonly SecureString _password;
       private readonly string _thumbprint;
       private readonly bool _ignoreServerCertificateValidation;
-      private readonly ILogger _logger;
+
+      public class LoggingHandler : DelegatingHandler {
+         private readonly ILoggerFactory _loggerFactory;
+         private readonly ILogger _logger;
+
+         public LoggingHandler(ILoggerFactory loggerFactory, HttpMessageHandler innerHandler)
+             : base(innerHandler) {
+            _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
+
+            _loggerFactory = loggerFactory;
+            _logger = _loggerFactory.CreateLogger<LoggingHandler>();
+         }
+
+         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
+            _logger.LogDebug($"Request: {request}");
+
+            if (request.Content != null) {
+               _logger.LogDebug(await request.Content.ReadAsStringAsync());
+            }
+
+            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+
+            _logger.LogDebug($"Response: {response}");
+            if (response.Content != null) {
+               _logger.LogDebug(await response.Content.ReadAsStringAsync());
+            }
+
+            return response;
+         }
+      }
 
       public VCTrustedCertificatesCollector(
          ILoggerFactory loggerFactory,
@@ -59,6 +90,13 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          _httpMessageHandlerFactory = httpMessageHandlerFactory;
          _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
          _logger = loggerFactory.CreateLogger(typeof(VCRegistrator));
+
+         _psc = psc ?? throw new ArgumentNullException(nameof(_psc));
+         if (string.IsNullOrEmpty(psc)) { throw new ArgumentException("psc is empty"); }
+         _username = username ?? throw new ArgumentNullException(nameof(username));
+         if (string.IsNullOrEmpty(username)) { throw new ArgumentException("username is empty"); }
+         _password = password ?? throw new ArgumentNullException(nameof(password));
+         if (password.Length == 0) { throw new ArgumentException("password is empty"); }
 
          _psc = psc;
          _username = username;
@@ -192,7 +230,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          };
 
          if (_httpMessageHandlerFactory != null) {
-            clientHandler = _httpMessageHandlerFactory.Invoke(clientHandler);
+            clientHandler = _httpMessageHandlerFactory.Invoke(new LoggingHandler(_loggerFactory, clientHandler));
          }
 
          return new HttpClient(clientHandler) {
