@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection.PortableExecutable;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
@@ -16,10 +19,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel.Client;
+using k8s;
+using k8s.KubeConfigModels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
 using SsoAdminServiceReference;
 using VMware.ScriptRuntimeService.AdminEngine.VCRegistration.Exceptions;
+using YamlDotNet.Core;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
    /// <summary>
@@ -51,20 +59,70 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          }
 
          protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
-            _logger.LogDebug($"Request: {request}");
-
-            if (request.Content != null) {
-               _logger.LogDebug(await request.Content.ReadAsStringAsync());
-            }
+            _logger.LogDebug($"Request: {await ToLogMessage(request)}");
 
             HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 
-            _logger.LogDebug($"Response: {response}");
-            if (response.Content != null) {
-               _logger.LogDebug(await response.Content.ReadAsStringAsync());
-            }
+            _logger.LogDebug($"Response: {await ToLogMessage(response)}");
 
             return response;
+         }
+
+         private async static Task<string> ToLogMessage(HttpResponseMessage response) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("StatusCode: ");
+            stringBuilder.Append((int) response.StatusCode);
+            stringBuilder.Append(", ReasonPhrase: '");
+            stringBuilder.Append(response.ReasonPhrase ?? "<null>");
+            stringBuilder.Append("', Version: ");
+            stringBuilder.Append(response.Version);
+            stringBuilder.Append(", Content: ");
+            stringBuilder.Append((response.Content == null) ? "<null>" : await response.Content.ReadAsStringAsync());
+            stringBuilder.Append(", Headers:\r\n");
+            stringBuilder.Append(DumpHeaders(Enumerable.Empty<string>(), response.Headers, (response.Content == null) ? null : response.Content.Headers));
+            return stringBuilder.ToString();
+         }
+
+         private async static Task<string> ToLogMessage(HttpRequestMessage request) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("Method: ");
+            stringBuilder.Append(request.Method);
+            stringBuilder.Append(", RequestUri: '");
+            stringBuilder.Append((request.RequestUri == null) ? "<null>" : request.RequestUri.ToString());
+            stringBuilder.Append("', Version: ");
+            stringBuilder.Append(request.Version);
+            stringBuilder.Append(", Content: ");
+            stringBuilder.Append((request.Content == null) ? "<null>" : await request.Content.ReadAsStringAsync());
+            stringBuilder.Append(", Headers:\r\n");
+            stringBuilder.Append(DumpHeaders(new[] { "Authorization" }, request.Headers, (request.Content == null) ? null : request.Content.Headers));
+            return stringBuilder.ToString();
+         }
+
+         private static string DumpHeaders(IEnumerable<string> headersToSanitize, params HttpHeaders[] headers) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("{\r\n");
+            for (int i = 0; i < headers.Length; i++) {
+               if (headers[i] == null) {
+                  continue;
+               }
+               foreach (KeyValuePair<string, IEnumerable<string>> item in headers[i]) {
+                  if (headersToSanitize?.Any(h => h.Equals(item.Key, StringComparison.OrdinalIgnoreCase)) ?? false) {
+                     stringBuilder.Append("  ");
+                     stringBuilder.Append(item.Key);
+                     stringBuilder.Append(": sanitized\r\n");
+                  } else {
+                     foreach (string item2 in item.Value) {
+                        stringBuilder.Append("  ");
+                        stringBuilder.Append(item.Key);
+                        stringBuilder.Append(": ");
+                        stringBuilder.Append(item2);
+                        stringBuilder.Append("\r\n");
+                     }
+                  }
+               }
+            }
+            stringBuilder.Append('}');
+            return stringBuilder.ToString();
          }
       }
 
