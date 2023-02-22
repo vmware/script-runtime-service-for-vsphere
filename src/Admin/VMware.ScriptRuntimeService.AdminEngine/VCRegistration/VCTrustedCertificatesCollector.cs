@@ -10,24 +10,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection.PortableExecutable;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityModel.Client;
-using k8s;
-using k8s.KubeConfigModels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Ocsp;
-using SsoAdminServiceReference;
 using VMware.ScriptRuntimeService.AdminEngine.VCRegistration.Exceptions;
-using YamlDotNet.Core;
 
 namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
    /// <summary>
@@ -57,6 +48,14 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             _loggerFactory = loggerFactory;
             _logger = _loggerFactory.CreateLogger<LoggingHandler>();
          }
+         
+         internal LoggingHandler(ILoggerFactory loggerFactory, ILogger logger, HttpMessageHandler innerHandler)
+             : base(innerHandler) {
+            _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
+
+            _loggerFactory = loggerFactory;
+            _logger = logger;
+         }
 
          protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
             _logger.LogDebug($"Request: {await ToLogMessage(request)}");
@@ -69,6 +68,9 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          }
 
          private async static Task<string> ToLogMessage(HttpResponseMessage response) {
+
+            if (null == response) { return "<null>"; }
+
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("StatusCode: ");
             stringBuilder.Append((int) response.StatusCode);
@@ -84,6 +86,9 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          }
 
          private async static Task<string> ToLogMessage(HttpRequestMessage request) {
+
+            if (null == request) { return "<null>"; }
+
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("Method: ");
             stringBuilder.Append(request.Method);
