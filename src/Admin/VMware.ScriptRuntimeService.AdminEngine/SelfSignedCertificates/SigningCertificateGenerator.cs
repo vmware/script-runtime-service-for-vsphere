@@ -78,7 +78,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.SelfSignedCertificates {
             }
          } catch (Exception exc) {
             actionResult = false;
-            _logger.LogError(exc, "Certificate generation failded");
+            _logger.LogError(exc, "Certificate generation failed");
          }
 
          return result;

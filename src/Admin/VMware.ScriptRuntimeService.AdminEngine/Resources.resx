@@ -174,4 +174,7 @@ It is recommended that you do not connect to any server with an invalid certific
   <data name="UpdateLookupServiceRegistration" xml:space="preserve">
     <value>Update lookup service registration</value>
   </data>
+  <data name="EncodedTrustedCertificatesRetrieval" xml:space="preserve">
+    <value>Trusted certificates retrieval</value>
+  </data>
 </root>

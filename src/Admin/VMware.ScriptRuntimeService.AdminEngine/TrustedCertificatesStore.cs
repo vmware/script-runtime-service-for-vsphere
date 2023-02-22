@@ -5,34 +5,32 @@
 
 using Microsoft.Extensions.Logging;
 using System;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters;
-using VMware.ScriptRuntimeService.SsoAdmin;
+using VMware.ScriptRuntimeService.AdminEngine.VCRegistration;
 
 namespace VMware.ScriptRuntimeService.AdminEngine {
    public class TrustedCertificatesStore {
       private readonly ILogger _logger;
       private readonly IConfigWriter _configWriter;
-      private readonly SsoAdminClient _ssoAdminClient;
+      private readonly VCTrustedCertificatesCollector _trustedCertificatesCollector;
 
       public TrustedCertificatesStore(
          ILoggerFactory loggerFactory,
-         SsoAdminClient ssoAdminClient,
+         VCTrustedCertificatesCollector trustedCertificatesCollector,
          IConfigWriter configWriter) {
 
          if (loggerFactory == null) { throw new ArgumentNullException(nameof(loggerFactory)); }
          _logger = loggerFactory.CreateLogger(typeof(TrustedCertificatesStore).FullName);
-         _ssoAdminClient = ssoAdminClient ?? throw new ArgumentNullException(nameof(ssoAdminClient));
+         _trustedCertificatesCollector = trustedCertificatesCollector ?? throw new ArgumentNullException(nameof(trustedCertificatesCollector));
          _configWriter = configWriter ?? throw new ArgumentNullException(nameof(configWriter));
       }
 
 
-      public void SaveVcenterCACertficates() {
+      public void SaveVcenterCACertificates() {
          try {
             _logger.LogInformation(
                   string.Format(Resources.PerofomingOperation, Resources.StoringCACertificates));
-            var encodedCerts = _ssoAdminClient.GetEncodedCACertificateFromVecs();
+            var encodedCerts = _trustedCertificatesCollector.GetEncodedTrustedCertificates();
             if (encodedCerts != null) {
                _configWriter.WriteTrustedCACertificates(encodedCerts);
             }
