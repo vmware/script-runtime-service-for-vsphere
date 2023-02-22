@@ -19,7 +19,7 @@ namespace VMware.ScriptRuntimeService.AdminApi
       {
          var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
          try {
-            // Copy attached trsuted CA certificates to system trusted certificates if avaiable
+            // Copy attached trusted CA certificates to system trusted certificates if avaiable
             // Works for photon OS only assuming it will run a photon OS container
             var expectedAttachedTrustedCADir = "/app/service/trusted-ca-certs";
             var expectedOSTrustedCADir = "/etc/ssl/certs";

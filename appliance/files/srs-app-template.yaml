@@ -178,12 +178,10 @@ spec:
           name: srs-adminapi
           volumeMounts:
             - name: service-settings
-              mountPath: "/app/service/settings/settings.json"
-              subPath: "settings.json"
+              mountPath: "/app/service/settings/settings"
               readOnly: false
             - name: sts-settings
-              mountPath: "/app/service/settings/sts-settings.json"
-              subPath: "sts-settings.json"
+              mountPath: "/app/service/settings/sts-settings"
               readOnly: false
             - name: trusted-ca-certs
               mountPath: "/app/service/trusted-ca-certs"
@@ -262,12 +260,10 @@ spec:
           name: srs-apigateway
           volumeMounts:
             - name: service-settings
-              mountPath: "/app/service/settings/settings.json"
-              subPath: "settings.json"
+              mountPath: "/app/service/settings/settings"
               readOnly: true
             - name: sts-settings
-              mountPath: "/app/service/settings/sts-settings.json"
-              subPath: "sts-settings.json"
+              mountPath: "/app/service/settings/sts-settings"
               readOnly: true
             - name: trusted-ca-certs
               mountPath: "/app/service/trusted-ca-certs"
@@ -278,6 +274,11 @@ spec:
           ports:
             - containerPort: 5050
               protocol: TCP
+          env:
+            - name: SERVICE_SETTINGS_LOCATION
+              value: "/app/service/settings/settings/settings.json"
+            - name: SERVICE_STS_SETTINGS_LOCATION
+              value: "/app/service/settings/sts-settings/sts-settings.json"
       volumes:
         - name: sign-certificate
           secret:
