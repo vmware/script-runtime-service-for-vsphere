@@ -133,6 +133,9 @@ nodes:
   - containerPort: 6443
     hostPort: 6443
     protocol: TCP
+  extraMounts:
+  - hostPath: /var/log/power-actions
+    containerPath: /var/log/power-actions
 EOF
      echo "Pull nginx docker images"
      if [ "$(docker images "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343" -q)" = "" ]; then
