@@ -267,8 +267,10 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          pathRule.path = $"/({id}/?)";
          pathRule.pathType = "ImplementationSpecific";
          dynamic backend = new ExpandoObject();
-         backend.serviceName = id;
-         backend.servicePort = 8086;
+         backend.service = new ExpandoObject() as dynamic;
+         backend.service.name = id;
+         backend.service.port = new ExpandoObject() as dynamic;
+         backend.service.port.number = 8086;
          pathRule.backend = backend;
 
          // Patch Json Spec
@@ -283,7 +285,9 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             dPath.path = path.Path;
             dPath.pathType = "ImplementationSpecific";
             dynamic dBackend = new ExpandoObject();
+            dBackend.service = new ExpandoObject() as dynamic;
             dBackend.service.name = path.Backend.Service.Name;
+            dBackend.service.port = new ExpandoObject() as dynamic;
             dBackend.service.port.number = path.Backend.Service.Port.Number;
             dPath.backend = dBackend;
             ingressSpecRulesHttp.paths.Add(dPath);
@@ -322,7 +326,9 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             dPath.path = path.Path;
             dPath.pathType = "ImplementationSpecific";
             dynamic dBackend = new ExpandoObject();
+            dBackend.service = new ExpandoObject() as dynamic;
             dBackend.service.name = path.Backend.Service.Name;
+            dBackend.service.port = new ExpandoObject() as dynamic;
             dBackend.service.port.number = path.Backend.Service.Port.Number;
             dPath.backend = dBackend;
             ingressSpecRulesHttp.paths.Add(dPath);
