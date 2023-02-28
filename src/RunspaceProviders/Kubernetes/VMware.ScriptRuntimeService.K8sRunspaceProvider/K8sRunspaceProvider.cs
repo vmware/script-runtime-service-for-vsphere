@@ -12,7 +12,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using k8s;
-using k8s.Autorest;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
@@ -45,7 +44,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          bool verifyRunspaceApiIsAccessibleOnCreate,
          string runspaceTrustedCertsConfigMapName) {
 
-         _logger = loggerFactory.CreateLogger(typeof(K8sRunspaceProvider).ToString());
+         _logger = loggerFactory.CreateLogger<K8sRunspaceProvider>();
 
          var config = new KubernetesClientConfiguration() {
             Host = k8sClusterEndpoint ?? @"https://kubernetes.default.svc",

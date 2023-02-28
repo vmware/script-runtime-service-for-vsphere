@@ -1,28 +1,23 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Configuration;
+using Newtonsoft.Json;
 using VMware.ScriptRuntimeService.APIGateway.Authentication;
 using VMware.ScriptRuntimeService.APIGateway.DataTypes;
 using VMware.ScriptRuntimeService.APIGateway.Properties;
-using VMware.ScriptRuntimeService.APIGateway.Runspace;
 using VMware.ScriptRuntimeService.APIGateway.Runspace.Impl;
 using VMware.ScriptRuntimeService.APIGateway.Sts;
 using VMware.ScriptRuntimeService.APIGateway.Sts.Impl;
-using VMware.ScriptRuntimeService.Docker.Bindings.Model;
-using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 using ErrorDetails = VMware.ScriptRuntimeService.APIGateway.DataTypes.ErrorDetails;
-using Task = System.Threading.Tasks.Task;
 
 namespace VMware.ScriptRuntimeService.APIGateway.Controllers
 {
@@ -31,10 +26,10 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
    [Consumes("application/json")]
    [ApiController]
    public class WebConsoleController : ControllerBase {
-      private StsSettings _stsSettings = new StsSettings();
-      private ILoggerFactory _loggerFactory;
-      private ILogger _logger;
-      private IConfiguration _configuration;
+      private readonly StsSettings _stsSettings = new StsSettings();
+      private readonly ILoggerFactory _loggerFactory;
+      private readonly ILogger _logger;
+      private readonly IConfiguration _configuration;
 
       public WebConsoleController(IConfiguration Configuration, ILoggerFactory loggerFactory) {
          _configuration = Configuration;
@@ -56,7 +51,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       [ProducesResponseType(typeof(WebConsole), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<WebConsole> Post() {         
+      public ActionResult<WebConsole> Post() {
          ActionResult<WebConsole> result = null;
          try {
             var authzToken = SessionToken.FromHeaders(Request.Headers);
@@ -81,6 +76,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
             
 
          } catch (Exception exc) {
+            _logger.LogError(JsonConvert.SerializeObject(exc));
             result = StatusCode(500, new ErrorDetails(exc));
          }
 
@@ -122,6 +118,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
 
          } catch (Exception e) {
             _logger.LogError(e, "List web consoles operation failed.");
+            _logger.LogError(JsonConvert.SerializeObject(e));
             result = StatusCode(
                500,
                new ErrorDetails(
@@ -163,6 +160,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
             result = Ok(new WebConsole(webConsoleData));
          } catch (Exception e) {
             _logger.LogError(e, "Get web console operation failed.");
+            _logger.LogError(JsonConvert.SerializeObject(e));
             result = NotFound(
                new ErrorDetails(
                   ApiErrorCodes.GetErrorCode(nameof(APIGatewayResources.WebConsoleNotFound)),
@@ -197,6 +195,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
             result = Ok();
          } catch (Exception exc) {
             _logger.LogError(exc, "Delete runspace operation failed.");
+            _logger.LogError(JsonConvert.SerializeObject(exc));
             result = StatusCode(
                500, 
                new ErrorDetails(
