@@ -276,6 +276,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          pathRule.backend = backend;
 
          // Patch Json Spec
+         dynamic ingressToMerge = new ExpandoObject();
          dynamic ingressSpec = new ExpandoObject();
          dynamic ingressSpecRulesHttp = new ExpandoObject();
          dynamic ingressSpecRule = new ExpandoObject();
@@ -301,12 +302,12 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          ingressSpecRule.http = ingressSpecRulesHttp;
          dynamic ingressSpecRules = new[] { ingressSpecRule };
          ingressSpec.rules = ingressSpecRules;
-
+         ingressToMerge.spec = ingressSpec;
          //var jsonPatch = new JsonPatchDocument();
          //jsonPatch.Replace("spec", ingressSpec);
 
          _client.NetworkingV1.PatchNamespacedIngress(new V1Patch(
-            JsonConvert.SerializeObject(ingressSpec), V1Patch.PatchType.MergePatch
+            JsonConvert.SerializeObject(ingressToMerge), V1Patch.PatchType.MergePatch
             ), "srs-ingress", _namespace);
       }
 
@@ -314,6 +315,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          V1Ingress ingress = _client.NetworkingV1.ReadNamespacedIngress("srs-ingress", _namespace);
 
          // Patch Json Spec
+         dynamic ingressToMerge = new ExpandoObject();
          dynamic ingressSpec = new ExpandoObject();
          dynamic ingressSpecRulesHttp = new ExpandoObject();
          dynamic ingressSpecRule = new ExpandoObject();
@@ -341,10 +343,11 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          ingressSpecRule.http = ingressSpecRulesHttp;
          dynamic ingressSpecRules = new[] { ingressSpecRule };
          ingressSpec.rules = ingressSpecRules;
+         ingressToMerge.spec = ingressSpec;
          //var jsonPatch = new JsonPatchDocument();
          //jsonPatch.Replace("spec", ingressSpec);
          _client.NetworkingV1.PatchNamespacedIngress(new V1Patch(
-            JsonConvert.SerializeObject(ingressSpec), V1Patch.PatchType.MergePatch
+            JsonConvert.SerializeObject(ingressToMerge), V1Patch.PatchType.MergePatch
             ), "srs-ingress", _namespace);
       }
 
