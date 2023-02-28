@@ -311,7 +311,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          V1Ingress ingress = null;
          try {
             ingress = _client.NetworkingV1.ReadNamespacedIngress("srs-ingress", _namespace);
-         } catch (HttpOperationException e) {
+         } catch (Exception e) {
             _logger.LogError("ReadNamespacedIngress exception ");
             _logger.LogError(JsonConvert.SerializeObject(e));
             throw;
