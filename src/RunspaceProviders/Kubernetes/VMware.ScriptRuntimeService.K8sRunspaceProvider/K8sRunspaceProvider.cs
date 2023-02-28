@@ -261,7 +261,14 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       public void AddSrsIngressWebConsolePath(string id) {
-         var ingress = _client.NetworkingV1.ReadNamespacedIngress("srs-ingress", _namespace);
+         V1Ingress ingress = null;
+         try {
+            ingress = _client.NetworkingV1.ReadNamespacedIngress("srs-ingress", _namespace);
+         } catch (Exception e) {
+            _logger.LogError("ReadNamespacedIngress exception ");
+            _logger.LogError(JsonConvert.SerializeObject(e));
+            throw;
+         }
 
          // Path to add
          dynamic pathRule = new ExpandoObject();
