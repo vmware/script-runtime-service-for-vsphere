@@ -306,7 +306,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          //jsonPatch.Replace("spec", ingressSpec);
 
          _client.NetworkingV1.PatchNamespacedIngress(new V1Patch(
-            JsonConvert.SerializeObject(ingressSpec), V1Patch.PatchType.ApplyPatch
+            JsonConvert.SerializeObject(ingressSpec), V1Patch.PatchType.MergePatch
             ), "srs-ingress", _namespace);
       }
 
@@ -344,7 +344,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          //var jsonPatch = new JsonPatchDocument();
          //jsonPatch.Replace("spec", ingressSpec);
          _client.NetworkingV1.PatchNamespacedIngress(new V1Patch(
-            JsonConvert.SerializeObject(ingressSpec), V1Patch.PatchType.ApplyPatch
+            JsonConvert.SerializeObject(ingressSpec), V1Patch.PatchType.MergePatch
             ), "srs-ingress", _namespace);
       }
 
