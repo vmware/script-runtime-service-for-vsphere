@@ -12,9 +12,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using k8s;
+using k8s.Autorest;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 
 namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
@@ -306,7 +308,14 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       public void RemoveSrsIngressWebConsolePath(string id) {
-         var ingress = _client.NetworkingV1.ReadNamespacedIngress("srs-ingress", _namespace);
+         V1Ingress ingress = null;
+         try {
+            ingress = _client.NetworkingV1.ReadNamespacedIngress("srs-ingress", _namespace);
+         } catch (HttpOperationException e) {
+            _logger.LogError("ReadNamespacedIngress exception ");
+            _logger.LogError(JsonConvert.SerializeObject(e));
+            throw;
+         }
 
          // Patch Json Spec
          dynamic ingressSpec = new ExpandoObject();
