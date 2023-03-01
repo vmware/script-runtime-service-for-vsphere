@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using VMware.ScriptRuntimeService.APIGateway.Authentication;
 using VMware.ScriptRuntimeService.APIGateway.DataTypes;
 using VMware.ScriptRuntimeService.APIGateway.Properties;
@@ -43,7 +42,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// Creates a PowerShell console accessible as web page
       /// </summary>
       /// <remarks>      
-      /// Web console is accessble on the SRS Url/web-console-Id      
+      /// Web console is accessble on the SRS Url/web-console-Id
       /// </remarks>      
       /// <returns>A Web Csonole resource.</returns>
       [HttpPost(Name = "create-webconsole")]
@@ -75,9 +74,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
             }
             
 
-         } catch (Exception exc) {
-            _logger.LogError(JsonConvert.SerializeObject(exc));
-            result = StatusCode(500, new ErrorDetails(exc));
+         } catch (Exception e) {
+            _logger.LogError(e, "Creating web console operation failed.");
+            result = StatusCode(500, new ErrorDetails(e));
          }
 
          return result;
@@ -118,7 +117,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
 
          } catch (Exception e) {
             _logger.LogError(e, "List web consoles operation failed.");
-            _logger.LogError(JsonConvert.SerializeObject(e));
             result = StatusCode(
                500,
                new ErrorDetails(
@@ -160,7 +158,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
             result = Ok(new WebConsole(webConsoleData));
          } catch (Exception e) {
             _logger.LogError(e, "Get web console operation failed.");
-            _logger.LogError(JsonConvert.SerializeObject(e));
             result = NotFound(
                new ErrorDetails(
                   ApiErrorCodes.GetErrorCode(nameof(APIGatewayResources.WebConsoleNotFound)),
@@ -179,7 +176,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <param name="id">Unique identifier of the web console</param>
       /// <remarks>
       /// Deletes the PowerShell instance that is prepresented by this **webconsole** resource.
-      /// Running script in the PowerShell instance won't prevent the operation.      
+      /// Running script in the PowerShell instance won't prevent the operation.
       /// </remarks>
       [HttpDelete("{id}", Name = "delete-webconsole")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
@@ -195,7 +192,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
             result = Ok();
          } catch (Exception exc) {
             _logger.LogError(exc, "Delete runspace operation failed.");
-            _logger.LogError(JsonConvert.SerializeObject(exc));
             result = StatusCode(
                500, 
                new ErrorDetails(
