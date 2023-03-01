@@ -45,8 +45,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
             try {
                _logger.Log(LogLevel.Debug, "Handle Basic Authentication Start");
 
-               Console.WriteLine($"Authorization: '{Request.Headers["Authorization"]}'");
-
                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
                var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
                var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
@@ -82,7 +80,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                   new AuthenticationTicket(principal, AuthenticationScheme));
                
             } catch (Exception exc) {
-               Console.WriteLine($"Authorization2: '{Request.Headers["Authorization"]}'");
                _logger.LogError(exc, "Basic Authorization failure");
                try {
                   _logger.LogTrace($"Failed Authorization header '{Request.Headers["Authorization"]}'");
