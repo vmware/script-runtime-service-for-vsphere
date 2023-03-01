@@ -25,8 +25,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
    public class BasicAuthenticationHandler : AuthenticationHandler<StsSettings> {
       public const string AuthenticationScheme = "Basic";
 
-      private ILogger _logger;
-      private ILoggerFactory _loggerFactory;
+      private readonly ILogger _logger;
+      private readonly ILoggerFactory _loggerFactory;
 
       public BasicAuthenticationHandler(
          IOptionsMonitor<StsSettings> options,
@@ -80,7 +80,10 @@ namespace VMware.ScriptRuntimeService.APIGateway.Authentication.Basic {
                   new AuthenticationTicket(principal, AuthenticationScheme));
                
             } catch (Exception exc) {
-               _logger.Log(LogLevel.Error, $"Basic Authorization failure: {exc}");
+               _logger.LogError(exc, "Basic Authorization failure");
+               try {
+                  _logger.LogTrace($"Failed Authorization header '{Request.Headers["Authorization"]}'");
+               } catch { }
                result = AuthenticateResult.Fail(exc.Message);
             }
 

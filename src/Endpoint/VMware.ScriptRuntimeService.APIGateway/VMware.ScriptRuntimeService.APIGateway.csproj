@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -180,7 +180,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.3.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="System.IO.Abstractions" Version="6.0.32" />
+    <PackageReference Include="System.IO.Abstractions" Version="17.2.3" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.0" />
     <PackageReference Include="NLog" Version="4.5.11" />
   </ItemGroup>

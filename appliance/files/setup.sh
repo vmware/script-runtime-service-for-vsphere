@@ -133,18 +133,21 @@ nodes:
   - containerPort: 6443
     hostPort: 6443
     protocol: TCP
+  extraMounts:
+  - hostPath: /var/log/power-actions
+    containerPath: /var/log/power-actions
 EOF
      echo "Pull nginx docker images"
-     if [ "$(docker images "jettech/kube-webhook-certgen:v1.2.2" -q)" = "" ]; then
-         docker pull docker.io/jettech/kube-webhook-certgen:v1.2.2
+     if [ "$(docker images "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343" -q)" = "" ]; then
+         docker pull registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343
      fi
-     if [ "$(docker images "us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1" -q)" = "" ]; then
-         docker pull us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1
+     if [ "$(docker images "us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v1.6.4" -q)" = "" ]; then
+         docker pull us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v1.6.4
      fi
 
      echo "Load nginx docker image to kind node"
-     kind load docker-image jettech/kube-webhook-certgen:v1.2.2
-     kind load docker-image us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1
+     kind load docker-image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343
+     kind load docker-image us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v1.6.4
 
      echo "Deploy ingress controller for SRS on K8s Cluster" > /dev/console
      kubectl apply -f /root/ingress-controller.yaml
