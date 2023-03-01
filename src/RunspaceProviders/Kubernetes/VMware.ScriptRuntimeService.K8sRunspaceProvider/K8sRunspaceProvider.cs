@@ -12,12 +12,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using k8s;
-using k8s.Autorest;
 using k8s.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Org.BouncyCastle.X509;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 
 namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
@@ -303,8 +300,6 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          dynamic ingressSpecRules = new[] { ingressSpecRule };
          ingressSpec.rules = ingressSpecRules;
          ingressToMerge.spec = ingressSpec;
-         //var jsonPatch = new JsonPatchDocument();
-         //jsonPatch.Replace("spec", ingressSpec);
 
          _client.NetworkingV1.PatchNamespacedIngress(new V1Patch(
             JsonConvert.SerializeObject(ingressToMerge), V1Patch.PatchType.MergePatch
@@ -344,8 +339,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          dynamic ingressSpecRules = new[] { ingressSpecRule };
          ingressSpec.rules = ingressSpecRules;
          ingressToMerge.spec = ingressSpec;
-         //var jsonPatch = new JsonPatchDocument();
-         //jsonPatch.Replace("spec", ingressSpec);
+
          _client.NetworkingV1.PatchNamespacedIngress(new V1Patch(
             JsonConvert.SerializeObject(ingressToMerge), V1Patch.PatchType.MergePatch
             ), "srs-ingress", _namespace);
@@ -740,18 +734,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       private void LogException(Exception ex) {
-         try {
-            if (ex is HttpOperationException httpEx) {
-               _logger.LogError(JsonConvert.SerializeObject(httpEx));
-               _logger.LogError(JsonConvert.SerializeObject(httpEx.Request));
-               _logger.LogError(JsonConvert.SerializeObject(httpEx.Response));
-               _logger.LogError(JsonConvert.SerializeObject(httpEx.Body));
-            } else {
-               _logger.LogError(JsonConvert.SerializeObject(ex));
-            }
-         } catch (Exception ex2) {
-            _logger.LogError(ex, "Unable to serialize the error. Using the built-in logger");
-         }
+         _logger.LogError(ex.ToString());
+         _logger.LogTrace(ex, ex.ToString());
       }
    }
 }
