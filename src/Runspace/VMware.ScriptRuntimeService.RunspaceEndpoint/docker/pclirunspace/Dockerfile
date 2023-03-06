@@ -4,6 +4,10 @@ FROM srs-base:1.0
 # Install Powershell Core
 RUN tdnf install powershell -y
 
+RUN tdnf install python3-3.7.5 python3-xml -y
+RUN python3 -m ensurepip
+RUN pip3 install six psutil lxml pyopenssl
+
 WORKDIR /app
 
 # Copy application
