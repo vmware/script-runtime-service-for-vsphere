@@ -30,7 +30,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
             Name = scriptName,
             Id = scriptId,
             State = ScriptState.Running,
-            IsSystem = isSystem
+            IsSystem = true
          });
 
          Task.Run(() => {
@@ -43,7 +43,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
                   _logger.Log(LogLevel.Error, exc.ToString());
                }
                
-               scriptExecutionWriter.WriteScriptExecution(new NamedScriptExecution(scriptName, scriptExecutionResult) { IsSystem = isSystem });
+               scriptExecutionWriter.WriteScriptExecution(new NamedScriptExecution(scriptName, scriptExecutionResult) { IsSystem = true });
                scriptExecutionWriter.WriteScriptExecutionOutput(new ScriptExecutionOutput(scriptExecutionResult));
                scriptExecutionWriter.WriteScriptExecutionDataStreams(new ScriptExecutionDataStreams(scriptExecutionResult?.Streams));
                
@@ -65,7 +65,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
                   OutputObjectsFormat = lastPersistedScript?.OutputObjectsFormat ?? OutputObjectsFormat.Text,
                   State = ScriptState.Error,
                   Reason = APIGatewayResources.PollingScriptExecutionPersister_ScriptFailed_RunspaceDisappeared,
-                  IsSystem = isSystem
+                  IsSystem = true
                };
                scriptExecutionWriter.WriteScriptExecution(updatedScriptExecution);
             }
