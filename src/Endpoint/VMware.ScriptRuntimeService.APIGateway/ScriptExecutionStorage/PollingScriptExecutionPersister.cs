@@ -25,12 +25,13 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
          int maxGetLastScriptFailures = 3;
          int lastScriptFailures = 0;
 
+         _logger.LogInformation($"1. PollingScriptExecutionPersister.Start('{scriptName}', '{isSystem}')");
          // Initialize scriptExecutionWriter with running script execution with Id, Name, and State
          scriptExecutionWriter.WriteScriptExecution(new NamedScriptExecution {
             Name = scriptName,
             Id = scriptId,
             State = ScriptState.Running,
-            IsSystem = true
+            IsSystem = isSystem
          });
 
          Task.Run(() => {
@@ -42,8 +43,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
                   lastScriptFailures++;
                   _logger.Log(LogLevel.Error, exc.ToString());
                }
-               
-               scriptExecutionWriter.WriteScriptExecution(new NamedScriptExecution(scriptName, scriptExecutionResult) { IsSystem = true });
+
+               _logger.LogInformation($"2. PollingScriptExecutionPersister.Start('{scriptName}', '{isSystem}')");
+               scriptExecutionWriter.WriteScriptExecution(new NamedScriptExecution(scriptName, scriptExecutionResult) { IsSystem = isSystem });
                scriptExecutionWriter.WriteScriptExecutionOutput(new ScriptExecutionOutput(scriptExecutionResult));
                scriptExecutionWriter.WriteScriptExecutionDataStreams(new ScriptExecutionDataStreams(scriptExecutionResult?.Streams));
                
@@ -57,6 +59,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
                // 2. Update Script ExecutionState to Error
                // 3. Write script state
                var lastPersistedScript = scriptExecutionWriter.ReadScriptExecution();
+
+               _logger.LogInformation($"3. PollingScriptExecutionPersister.Start('{scriptName}', '{isSystem}')");
                var updatedScriptExecution = new NamedScriptExecution {
                   Name = lastPersistedScript?.Name,
                   Id = lastPersistedScript?.Id,
@@ -65,7 +69,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
                   OutputObjectsFormat = lastPersistedScript?.OutputObjectsFormat ?? OutputObjectsFormat.Text,
                   State = ScriptState.Error,
                   Reason = APIGatewayResources.PollingScriptExecutionPersister_ScriptFailed_RunspaceDisappeared,
-                  IsSystem = true
+                  IsSystem = isSystem
                };
                scriptExecutionWriter.WriteScriptExecution(updatedScriptExecution);
             }
