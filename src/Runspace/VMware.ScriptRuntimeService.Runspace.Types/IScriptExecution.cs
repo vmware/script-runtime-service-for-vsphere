@@ -18,7 +18,5 @@ namespace VMware.ScriptRuntimeService.Runspace.Types {
       DateTime? StarTime { get; }
 
       DateTime? EndTime { get; }
-
-      bool IsSystem { get; }
    }
 }

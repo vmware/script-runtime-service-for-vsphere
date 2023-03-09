@@ -238,8 +238,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                                  Name = "allLinked",
                                  Value = true
                               }
-                           },
-                           IsSystem = true
+                           }
                         };
 
                         _logger.LogDebug($"Start Connect VC script");

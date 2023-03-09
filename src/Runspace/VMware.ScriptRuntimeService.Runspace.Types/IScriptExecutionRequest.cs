@@ -14,7 +14,5 @@ namespace VMware.ScriptRuntimeService.Runspace.Types
       OutputObjectsFormat OutputObjectsFormat { get; }
 
       IScriptParameter[] Parameters { get; }
-
-      bool IsSystem { get; }
    }
 }

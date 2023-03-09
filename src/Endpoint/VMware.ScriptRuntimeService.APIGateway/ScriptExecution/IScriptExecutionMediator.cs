@@ -14,6 +14,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecution
    {
       Task<INamedScriptExecution> StartScriptExecution(string userId, IRunspaceInfo runspace, IScriptExecutionRequest scriptExecutionRequest);
       
+      Task<INamedScriptExecution> StartScriptExecution(string userId, IRunspaceInfo runspace, IScriptExecutionRequest scriptExecutionRequest, bool isSystemExecution);
+      
       INamedScriptExecution GetScriptExecution(string userId, string scriptId);
 
       INamedScriptExecution[] ListScriptExecutions(string userId, bool skipSystemExecutions);

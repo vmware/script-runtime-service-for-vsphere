@@ -111,11 +111,5 @@ namespace VMware.ScriptRuntimeService.APIGateway.DataTypes
       [DataMember(Name = "end_time", IsRequired = false)]
       [JsonConverter(typeof(IsoDateTimeConverter))]
       public DateTime? EndTime { get; }
-
-      /// <summary>
-      /// Specifies whether the script is a system script run by the service - true, or explicitly requested by the user - false
-      /// </summary>
-      [DataMember(Name = "is_system")]
-      public bool IsSystem { get; set; }
    }
 }

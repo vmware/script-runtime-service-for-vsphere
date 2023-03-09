@@ -29,10 +29,19 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecution.Impl {
          _runspaceClientFactory = new RunspaceClientFactory();
       }
 
-      public async Task<INamedScriptExecution> StartScriptExecution(
+      public Task<INamedScriptExecution> StartScriptExecution(
          string userId, 
          IRunspaceInfo runspace, 
          IScriptExecutionRequest scriptExecutionRequest) {
+
+         return StartScriptExecution(userId, runspace, scriptExecutionRequest, false);
+      }
+      
+      public async Task<INamedScriptExecution> StartScriptExecution(
+         string userId, 
+         IRunspaceInfo runspace, 
+         IScriptExecutionRequest scriptExecutionRequest,
+         bool isSystemExecution) {
 
          var runspaceClient = _runspaceClientFactory.Create(runspace.Endpoint) as RunspaceClient.RunspaceClient;
          var scriptExecResult = await runspaceClient.StartScript(
@@ -40,7 +49,13 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecution.Impl {
             scriptExecutionRequest.OutputObjectsFormat,
             scriptExecutionRequest.Parameters);
          _scriptIdToRunspaceClient[scriptExecResult.Id] = runspaceClient;
-         _scriptExecutionStorage.StartStoringScriptExecution(userId, runspaceClient, scriptExecResult.Id, scriptExecutionRequest.Name, scriptExecutionRequest.IsSystem);
+
+         _scriptExecutionStorage.StartStoringScriptExecution(
+            userId, 
+            runspaceClient, 
+            scriptExecResult.Id, 
+            scriptExecutionRequest.Name,
+            isSystemExecution);
 
          return new ScriptResult(scriptExecutionRequest.Name, scriptExecResult);
       }

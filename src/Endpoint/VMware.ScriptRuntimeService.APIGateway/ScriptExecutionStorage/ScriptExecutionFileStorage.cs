@@ -163,9 +163,17 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
 
          return userScripts.Select(scriptId => GetScriptExecution(userId, scriptId)).
             Where(se => 
-               !string.IsNullOrEmpty(se?.Id) && 
-               (skipSystemExecutions ? !se.IsSystem : true)).
+               !string.IsNullOrEmpty(se?.Id) &&
+               ShouldIncludeExecution(se, skipSystemExecutions)).
             ToArray();
+      }
+
+      private static bool ShouldIncludeExecution(INamedScriptExecution execution, bool skipSystemExecutions) {
+         if (skipSystemExecutions && execution is NamedScriptExecution named) {
+            return !named.IsSystem;
+         } else {
+            return true;
+         }
       }
       
       public void StartStoringScriptExecution(

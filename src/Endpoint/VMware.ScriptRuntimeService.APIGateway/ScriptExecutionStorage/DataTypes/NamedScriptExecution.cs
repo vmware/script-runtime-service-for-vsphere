@@ -47,8 +47,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataType
                 source.State == State &&
                 source.OutputObjectsFormat == OutputObjectsFormat &&
                 source.StarTime == StarTime &&
-                source.EndTime == EndTime &&
-                source.IsSystem == IsSystem;
+                source.EndTime == EndTime;
       }
 
       public override int GetHashCode() {
@@ -69,7 +68,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataType
             }
             hashCode = hashCode * 59 + this.State.GetHashCode();
             hashCode = hashCode * 59 + this.OutputObjectsFormat.GetHashCode();
-            hashCode = hashCode * 59 + this.IsSystem.GetHashCode();
             return hashCode;
          }
       }

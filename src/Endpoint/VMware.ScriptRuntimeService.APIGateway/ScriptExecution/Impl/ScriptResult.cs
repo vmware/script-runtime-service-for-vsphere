@@ -19,7 +19,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecution.Impl
          OutputObjectsFormat = scriptResult.OutputObjectsFormat;
          StarTime = scriptResult.StarTime;
          EndTime = scriptResult.EndTime;
-         IsSystem = scriptResult.IsSystem;
       }
 
       public string Name { get; set; }
@@ -31,7 +30,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecution.Impl
       public OutputObjectsFormat OutputObjectsFormat { get; set; }
       public DateTime? StarTime { get; set; }
       public DateTime? EndTime { get; set; }
-      public bool IsSystem { get; set; }
 
       #endregion
    }
