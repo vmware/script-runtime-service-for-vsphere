@@ -245,7 +245,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                         var scriptResult = ScriptExecutionMediatorSingleton.
                            Instance.
                            ScriptExecutionMediator.
-                           StartScriptExecution(sessionToken.UserName, result, scriptExecutionRequest).Result;
+                           StartScriptExecution(sessionToken.UserName, result, scriptExecutionRequest, true).Result;
                         result.VcConnectionScriptId = scriptResult.Id;
 
                         _logger.LogDebug($"Wait Connect VC script to complete");
@@ -396,7 +396,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                      var scriptResult = ScriptExecutionMediatorSingleton.
                         Instance.
                         ScriptExecutionMediator.
-                        StartScriptExecution(userId, runspaceInfo, scriptExecutionRequest).Result;                     
+                        StartScriptExecution(userId, runspaceInfo, scriptExecutionRequest, true).Result;                     
 
                      _logger.LogDebug($"Wait Disconnect All Servers script to complete");
                      while (scriptResult.State == ScriptState.Running) {

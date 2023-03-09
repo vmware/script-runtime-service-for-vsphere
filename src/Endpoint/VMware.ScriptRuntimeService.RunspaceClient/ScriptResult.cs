@@ -39,6 +39,5 @@ namespace VMware.ScriptRuntimeService.RunspaceClient
       public DateTime? EndTime { get; }
       public IDataStreams Streams { get; set; }
       public string Name { get; }
-      public bool IsSystem => false;
    }
 }
