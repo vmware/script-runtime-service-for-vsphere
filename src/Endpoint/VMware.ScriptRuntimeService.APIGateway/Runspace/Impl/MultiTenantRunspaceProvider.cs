@@ -21,12 +21,12 @@ using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 {
    internal class MultiTenantRunspaceProvider : IMultiTenantRunspaceProvider, IDisposable {
-      private ILogger _logger;
-      private IRunspaceProvider _runspaceProvider;
-      private IRunspacesStatsMonitor _runspacesStatsMonitor;
-      private UserToIdentifiableData<IRunspaceData> _userRunspaces = new UserToIdentifiableData<IRunspaceData>();
-      private UserToIdentifiableData<IWebConsoleData> _userWebConsoles = new UserToIdentifiableData<IWebConsoleData>();
-      private Timer _runspacesCleanupTimer;
+      private readonly ILogger _logger;
+      private readonly IRunspaceProvider _runspaceProvider;
+      private readonly IRunspacesStatsMonitor _runspacesStatsMonitor;
+      private readonly UserToIdentifiableData<IRunspaceData> _userRunspaces = new UserToIdentifiableData<IRunspaceData>();
+      private readonly UserToIdentifiableData<IWebConsoleData> _userWebConsoles = new UserToIdentifiableData<IWebConsoleData>();
+      private readonly Timer _runspacesCleanupTimer;
 
       public MultiTenantRunspaceProvider(ILoggerFactory loggerFactory, IRunspaceProvider runspaceProvider) : 
          this(loggerFactory, runspaceProvider, Int32.MaxValue, 24 * 60, 24 * 60) {}
