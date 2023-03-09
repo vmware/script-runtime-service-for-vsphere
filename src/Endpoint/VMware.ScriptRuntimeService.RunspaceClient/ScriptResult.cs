@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -39,5 +39,6 @@ namespace VMware.ScriptRuntimeService.RunspaceClient
       public DateTime? EndTime { get; }
       public IDataStreams Streams { get; set; }
       public string Name { get; }
+      public bool IsSystem => false;
    }
 }

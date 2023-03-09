@@ -1,27 +1,21 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
-using k8s.KubeConfigModels;
 using Microsoft.Extensions.Logging;
 using VMware.ScriptRuntimeService.APIGateway.Authentication;
 using VMware.ScriptRuntimeService.APIGateway.Properties;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecution.Impl;
 using VMware.ScriptRuntimeService.APIGateway.Sts;
-using VMware.ScriptRuntimeService.APIGateway.Sts.Impl;
 using VMware.ScriptRuntimeService.APIGateway.SystemScripts;
 using VMware.ScriptRuntimeService.K8sRunspaceProvider;
 using VMware.ScriptRuntimeService.Runspace.Types;
-using VMware.ScriptRuntimeService.RunspaceClient.Bindings.Model;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 
 namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
@@ -244,7 +238,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                                  Name = "allLinked",
                                  Value = true
                               }
-                           }
+                           },
+                           IsSystem = true
                         };
 
                         _logger.LogDebug($"Start Connect VC script");

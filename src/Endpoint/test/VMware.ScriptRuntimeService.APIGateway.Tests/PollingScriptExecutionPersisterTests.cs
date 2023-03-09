@@ -1,19 +1,15 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage;
-using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataTypes;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.ReadWriteDataTypes;
-using VMware.ScriptRuntimeService.APIGateway.ScriptExecution;
 using VMware.ScriptRuntimeService.Runspace.Types;
 using VMware.ScriptRuntimeService.RunspaceClient;
 
@@ -43,6 +39,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
          public override int GetHashCode() {
              return this.Id.GetHashCode();
          }
+
+         public bool IsSystem { get; }
       }
       [Test]
       public void PollsScriptsStateUntilComplete() {
@@ -91,7 +89,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
          testObject.ScriptResultPersisted += (object sender, ScriptResultStoredEventArgs e) => {
             Interlocked.Exchange(ref completed, 1);
          };
-         testObject.Start(runspaceMock.Object, scriptId, scriptName, scriptExecutionWriterMock.Object);
+         testObject.Start(runspaceMock.Object, scriptId, scriptName, false, scriptExecutionWriterMock.Object);
 
          while (Interlocked.Read(ref completed) == 0) {
             Thread.Sleep(500);
@@ -135,7 +133,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
          var testObject = new PollingScriptExecutionPersister(logger);
 
          // Act
-         testObject.Start(runspaceMock.Object, scriptId, scriptName, scriptExecutionWriterMock.Object);
+         testObject.Start(runspaceMock.Object, scriptId, scriptName, false, scriptExecutionWriterMock.Object);
                 
          // Assert         
          scriptExecutionWriterMock.Verify(x => x.WriteScriptExecution(runningNamedScriptExecution), Times.AtLeastOnce());

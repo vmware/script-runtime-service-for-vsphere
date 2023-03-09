@@ -1,10 +1,9 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using System;
-using VMware.ScriptRuntimeService.APIGateway.ScriptExecution;
 using VMware.ScriptRuntimeService.Runspace.Types;
 
 namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataTypes {
@@ -31,6 +30,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataType
       public OutputObjectsFormat OutputObjectsFormat { get; set; }
       public DateTime? StarTime { get; set; }
       public DateTime? EndTime { get; set; }
+      public bool IsSystem { get; set; }
 
       #endregion
 
@@ -47,7 +47,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataType
                 source.State == State &&
                 source.OutputObjectsFormat == OutputObjectsFormat &&
                 source.StarTime == StarTime &&
-                source.EndTime == EndTime;
+                source.EndTime == EndTime &&
+                source.IsSystem == IsSystem;
       }
 
       public override int GetHashCode() {
@@ -68,6 +69,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataType
             }
             hashCode = hashCode * 59 + this.State.GetHashCode();
             hashCode = hashCode * 59 + this.OutputObjectsFormat.GetHashCode();
+            hashCode = hashCode * 59 + this.IsSystem.GetHashCode();
             return hashCode;
          }
       }

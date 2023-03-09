@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -9,19 +9,16 @@ using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using VMware.ScriptRuntimeService.APIGateway.DataTypes;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataTypes;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.ReadWriteDataTypes;
 using VMware.ScriptRuntimeService.Runspace.Types;
 using VMware.ScriptRuntimeService.RunspaceClient;
 using ScriptState = VMware.ScriptRuntimeService.Runspace.Types.ScriptState;
-using StreamRecord = VMware.ScriptRuntimeService.APIGateway.DataTypes.StreamRecord;
 
 namespace VMware.ScriptRuntimeService.APIGateway.Tests {
    public class ScriptExecutionFileStorageTests {
@@ -90,9 +87,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             completedScripts.Add(args.ScriptId);
          };
 
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId1, _runspace, _scriptId1, _scriptName1);
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId2, _scriptName2);
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId3, _scriptName3);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId1, _runspace, _scriptId1, _scriptName1, false);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId2, _scriptName2, false);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId3, _scriptName3, false);
 
          while (!completedScripts.Contains(_scriptId1) ||
                 !completedScripts.Contains(_scriptId2) ||
@@ -110,9 +107,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
          };
 
          // Act
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId1, _runspace, _scriptId1, _scriptName1);
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId2, _scriptName2);
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId3, _scriptName3);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId1, _runspace, _scriptId1, _scriptName1, false);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId2, _scriptName2, false);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId3, _scriptName3, false);
 
          while (!completedScripts.Contains(_scriptId1) ||
                 !completedScripts.Contains(_scriptId2) ||
@@ -145,7 +142,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
          ArrangeDataRetrievalTests();
 
          // Act
-         var user2Scripts = _scriptExecutionFileStorage.ListScriptExecutions(_userId2);
+         var user2Scripts = _scriptExecutionFileStorage.ListScriptExecutions(_userId2, false);
 
          // Assert
          Assert.AreEqual(2, user2Scripts.Length);
@@ -190,9 +187,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
             completedScripts.Add(args.ScriptId);
          };
 
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId1, _runspace, _scriptId1, _scriptName1);
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId2, _scriptName2);
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId3, _scriptName3);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId1, _runspace, _scriptId1, _scriptName1, false);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId2, _scriptName2, false);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId3, _scriptName3, false);
 
          while (!completedScripts.Contains(_scriptId1) ||
                 !completedScripts.Contains(_scriptId2) ||

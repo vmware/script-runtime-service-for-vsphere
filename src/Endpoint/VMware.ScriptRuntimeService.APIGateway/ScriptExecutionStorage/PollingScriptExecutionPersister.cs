@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -8,21 +8,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using VMware.ScriptRuntimeService.APIGateway.Properties;
-using VMware.ScriptRuntimeService.APIGateway.ScriptExecution;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataTypes;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.ReadWriteDataTypes;
 using VMware.ScriptRuntimeService.Runspace.Types;
 
 namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
    internal class PollingScriptExecutionPersister : IPollingScriptExecutionPersister {
-      private ILogger _logger;
+      private readonly ILogger _logger;
       public PollingScriptExecutionPersister(ILogger logger) {
          _logger = logger ?? throw new ArgumentNullException(nameof(logger));
       }
 
       public event EventHandler<ScriptResultStoredEventArgs> ScriptResultPersisted;
 
-      public void Start(IRunspace runspaceClient, string scriptId, string scriptName, IScriptExecutionStoreProvider scriptExecutionWriter) {
+      public void Start(IRunspace runspaceClient, string scriptId, string scriptName, bool isSystem, IScriptExecutionStoreProvider scriptExecutionWriter) {
          int maxGetLastScriptFailures = 3;
          int lastScriptFailures = 0;
 
@@ -30,7 +29,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
          scriptExecutionWriter.WriteScriptExecution(new NamedScriptExecution {
             Name = scriptName,
             Id = scriptId,
-            State = ScriptState.Running
+            State = ScriptState.Running,
+            IsSystem = isSystem
          });
 
          Task.Run(() => {
