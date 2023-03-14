@@ -49,12 +49,12 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
          var runspaceMock = new Mock<IRunspace>();
 
          _scriptExecutionFileStorage = new ScriptExecutionFileStorage(
-            loggerFactoryMock.Object, 
+            loggerFactoryMock.Object,
             new ScriptExecutionStorageSettings {
                ServiceScriptStorageDir = _rootPath
             },
             _fileSystem,
-            new ScriptExecutionFileStoreProviderFactory(), 
+            new ScriptExecutionFileStoreProviderFactory(),
             new PollingScriptExecutionPersisterFactory());
 
          var script1ResultMock = new Mock<IScriptExecutionResult>();
@@ -88,7 +88,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
          };
 
          _scriptExecutionFileStorage.StartStoringScriptExecution(_userId1, _runspace, _scriptId1, _scriptName1, false);
-         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId2, _scriptName2, false);
+         _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId2, _scriptName2, true);
          _scriptExecutionFileStorage.StartStoringScriptExecution(_userId2, _runspace, _scriptId3, _scriptName3, false);
 
          while (!completedScripts.Contains(_scriptId1) ||
@@ -116,7 +116,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
                 !completedScripts.Contains(_scriptId3)) {
             Thread.Sleep(500);
          }
-         
+
          // Assert
          Assert.IsTrue(_fileSystem.Directory.Exists(Path.Combine(_rootPath, _userId1, _scriptId1)));
          Assert.IsTrue(_fileSystem.Directory.Exists(Path.Combine(_rootPath, _userId2, _scriptId2)));
@@ -137,7 +137,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
       }
 
       [Test]
-      public void ListScriptsForUser() {
+      public void ListAllScriptsForUser() {
          // Arrange
          ArrangeDataRetrievalTests();
 
@@ -147,6 +147,19 @@ namespace VMware.ScriptRuntimeService.APIGateway.Tests {
          // Assert
          Assert.AreEqual(2, user2Scripts.Length);
          Assert.Contains(_scriptId2, user2Scripts.Select(s => s.Id).ToArray());
+         Assert.Contains(_scriptId3, user2Scripts.Select(s => s.Id).ToArray());
+      }
+
+      [Test]
+      public void ListNonSystemScriptsForUser() {
+         // Arrange
+         ArrangeDataRetrievalTests();
+
+         // Act
+         var user2Scripts = _scriptExecutionFileStorage.ListScriptExecutions(_userId2, true);
+
+         // Assert
+         Assert.AreEqual(1, user2Scripts.Length);
          Assert.Contains(_scriptId3, user2Scripts.Select(s => s.Id).ToArray());
       }
 
