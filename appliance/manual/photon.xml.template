@@ -57,6 +57,10 @@
             <Label>VCThumbprint</Label>
             <Description>VC Tls certificate thumbprint SRS installation will trust to perform SRS registration</Description>
         </Property>
+        <Property ovf:key="srs.vcclean" ovf:type="boolean" ovf:userConfigurable="true" ovf:value="true">
+            <Label>Remove prior installation</Label>
+            <Description>Remove previously installed SRS from the target VC</Description>
+        </Property>
         <Property ovf:key="srs.adminuser" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
             <Label>AdminUser</Label>
             <Description>Username for administration service access</Description>

@@ -50,6 +50,9 @@ namespace VMware.ScriptRuntimeService.Setup {
             case "force":
                userInput.ForceSpecified = true;
                break;
+            case "clean":
+               userInput.CleanSpecified = true;
+               break;
          }
       }
 

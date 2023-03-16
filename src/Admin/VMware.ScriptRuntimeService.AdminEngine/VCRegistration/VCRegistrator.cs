@@ -258,6 +258,28 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          SecureString password,
          string thumbprint,
          bool force) {
+         Register(
+            hostname, 
+            signingCertificatePath, 
+            tlsCertificatePath, 
+            psc, 
+            username, 
+            password, 
+            thumbprint, 
+            force, 
+            false);
+      }
+
+      public void Register(
+         string hostname,
+         string signingCertificatePath,
+         string tlsCertificatePath,
+         string psc,
+         string username,
+         SecureString password,
+         string thumbprint,
+         bool force,
+         bool cleanPriorToRegistring) {
 
          _logger.LogInformation("Registring with VC");
 
@@ -265,6 +287,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          _logger.LogDebug($"VC User: {username}");
          _logger.LogDebug($"VC Thumbprint: {thumbprint}");
          _logger.LogDebug($"Force Specified: {force}");
+         _logger.LogDebug($"Clean before registring: {cleanPriorToRegistring}");
+
+         if (cleanPriorToRegistring) {
+            Clean(psc, username, password, thumbprint, force);
+         }
 
          var certificates = SetupCertificatesInternal(hostname, signingCertificatePath, tlsCertificatePath);
 
@@ -414,14 +441,6 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          return new LookupServiceClient(
             psc,
             certificateValidator);
-      }
-
-      private SsoAdminClient GetSsoAdminClient(string psc, X509CertificateValidator certificateValidator) {
-         var lookupServiceClient = GetLookupServiceClient(
-            psc,
-            certificateValidator);
-
-         return GetSsoAdminClient(lookupServiceClient, certificateValidator);
       }
 
       private SsoAdminClient GetSsoAdminClient(LookupServiceClient lookupServiceClient, X509CertificateValidator certificateValidator) {

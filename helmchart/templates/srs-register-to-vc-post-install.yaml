@@ -32,6 +32,10 @@ spec:
       - name: TARGET_VC_THUMBPRINT
         value: {{ .Values.vc.tls_thumbprint  }}
       {{ end  }}
+      {{ if and .Values.vc .Values.vc.clean }}
+      - name: TARGET_VC_CLEAN
+        value: {{ .Values.vc.clean  }}
+      {{ end  }}
       - name: SERVICE_HOSTNAME
         value: {{ required "Specify SRS service hostname" .Values.srs.service.hostname  }}
   restartPolicy: Never

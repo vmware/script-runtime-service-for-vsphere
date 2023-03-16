@@ -99,6 +99,8 @@ spec:
             value: "${VC_PASSWORD}"
           - name: TARGET_VC_THUMBPRINT
             value: ${VC_THUMBPRINT}
+          - name: TARGET_VC_CLEAN
+            value: ${VC_CLEAN}
           - name: SERVICE_HOSTNAME
             value: "${SRSA_HOSTNAME}"
       restartPolicy: Never

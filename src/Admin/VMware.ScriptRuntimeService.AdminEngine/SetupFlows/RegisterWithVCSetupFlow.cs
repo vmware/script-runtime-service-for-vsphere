@@ -24,7 +24,8 @@ namespace VMware.ScriptRuntimeService.AdminEngine.SetupFlows {
             userInput.User,
             userInput.Password,
             userInput.VcThumbprint,
-            userInput.ForceSpecified);
+            userInput.ForceSpecified,
+            userInput.CleanSpecified);
       }
    }
 }
