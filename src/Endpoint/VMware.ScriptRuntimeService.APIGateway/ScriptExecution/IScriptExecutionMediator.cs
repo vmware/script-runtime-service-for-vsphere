@@ -1,11 +1,8 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 using VMware.ScriptRuntimeService.Runspace.Types;
@@ -17,9 +14,11 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecution
    {
       Task<INamedScriptExecution> StartScriptExecution(string userId, IRunspaceInfo runspace, IScriptExecutionRequest scriptExecutionRequest);
       
+      Task<INamedScriptExecution> StartScriptExecution(string userId, IRunspaceInfo runspace, IScriptExecutionRequest scriptExecutionRequest, bool isSystemExecution);
+      
       INamedScriptExecution GetScriptExecution(string userId, string scriptId);
 
-      INamedScriptExecution[] ListScriptExecutions(string userId);
+      INamedScriptExecution[] ListScriptExecutions(string userId, bool skipSystemExecutions);
 
       IScriptExecutionOutputObjects GetScriptExecutionOutput(string userId, string scriptId);
 

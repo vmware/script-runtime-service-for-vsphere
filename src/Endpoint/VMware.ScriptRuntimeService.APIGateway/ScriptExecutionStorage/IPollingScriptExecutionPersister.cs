@@ -1,11 +1,10 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using System;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.ReadWriteDataTypes;
-using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 using VMware.ScriptRuntimeService.Runspace.Types;
 
 namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
@@ -20,8 +19,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
       /// <param name="runspaceClient">Client for communication with the runspace where script runs</param>
       /// <param name="scriptId">Id of the script to poll for</param>
       /// <param name="scriptName">Name of the script to poll for</param>
+      /// <param name="isSystem">Is it a system run script or user requested</param>
       /// <param name="scriptExecutionWriter">Instance of <see cref="IScriptExecutionWriter" /> used to store Script Execution Data</param>
-      void Start(IRunspace runspaceClient, string scriptId, string scriptName, IScriptExecutionStoreProvider scriptExecutionWriter);
+      void Start(IRunspace runspaceClient, string scriptId, string scriptName, bool isSystem, IScriptExecutionStoreProvider scriptExecutionWriter);
 
       /// <summary>
       /// Raised once script has completed and it's result is persisted

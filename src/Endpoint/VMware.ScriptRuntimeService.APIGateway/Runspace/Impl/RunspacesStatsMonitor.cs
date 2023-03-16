@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using VMware.ScriptRuntimeService.APIGateway.Runspace.Impl.RetentionPolicy;
 using VMware.ScriptRuntimeService.APIGateway.Runspace.Impl.Statistics;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
@@ -15,12 +14,12 @@ using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 {
    public class RunspacesStatsMonitor : IRunspacesStatsMonitor {
-      List<IRunspaceStats> _runspaceStats = new List<IRunspaceStats>();
+      private readonly List<IRunspaceStats> _runspaceStats = new List<IRunspaceStats>();
       private RunspaceRetentionPolicy _retentionPolicy;
       private int _maxNumberOfRunspaces;
-      private IRunspaceStatsFactory _runspaceStatsFactory;
-      private IRemoveExpiredIdleRunspaceRuleFactory _removeExpiredIdleRuleFactory;
-      private IRemoveExpiredActiveRunspaceRuleFactory _removeExpiredActiveRuleFactory;
+      private readonly IRunspaceStatsFactory _runspaceStatsFactory;
+      private readonly IRemoveExpiredIdleRunspaceRuleFactory _removeExpiredIdleRuleFactory;
+      private readonly IRemoveExpiredActiveRunspaceRuleFactory _removeExpiredActiveRuleFactory;
       private int _lastConfiguredMaxRunspaceIdleTimeMinutes;
       private int _lastConfiguredMaxRunspaceActiveTimeMinutes;
 

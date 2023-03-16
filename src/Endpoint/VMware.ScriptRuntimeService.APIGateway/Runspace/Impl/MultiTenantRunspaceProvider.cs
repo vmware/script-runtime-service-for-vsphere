@@ -1,38 +1,32 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
-using k8s.KubeConfigModels;
 using Microsoft.Extensions.Logging;
 using VMware.ScriptRuntimeService.APIGateway.Authentication;
 using VMware.ScriptRuntimeService.APIGateway.Properties;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecution.Impl;
 using VMware.ScriptRuntimeService.APIGateway.Sts;
-using VMware.ScriptRuntimeService.APIGateway.Sts.Impl;
 using VMware.ScriptRuntimeService.APIGateway.SystemScripts;
 using VMware.ScriptRuntimeService.K8sRunspaceProvider;
 using VMware.ScriptRuntimeService.Runspace.Types;
-using VMware.ScriptRuntimeService.RunspaceClient.Bindings.Model;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 
 namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 {
    internal class MultiTenantRunspaceProvider : IMultiTenantRunspaceProvider, IDisposable {
-      private ILogger _logger;
-      private IRunspaceProvider _runspaceProvider;
-      private IRunspacesStatsMonitor _runspacesStatsMonitor;
-      private UserToIdentifiableData<IRunspaceData> _userRunspaces = new UserToIdentifiableData<IRunspaceData>();
-      private UserToIdentifiableData<IWebConsoleData> _userWebConsoles = new UserToIdentifiableData<IWebConsoleData>();
-      private Timer _runspacesCleanupTimer;
+      private readonly ILogger _logger;
+      private readonly IRunspaceProvider _runspaceProvider;
+      private readonly IRunspacesStatsMonitor _runspacesStatsMonitor;
+      private readonly UserToIdentifiableData<IRunspaceData> _userRunspaces = new UserToIdentifiableData<IRunspaceData>();
+      private readonly UserToIdentifiableData<IWebConsoleData> _userWebConsoles = new UserToIdentifiableData<IWebConsoleData>();
+      private readonly Timer _runspacesCleanupTimer;
 
       public MultiTenantRunspaceProvider(ILoggerFactory loggerFactory, IRunspaceProvider runspaceProvider) : 
          this(loggerFactory, runspaceProvider, Int32.MaxValue, 24 * 60, 24 * 60) {}
@@ -251,7 +245,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                         var scriptResult = ScriptExecutionMediatorSingleton.
                            Instance.
                            ScriptExecutionMediator.
-                           StartScriptExecution(sessionToken.UserName, result, scriptExecutionRequest).Result;
+                           StartScriptExecution(sessionToken.UserName, result, scriptExecutionRequest, true).Result;
                         result.VcConnectionScriptId = scriptResult.Id;
 
                         _logger.LogDebug($"Wait Connect VC script to complete");
@@ -402,7 +396,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                      var scriptResult = ScriptExecutionMediatorSingleton.
                         Instance.
                         ScriptExecutionMediator.
-                        StartScriptExecution(userId, runspaceInfo, scriptExecutionRequest).Result;                     
+                        StartScriptExecution(userId, runspaceInfo, scriptExecutionRequest, true).Result;                     
 
                      _logger.LogDebug($"Wait Disconnect All Servers script to complete");
                      while (scriptResult.State == ScriptState.Running) {

@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -16,9 +16,9 @@ using VMware.ScriptRuntimeService.RunspaceClient;
 namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecution.Impl {
    public class PersistentScriptExecutionMediator : IScriptExecutionMediator, IDisposable {
       private IScriptExecutionStorage _scriptExecutionStorage;
-      private IRunspaceClientFactory _runspaceClientFactory;
+      private readonly IRunspaceClientFactory _runspaceClientFactory;
 
-      private ConcurrentDictionary<string, RunspaceClient.RunspaceClient> _scriptIdToRunspaceClient =
+      private readonly ConcurrentDictionary<string, RunspaceClient.RunspaceClient> _scriptIdToRunspaceClient =
          new ConcurrentDictionary<string, RunspaceClient.RunspaceClient>();
 
       public PersistentScriptExecutionMediator(ILoggerFactory loggerFactory, ScriptExecutionStorageSettings storageSettings) {
@@ -29,24 +29,39 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecution.Impl {
          _runspaceClientFactory = new RunspaceClientFactory();
       }
 
-      public async Task<INamedScriptExecution> StartScriptExecution(
+      public Task<INamedScriptExecution> StartScriptExecution(
          string userId, 
          IRunspaceInfo runspace, 
          IScriptExecutionRequest scriptExecutionRequest) {
 
-         var runspaceClient = _runspaceClientFactory.Create(runspace.Endpoint) as ScriptRuntimeService.RunspaceClient.RunspaceClient;
+         return StartScriptExecution(userId, runspace, scriptExecutionRequest, false);
+      }
+      
+      public async Task<INamedScriptExecution> StartScriptExecution(
+         string userId, 
+         IRunspaceInfo runspace, 
+         IScriptExecutionRequest scriptExecutionRequest,
+         bool isSystemExecution) {
+
+         var runspaceClient = _runspaceClientFactory.Create(runspace.Endpoint) as RunspaceClient.RunspaceClient;
          var scriptExecResult = await runspaceClient.StartScript(
             scriptExecutionRequest.Script, 
             scriptExecutionRequest.OutputObjectsFormat,
             scriptExecutionRequest.Parameters);
          _scriptIdToRunspaceClient[scriptExecResult.Id] = runspaceClient;
-         _scriptExecutionStorage.StartStoringScriptExecution(userId, runspaceClient, scriptExecResult.Id, scriptExecutionRequest.Name);
+
+         _scriptExecutionStorage.StartStoringScriptExecution(
+            userId, 
+            runspaceClient, 
+            scriptExecResult.Id, 
+            scriptExecutionRequest.Name,
+            isSystemExecution);
 
          return new ScriptResult(scriptExecutionRequest.Name, scriptExecResult);
       }
 
-      public INamedScriptExecution[] ListScriptExecutions(string userId) {
-         return _scriptExecutionStorage.ListScriptExecutions(userId);
+      public INamedScriptExecution[] ListScriptExecutions(string userId, bool skipSystemExecutions) {
+         return _scriptExecutionStorage.ListScriptExecutions(userId, skipSystemExecutions);
       }
 
       public INamedScriptExecution GetScriptExecution(string userId, string scriptId) {

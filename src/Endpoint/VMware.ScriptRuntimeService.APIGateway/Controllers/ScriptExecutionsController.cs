@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -14,13 +14,10 @@ using VMware.ScriptRuntimeService.APIGateway.DataTypes;
 using VMware.ScriptRuntimeService.APIGateway.Properties;
 using VMware.ScriptRuntimeService.APIGateway.Runspace;
 using VMware.ScriptRuntimeService.APIGateway.Runspace.Impl;
-using VMware.ScriptRuntimeService.APIGateway.ScriptExecution;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecution.Impl;
-using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 using VMware.ScriptRuntimeService.Runspace.Types;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataTypes;
 
 namespace VMware.ScriptRuntimeService.APIGateway.Controllers
 {
@@ -30,9 +27,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
    [ApiController]
    public class ScriptExecutionsController : Controller  {
 
-      private ILoggerFactory _loggerFactory;
-      private ILogger _logger;
-      private IConfiguration _configuration;
+      private readonly ILoggerFactory _loggerFactory;
+      private readonly ILogger _logger;
+      private readonly IConfiguration _configuration;
 
       public ScriptExecutionsController(IConfiguration Configuration, ILoggerFactory loggerFactory) {
          _configuration = Configuration;
@@ -48,8 +45,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <remarks>
       /// **Script execution** represents asynchronous execution of a script in a specified **runspace**
       /// When created, the **script execution** starts running in the **runspace**. To monitor the script execution progress, poll the resource by id.
-      ///       
-      /// When the request is accepted **Location** header is returned in the response that leads you to the **script execution** resource.      
+      ///
+      /// When the request is accepted **Location** header is returned in the response that leads you to the **script execution** resource.
       /// </remarks>
       /// <param name="script_execution">Desired script execution resource.</param>
       /// <returns>
@@ -70,7 +67,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
          try {
             var authzToken = SessionToken.FromHeaders(Request.Headers);
 
-            runspaceInfo = 
+            runspaceInfo =
                RunspaceProviderSingleton.
                   Instance.
                   RunspaceProvider.
@@ -93,8 +90,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
                   ApiErrorCodes.GetErrorCode(
                      nameof(APIGatewayResources.RunspaceNotReady)),
                   string.Format(
-                        APIGatewayResources.RunspaceNotReady, 
-                        script_execution.RunspaceId, 
+                        APIGatewayResources.RunspaceNotReady,
+                        script_execution.RunspaceId,
                         runspaceInfo.State)));
          } else {
             // Add Script Execution in the ScriptExecutionMediator
@@ -128,7 +125,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
             }
          }
 
-        
+
          return result;
       }
 
@@ -200,7 +197,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </summary>
       /// <remarks>
       /// Retrieves all available **script execution** records
-      /// </remarks>      
+      /// </remarks>
       /// <returns></returns>
       [HttpGet(Name = "list-script-executions")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
@@ -213,7 +210,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       // When fields are requested in the query parameter other fields will remain null.
       // <param name="fields"></param>
       //public ActionResult<DataTypes.ScriptExecution[]> List([FromQuery]string[] fields) {
-      public ActionResult<DataTypes.ScriptExecution[]> List() {
+      public ActionResult<DataTypes.ScriptExecution[]> List([FromQuery] bool? skipSystemExecutions = default(bool?)) {
             ActionResult<DataTypes.ScriptExecution[]> result = null;
          // Get Script Execution from ScriptExecutionMediator
          try {
@@ -222,13 +219,15 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
             var scriptExecutionResults = ScriptExecutionMediatorSingleton.
                Instance.
                ScriptExecutionMediator.
-               ListScriptExecutions(authzToken.UserName);
+               ListScriptExecutions(authzToken.UserName, skipSystemExecutions ?? false);
 
             if (scriptExecutionResults != null) {
                var resultList = new List<DataTypes.ScriptExecution>();
 
-               foreach (var scriptExecutionResult in scriptExecutionResults)
+               foreach (var scriptExecutionResult in scriptExecutionResults) {
                   resultList.Add(new DataTypes.ScriptExecution(scriptExecutionResult));
+               }
+
                result = resultList.ToArray();
             } else {
                result = Ok(new DataTypes.ScriptExecution[]{});
@@ -242,7 +241,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
                   runspaceEndointException.ToString()));
          } catch (Exception exc) {
             result = StatusCode(
-               500, 
+               500,
                new ErrorDetails(
                   ApiErrorCodes.GetErrorCode(
                      nameof(APIGatewayResources.ScriptsController_ScriptStorageService_FailedToRetrieveScripts)),
@@ -257,8 +256,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// </summary>
       /// <param name="id">Unique identifier of the runspace</param>
       /// <remarks>
-      /// Retrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on the **script execution** creation.      
-      /// </remarks>      
+      /// Retrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on the **script execution** creation.
+      /// </remarks>
       /// <returns></returns>
       // GET api/script-executions/{id}
       [HttpGet("{id}", Name = "get-script-execution")]

@@ -1,16 +1,14 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.IO.Abstractions;
 using System.Threading;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataTypes;
 using VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.ReadWriteDataTypes;
@@ -20,14 +18,14 @@ using VMware.ScriptRuntimeService.Runspace.Types;
 
 namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
    public class ScriptExecutionFileStorage : IScriptExecutionStorage, IDisposable {
-      private ILogger _logger;
-      private ILoggerFactory _loggerFactory;
-      private IFileSystem _fileSystem;
-      private IScriptExecutionStoreProviderFactory _scriptExecutionWriterFactory;
-      private IPollingScriptExecutionPersisterFactory _scriptExecutionPersisterFactory;
+      private readonly ILogger _logger;
+      private readonly ILoggerFactory _loggerFactory;
+      private readonly IFileSystem _fileSystem;
+      private readonly IScriptExecutionStoreProviderFactory _scriptExecutionWriterFactory;
+      private readonly IPollingScriptExecutionPersisterFactory _scriptExecutionPersisterFactory;
       private string _rootFolder;
       private ScriptExecutionStorageSettings _lastSttingsConfiguration;
-      private object _retentionPolicyUpdateLock = new object();
+      private readonly object _retentionPolicyUpdateLock = new object();
 
       // Retention Policy fields
       private FolderScriptExecutionsRetentionPolicy _retentionPolicy;
@@ -35,9 +33,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
       private const int DEFAULT_NO_OLDER_THAN_DAYS = 5;
       private Timer _retentionPolicyApplierTimer;
 
-      private Dictionary<string, IScriptExecutionStoreProvider> _scriptIdToFileStoreProvider =
+      private readonly Dictionary<string, IScriptExecutionStoreProvider> _scriptIdToFileStoreProvider =
          new Dictionary<string, IScriptExecutionStoreProvider>();
-      private Dictionary<string, IPollingScriptExecutionPersister> _scriptIdToPollingPersister =
+      private readonly Dictionary<string, IPollingScriptExecutionPersister> _scriptIdToPollingPersister =
          new Dictionary<string, IPollingScriptExecutionPersister>();
 
       public ScriptExecutionFileStorage(ILoggerFactory loggerFactory, ScriptExecutionStorageSettings settings)
@@ -160,19 +158,30 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
          return reader.ReadScriptExecutionOutput();
       }
 
-      public INamedScriptExecution[] ListScriptExecutions(string userId) {
+      public INamedScriptExecution[] ListScriptExecutions(string userId, bool skipSystemExecutions) {
          var userScripts = ListScriptIds(userId);
 
          return userScripts.Select(scriptId => GetScriptExecution(userId, scriptId)).
-            Where(se => !string.IsNullOrEmpty(se?.Id)).
+            Where(se => 
+               !string.IsNullOrEmpty(se?.Id) &&
+               ShouldIncludeExecution(se, skipSystemExecutions)).
             ToArray();
+      }
+
+      private static bool ShouldIncludeExecution(INamedScriptExecution execution, bool skipSystemExecutions) {
+         if (skipSystemExecutions && execution is NamedScriptExecution named) {
+            return !named.IsSystem;
+         } else {
+            return true;
+         }
       }
       
       public void StartStoringScriptExecution(
          string userId, 
          IRunspace runspaceClient, 
          string scriptId, 
-         string scriptName) {
+         string scriptName,
+         bool isSystem) {
 
          var fileStoreProvider = _scriptExecutionWriterFactory.Create(_logger, _rootFolder, userId, scriptId, _fileSystem);
          var pollingScriptExecutionPersister = _scriptExecutionPersisterFactory.Create(_logger);
@@ -181,7 +190,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
 
          AddScriptStorageControllers(scriptId, fileStoreProvider, pollingScriptExecutionPersister);
 
-         pollingScriptExecutionPersister.Start(runspaceClient, scriptId, scriptName, fileStoreProvider);
+         pollingScriptExecutionPersister.Start(runspaceClient, scriptId, scriptName, isSystem, fileStoreProvider);
       }
 
       private void PollingScriptExecutionPersister_ScriptResultPersisted(object sender, ScriptResultStoredEventArgs e) {

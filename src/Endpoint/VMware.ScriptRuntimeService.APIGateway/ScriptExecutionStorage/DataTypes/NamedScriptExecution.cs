@@ -1,10 +1,9 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
 using System;
-using VMware.ScriptRuntimeService.APIGateway.ScriptExecution;
 using VMware.ScriptRuntimeService.Runspace.Types;
 
 namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataTypes {
@@ -31,6 +30,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage.DataType
       public OutputObjectsFormat OutputObjectsFormat { get; set; }
       public DateTime? StarTime { get; set; }
       public DateTime? EndTime { get; set; }
+      public bool IsSystem { get; set; }
 
       #endregion
 

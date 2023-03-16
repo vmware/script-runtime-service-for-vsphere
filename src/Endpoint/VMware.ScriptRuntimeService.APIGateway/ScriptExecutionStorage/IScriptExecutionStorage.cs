@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -9,16 +9,17 @@ using VMware.ScriptRuntimeService.APIGateway.ScriptExecution;
 using VMware.ScriptRuntimeService.Runspace.Types;
 
 namespace VMware.ScriptRuntimeService.APIGateway.ScriptExecutionStorage {
-   interface IScriptExecutionStorage {
+   internal interface IScriptExecutionStorage {
       void StartStoringScriptExecution(
          string userId,
          IRunspace runspaceClient,
          string scriptId,
-         string scriptName);
+         string scriptName,
+         bool isSystem);
 
       INamedScriptExecution GetScriptExecution(string userId, string scriptId);
 
-      INamedScriptExecution[] ListScriptExecutions(string userId);
+      INamedScriptExecution[] ListScriptExecutions(string userId, bool skipSystemExecutions);
 
       IScriptExecutionOutputObjects GetScriptExecutionOutput(string userId, string scriptId);
 
