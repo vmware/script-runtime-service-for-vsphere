@@ -3,12 +3,9 @@
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
-using LookupServiceReference;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security;
-using System.Text;
 using VMware.ScriptRuntimeService.AdminEngine.SetupFlows;
 
 namespace VMware.ScriptRuntimeService.AdminEngine {
@@ -42,6 +39,9 @@ namespace VMware.ScriptRuntimeService.AdminEngine {
          if (bool.TryParse(Environment.GetEnvironmentVariable("TARGET_VC_INSECURE"), out var forceSpecified)) {
             ForceSpecified = forceSpecified;
          }
+         if (bool.TryParse(Environment.GetEnvironmentVariable("TARGET_VC_CLEAN"), out var cleanSpecified)) {
+            CleanSpecified = cleanSpecified;
+         }
          VcThumbprint = Environment.GetEnvironmentVariable("TARGET_VC_THUMBPRINT");
       }
 
@@ -66,6 +66,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine {
       public string ConfigDir { get; set; }
       public string K8sSettings { get; set; }
       public bool ForceSpecified { get; set; }
+      public bool CleanSpecified { get; set; }
       public string VcThumbprint { get; set; }
 
       /// <summary>
