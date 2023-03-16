@@ -215,6 +215,8 @@ EOF
     VC_PASSWORD=$(echo $VC_PASSWORD_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
     VC_THUMBPRINT_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.vcthumbprint")
     VC_TLS_THUMBPRINT=$(echo $VC_THUMBPRINT_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
+    VC_CLEAN_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.vcclean")
+    VC_CLEAN=$(echo $VC_CLEAN_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
     ADMIN_USER_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.adminuser")
     ADMIN_USER=$(echo $ADMIN_USER_PROPERTY | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}' | base64)
     ADMIN_PASSWORD_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "srs.adminpassword")
@@ -230,7 +232,7 @@ EOF
     ADMIN_PASSWORD=$(echo -n "$ADMIN_PASSWORD_SALT$ADMIN_PASSWORD" | sha256sum | cut -d ' ' -f 1 | base64 | tr -d '\n')
     ADMIN_PASSWORD_SALT=$(echo -n "$ADMIN_PASSWORD_SALT" | base64 | tr -d '\n')
 
-    sed -e "s/\${VC_SERVER}/$VC_IP/" -e "s/\${VC_USER}/$VC_USER/" -e "s/\${VC_PASSWORD}/$VC_PASSWORD/" -e "s/\${VC_THUMBPRINT}/$VC_TLS_THUMBPRINT/" -e "s/\${ADMIN_USER}/$ADMIN_USER/" -e "s/\${ADMIN_PASSWORD}/$ADMIN_PASSWORD/" -e "s/\${ADMIN_PASSWORD_SALT}/$ADMIN_PASSWORD_SALT/" -e "s/\${SRSA_HOSTNAME}/$SRSA_HOSTNAME/" /root/srs-app-template.yaml > /root/srs-app.yaml
+    sed -e "s/\${VC_SERVER}/$VC_IP/" -e "s/\${VC_USER}/$VC_USER/" -e "s/\${VC_PASSWORD}/$VC_PASSWORD/" -e "s/\${VC_THUMBPRINT}/$VC_TLS_THUMBPRINT/" -e "s/\${ADMIN_USER}/$ADMIN_USER/" -e "s/\${ADMIN_PASSWORD}/$ADMIN_PASSWORD/" -e "s/\${ADMIN_PASSWORD_SALT}/$ADMIN_PASSWORD_SALT/" -e "s/\${SRSA_HOSTNAME}/$SRSA_HOSTNAME/" -e "s/\${VC_CLEAN}/$VC_CLEAN/" /root/srs-app-template.yaml > /root/srs-app.yaml
 
     echo -e "\e[92mDeploy SRS on K8s Cluster" > /dev/console
     kubectl apply -f /root/srs-app.yaml
