@@ -416,14 +416,6 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
             certificateValidator);
       }
 
-      private SsoAdminClient GetSsoAdminClient(string psc, X509CertificateValidator certificateValidator) {
-         var lookupServiceClient = GetLookupServiceClient(
-            psc,
-            certificateValidator);
-
-         return GetSsoAdminClient(lookupServiceClient, certificateValidator);
-      }
-
       private SsoAdminClient GetSsoAdminClient(LookupServiceClient lookupServiceClient, X509CertificateValidator certificateValidator) {
 
          // Get SSO Admin And STS URIs from Lookup Service
