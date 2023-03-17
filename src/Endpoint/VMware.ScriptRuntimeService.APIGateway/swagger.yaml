@@ -1,25 +1,18 @@
 openapi: 3.0.1
 info:
   title: Script Runtime Service for vSphere
-  description: Script Runtime Service for vSphere (SRS) enables vSphere users and
-    services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS
-    clients authenticate once with vSphere credentials or access token. SRS clients
-    can create PowerCLI instances and run scripts within. PowerCLI runs server-side
-    and automatically connects to target vCenter servers. SRS tracks history of script
-    outputs.
+  description: Script Runtime Service for vSphere (SRS) enables vSphere users and services (clients) to manage PowerCLI instances and run PowerCLI scripts. SRS clients authenticate once with vSphere credentials or access token. SRS clients can create PowerCLI instances and run scripts within. PowerCLI runs server-side and automatically connects to target vCenter servers. SRS tracks history of script outputs.
   contact:
     name: Script Runtime Service for vSphere
     url: https://github.com/vmware/script-runtime-service-for-vsphere
   version: '1.0'
   x-vmw-vapi-codegenconfig:
     package-name: com.vmware.srs
-servers:
-- url: https://{srs address}
 paths:
-  "/api/about":
+  /api/about:
     get:
       tags:
-      - about
+        - about
       summary: Retrieves about information for the product
       operationId: get-product-about-info
       responses:
@@ -28,19 +21,15 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/About"
+                $ref: '#/components/schemas/About'
       x-vmw-vapi-servicename: about
       x-vmw-vapi-methodname: get
-  "/api/argument-scripts/templates":
+  /api/argument-scripts/templates:
     get:
       tags:
-      - argument_scripts
+        - argument_scripts
       summary: List available argument script templates
-      description: |-
-        Argument script templates are scripts with placeholders. When values replace the placeholders, the script can run in a given script runtime.
-        Argument script templates help to convert simple type values to objects of types that can only be produced in a given script runtime. Those objects can be used as arguments to scripts' parameters.
-
-        This operation retrieves the available argument script templates.
+      description: "Argument script templates are scripts with placeholders. When values replace the placeholders, the script can run in a given script runtime.\r\nArgument script templates help to convert simple type values to objects of types that can only be produced in a given script runtime. Those objects can be used as arguments to scripts' parameters.\r\n\r\nThis operation retrieves the available argument script templates."
       operationId: list-argument-scripts-templates
       responses:
         '200':
@@ -50,90 +39,68 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/ArgumentScriptTemplate"
+                  $ref: '#/components/schemas/ArgumentScriptTemplate'
       security:
-      - apiKeyAuth: []
-  "/api/argument-scripts/templates/{id}":
+        - apiKeyAuth: [ ]
+  '/api/argument-scripts/templates/{id}':
     get:
       tags:
-      - argument_scripts
+        - argument_scripts
       summary: Retrieves argument script template by given unique template identifier
-      description: This operation returns argument script template for the specified
-        template id.
+      description: This operation returns argument script template for the specified template id.
       operationId: get-argument-scripts-template
       parameters:
-      - name: id
-        in: path
-        description: The Id of the argument script template
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
           description: The Id of the argument script template
-          nullable: true
+          required: true
+          schema:
+            type: string
+            description: The Id of the argument script template
+            nullable: true
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ArgumentScriptTemplate"
+                $ref: '#/components/schemas/ArgumentScriptTemplate'
       security:
-      - apiKeyAuth: []
-  "/api/argument-scripts/script":
+        - apiKeyAuth: [ ]
+  /api/argument-scripts/script:
     post:
       tags:
-      - argument_scripts
+        - argument_scripts
       summary: Creates scripts for a given script template id and placeholder values
-      description: |-
-        Replaces the placeholders in a given argument transformation script template with given values on the placeholder_value_list field
-        The resulting script can be provided to a **script execution** parameter that expects a specific script runtime type
-
-        **Example**
-
-        If the template argument transformation script is
-
-        Get-VM -Id <vm-id> -Server <server>
-
-        The result of this operation with given Id 'vm-1' and Server 'server-1' is
-
-        Get-VM -Id 'vm-1' -Server 'server-1'
+      description: "Replaces the placeholders in a given argument transformation script template with given values on the placeholder_value_list field\r\nThe resulting script can be provided to a **script execution** parameter that expects a specific script runtime type\r\n\r\n**Example**\r\n\r\nIf the template argument transformation script is\r\n\r\nGet-VM -Id <vm-id> -Server <server>\r\n\r\nThe result of this operation with given Id 'vm-1' and Server 'server-1' is\r\n\r\nGet-VM -Id 'vm-1' -Server 'server-1'"
       operationId: create-argument-scripts-script
       requestBody:
         description: The argument script create request
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ArgumentScript"
+              $ref: '#/components/schemas/ArgumentScript'
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ArgumentScript"
+                $ref: '#/components/schemas/ArgumentScript'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
-  "/api/auth/login":
+        - apiKeyAuth: [ ]
+  /api/auth/login:
     post:
       tags:
-      - authentication
+        - authentication
       summary: Exchanges client credentials or SIGN token for SRS access key
-      description: "Uses vCenter Server SSO as Identity and Authentication Server.\nTwo
-        types of authentication are supported SIGN and Basic.\nWhen Basic authentication
-        is used, the service exchanges username and password for SAML Token from the
-        vCenter Server SSO.\nWhen SIGN authentication is used, the service exchanges
-        the SSO SAML token from the SIGN token for another SAML token on behalf of
-        the principal from the vCenter Server SSO.\nOn successful authentication with
-        the SSO, the service returns **X-SRS-API-KEY** token in the response headers.
-        **X-SRS-API-KEY** token authorizes access to the service resources. \nThe
-        service associates **X-SRS-API-KEY** token to the acquired SSO SAML token.
-        The associated SSO SAML token authenticates PowerCLI to the vCenter services."
+      description: "Uses vCenter Server SSO as Identity and Authentication Server.\r\nTwo types of authentication are supported SIGN and Basic.\r\nWhen Basic authentication is used, the service exchanges username and password for SAML Token from the vCenter Server SSO.\r\nWhen SIGN authentication is used, the service exchanges the SSO SAML token from the SIGN token for another SAML token on behalf of the principal from the vCenter Server SSO.\r\nOn successful authentication with the SSO, the service returns **X-SRS-API-KEY** token in the response headers. **X-SRS-API-KEY** token authorizes access to the service resources. \r\nThe service associates **X-SRS-API-KEY** token to the acquired SSO SAML token. The associated SSO SAML token authenticates PowerCLI to the vCenter services."
       operationId: login
       responses:
         '200':
@@ -143,26 +110,24 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - basicAuth: []
-      - signAuth: []
+        - basicAuth: [ ]
+        - signAuth: [ ]
       x-vmw-vapi-servicename: authentication
       x-vmw-vapi-methodname: login
-  "/api/auth/logout":
+  /api/auth/logout:
     post:
       tags:
-      - authentication
+        - authentication
       summary: Revokes SRS access key
-      description: |-
-        The service revokes **X-SRS-API-KEY** and deletes all associated non-active **runspace** resources.
-        Active runspaces are deleted immediately after the completion of the scripts they run.
+      description: "The service revokes **X-SRS-API-KEY** and deletes all associated non-active **runspace** resources.\r\nActive runspaces are deleted immediately after the completion of the scripts they run."
       operationId: logout
       responses:
         '200':
@@ -172,62 +137,56 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
+        - apiKeyAuth: [ ]
       x-vmw-vapi-servicename: authentication
       x-vmw-vapi-methodname: logout
-  "/api/runspaces":
+  /api/runspaces:
     post:
       tags:
-      - runspaces
+        - runspaces
       summary: Starts a runspace creation
-      description: |-
-        Runspace creation and preparation time depends on the requested runspace details.
-        If a connection to the vCenter Servers is requested, the operation creates a PowerShell instance, loads PowerCLI modules, and connects PowerCLI to the vCenter Servers.
-
-        Returns
-
-        When request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource. The **runspace** resource is in **creation** state initially.
+      description: "Runspace creation and preparation time depends on the requested runspace details.\r\nIf a connection to the vCenter Servers is requested, the operation creates a PowerShell instance, loads PowerCLI modules, and connects PowerCLI to the vCenter Servers.\r\n\r\nReturns\r\n\r\nWhen request is accepted **202 Accepted** - response code, with **Location** header is returned in the response that leads you to the **runspace** resource. The **runspace** resource is in **creation** state initially."
       operationId: create-runspace
       requestBody:
         description: Desired runspace resource.
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/Runspace"
+              $ref: '#/components/schemas/Runspace'
       responses:
         '202':
           description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Runspace"
+                $ref: '#/components/schemas/Runspace'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
+        - apiKeyAuth: [ ]
       x-vmw-vapi-servicename: runspaces
       x-vmw-vapi-methodname: create
     get:
       tags:
-      - runspaces
+        - runspaces
       summary: List all runspaces
       description: ''
       operationId: list-runspaces
@@ -239,89 +198,83 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/Runspace"
+                  $ref: '#/components/schemas/Runspace'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
+        - apiKeyAuth: [ ]
       x-vmw-vapi-servicename: runspaces
       x-vmw-vapi-methodname: list
-  "/api/runspaces/{id}":
+  '/api/runspaces/{id}':
     get:
       tags:
-      - runspaces
+        - runspaces
       summary: Retrieve a runspace
-      description: "Retrieves the details of a runspace. One only needs to supply
-        the unique runspace identifier returned on the runspace creation to retrieve
-        runspace details.\n            \nReturns a **runspace** resource instance
-        if a valid identifier was provided.\nWhen requesting the Id of a runspace
-        that has been deleted or doesn't exist **404 NotFound** is returned."
+      description: "Retrieves the details of a runspace. One only needs to supply the unique runspace identifier returned on the runspace creation to retrieve runspace details.\r\n            \r\nReturns a **runspace** resource instance if a valid identifier was provided.\r\nWhen requesting the Id of a runspace that has been deleted or doesn't exist **404 NotFound** is returned."
       operationId: get-runspace
       parameters:
-      - name: id
-        in: path
-        description: Unique identifier of the runspace
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
           description: Unique identifier of the runspace
-          nullable: true
+          required: true
+          schema:
+            type: string
+            description: Unique identifier of the runspace
+            nullable: true
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Runspace"
+                $ref: '#/components/schemas/Runspace'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
+        - apiKeyAuth: [ ]
       x-vmw-vapi-servicename: runspaces
       x-vmw-vapi-methodname: get
     delete:
       tags:
-      - runspaces
+        - runspaces
       summary: Deletes a runspace
-      description: |-
-        Deletes the PowerShell instance that is prepresented by this **runspace** resource.
-        Running script in the PowerShell instance won't prevent the operation.
+      description: "Deletes the PowerShell instance that is prepresented by this **runspace** resource.\r\nRunning script in the PowerShell instance won't prevent the operation."
       operationId: delete-runspace
       parameters:
-      - name: id
-        in: path
-        description: Unique identifier of the runspace
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
           description: Unique identifier of the runspace
-          nullable: true
+          required: true
+          schema:
+            type: string
+            description: Unique identifier of the runspace
+            nullable: true
       responses:
         '200':
           description: Success
@@ -330,37 +283,33 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
+        - apiKeyAuth: [ ]
       x-vmw-vapi-servicename: runspaces
       x-vmw-vapi-methodname: delete
-  "/api/script-executions/{id}/output":
+  '/api/script-executions/{id}/output':
     get:
       tags:
-      - script_executions
+        - script_executions
       summary: Retrieves output objects produced by a script execution.
-      description: |-
-        Output object could be in a different format depending on the requested output object format on **script execution** request.
-        Text and JSON are currently supported.
-        When Text format is requested, the objects produced by the script execution are formatted in a table, the same way Format-Table formats the objects in PowerShell.
-        When JSON format is requested, a custom json formatting is used to serialize the objects produced by the script execution. The JSON objects contain the type name and the full name of the implementing interfaces.
+      description: "Output object could be in a different format depending on the requested output object format on **script execution** request.\r\nText and JSON are currently supported.\r\nWhen Text format is requested, the objects produced by the script execution are formatted in a table, the same way Format-Table formats the objects in PowerShell.\r\nWhen JSON format is requested, a custom json formatting is used to serialize the objects produced by the script execution. The JSON objects contain the type name and the full name of the implementing interfaces."
       operationId: get-script-execution-output
       parameters:
-      - name: id
-        in: path
-        description: Unique identifier of the script execution
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
           description: Unique identifier of the script execution
-          nullable: true
+          required: true
+          schema:
+            type: string
+            description: Unique identifier of the script execution
+            nullable: true
       responses:
         '200':
           description: Success
@@ -375,45 +324,43 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
-  "/api/script-executions/{id}/streams/{stream-type}":
+        - apiKeyAuth: [ ]
+  '/api/script-executions/{id}/streams/{stream-type}':
     get:
       tags:
-      - script_executions
+        - script_executions
       summary: Retrieves list of stream records received during script execution.
-      description: |-
-        During the execution of a script, the script execution engine collects streams that are produced by the running script.
-        There are five stream types: information, error, warning, debug, verbose.
+      description: "During the execution of a script, the script execution engine collects streams that are produced by the running script.\r\nThere are five stream types: information, error, warning, debug, verbose."
       operationId: get-script-execution-stream
       parameters:
-      - name: id
-        in: path
-        description: Unique identifier of the script execution
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
           description: Unique identifier of the script execution
-          nullable: true
-      - name: stream-type
-        in: path
-        description: Type of the stream for which records to be rterieved
-        required: true
-        schema:
-          "$ref": "#/components/schemas/StreamType"
+          required: true
+          schema:
+            type: string
+            description: Unique identifier of the script execution
+            nullable: true
+        - name: stream-type
+          in: path
+          description: Type of the stream for which records to be rterieved
+          required: true
+          schema:
+            $ref: '#/components/schemas/StreamType'
       responses:
         '200':
           description: Success
@@ -422,77 +369,79 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/StreamRecord"
+                  $ref: '#/components/schemas/StreamRecord'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
-  "/api/script-executions":
+        - apiKeyAuth: [ ]
+  /api/script-executions:
     post:
       tags:
-      - script_executions
+        - script_executions
       summary: Creates a script execution
-      description: "**Script execution** represents asynchronous execution of a script
-        in a specified **runspace**\nWhen created, the **script execution** starts
-        running in the **runspace**. To monitor the script execution progress, poll
-        the resource by id.\n      \nWhen the request is accepted **Location** header
-        is returned in the response that leads you to the **script execution** resource."
+      description: "**Script execution** represents asynchronous execution of a script in a specified **runspace**\r\nWhen created, the **script execution** starts running in the **runspace**. To monitor the script execution progress, poll the resource by id.\r\n            \r\nWhen the request is accepted **Location** header is returned in the response that leads you to the **script execution** resource."
       operationId: create-script-execution
       requestBody:
         description: Desired script execution resource.
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ScriptExecution"
+              $ref: '#/components/schemas/ScriptExecution'
       responses:
         '202':
           description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ScriptExecution"
+                $ref: '#/components/schemas/ScriptExecution'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
+        - apiKeyAuth: [ ]
     get:
       tags:
-      - script_executions
+        - script_executions
       summary: List all script executions
       description: Retrieves all available **script execution** records
       operationId: list-script-executions
+      parameters:
+        - name: skipSystemExecutions
+          in: query
+          schema:
+            type: boolean
+            nullable: true
       responses:
         '200':
           description: Success
@@ -501,40 +450,37 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/ScriptExecution"
+                  $ref: '#/components/schemas/ScriptExecution'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
-  "/api/script-executions/{id}/cancel":
+        - apiKeyAuth: [ ]
+  '/api/script-executions/{id}/cancel':
     post:
       tags:
-      - script_executions
+        - script_executions
       summary: Cancels a script execution
-      description: |-
-        This operation is equivalent to pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be canceled.
-        The state of the **script execution** will become canceled after this operation. The operation is asynchronous. Cancel request
-        is sent to the runtime.
+      description: "This operation is equivalent to pressing Ctrl+C in the PowerShell console. If the script is cancellable it will be canceled.\r\nThe state of the **script execution** will become canceled after this operation. The operation is asynchronous. Cancel request\r\nis sent to the runtime."
       operationId: cancel-script-execution
       parameters:
-      - name: id
-        in: path
-        description: The id of the script execution
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
           description: The id of the script execution
-          nullable: true
+          required: true
+          schema:
+            type: string
+            description: The id of the script execution
+            nullable: true
       responses:
         '200':
           description: Success
@@ -543,60 +489,190 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
-  "/api/script-executions/{id}":
+        - apiKeyAuth: [ ]
+  '/api/script-executions/{id}':
     get:
       tags:
-      - script_executions
+        - script_executions
       summary: Retrieve a script execution
-      description: Retrieves the details of a **script execution**. You need only
-        supply the unique script execution identifier that was returned on the **script
-        execution** creation.
+      description: Retrieves the details of a **script execution**. You need only supply the unique script execution identifier that was returned on the **script execution** creation.
       operationId: get-script-execution
       parameters:
-      - name: id
-        in: path
-        description: Unique identifier of the runspace
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
           description: Unique identifier of the runspace
-          nullable: true
+          required: true
+          schema:
+            type: string
+            description: Unique identifier of the runspace
+            nullable: true
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ScriptExecution"
+                $ref: '#/components/schemas/ScriptExecution'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
         '500':
           description: Server Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ErrorDetails"
+                $ref: '#/components/schemas/ErrorDetails'
       security:
-      - apiKeyAuth: []
+        - apiKeyAuth: [ ]
+  /api/webconsoles:
+    post:
+      tags:
+        - webconsole
+      summary: Creates a PowerShell console accessible as web page
+      description: Web console is accessble on the SRS Url/web-console-Id
+      operationId: create-webconsole
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebConsole'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+      security:
+        - apiKeyAuth: [ ]
+    get:
+      tags:
+        - webconsole
+      summary: List all webconsoles
+      description: ''
+      operationId: list-webconsoles
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WebConsole'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+      security:
+        - apiKeyAuth: [ ]
+  '/api/webconsoles/{id}':
+    get:
+      tags:
+        - webconsole
+      summary: Retrieve a web console
+      description: "Retrieves the details of a web console. One only needs to supply the unique web console identifier returned on the web console creation to retrieve the web console details.\r\n            \r\nReturns a **webconsole** resource instance if a valid identifier was provided.\r\nWhen requesting the Id of a web console that has been deleted or doesn't exist **404 NotFound** is returned."
+      operationId: get-webconsole
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the web console
+          required: true
+          schema:
+            type: string
+            description: Unique identifier of the web console
+            nullable: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebConsole'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+      security:
+        - apiKeyAuth: [ ]
+    delete:
+      tags:
+        - webconsole
+      summary: Deletes a web console
+      description: "Deletes the PowerShell instance that is prepresented by this **webconsole** resource.\r\nRunning script in the PowerShell instance won't prevent the operation."
+      operationId: delete-webconsole
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the web console
+          required: true
+          schema:
+            type: string
+            description: Unique identifier of the web console
+            nullable: true
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+      security:
+        - apiKeyAuth: [ ]
 components:
   schemas:
     About:
@@ -622,6 +698,7 @@ components:
           description: Version of the API.
           nullable: true
           readOnly: true
+      additionalProperties: false
       description: About information for the product.
     ArgumentScriptTemplate:
       type: object
@@ -650,49 +727,42 @@ components:
           type: array
           items:
             type: string
-          description: The script template placeholders that has to be replaced by
-            strings to produce a valid script.
+          description: The script template placeholders that has to be replaced by strings to produce a valid script.
           nullable: true
-      description: "ArgumentScriptTemplate object represents a script with placeholders.
-        If placeholders are replaced by values, the script can be executed.\nThe purpose
-        of the script is to produce an object of a type valid for a given script runtime.
-        The result type of the script is usually\ninput type for other scripts. The
-        ArgumentScriptTemplate scripts help to convert simple type values to \nobjects
-        of types that can only be produced in a given script runtime."
+      additionalProperties: false
+      description: "ArgumentScriptTemplate object represents a script with placeholders. If placeholders are replaced by values, the script can be executed.\r\nThe purpose of the script is to produce an object of a type valid for a given script runtime. The result type of the script is usually\r\ninput type for other scripts. The ArgumentScriptTemplate scripts help to convert simple type values to \r\nobjects of types that can only be produced in a given script runtime."
     PlaceholderValue:
       required:
-      - placeholder_name
-      - value
+        - placeholder_name
+        - value
       type: object
       properties:
         placeholder_name:
           type: string
-          description: The name of the placeholder in the script template which will
-            be replaced on the creation of an argument script.
+          description: The name of the placeholder in the script template which will be replaced on the creation of an argument script.
         value:
           type: array
           items:
             type: string
-          description: Value that will be used to replace the placeholder on the creation
-            of an argument script.
-      description: PlaceholderValue object represents a single value for a placeholder
-        in template script.
+          description: Value that will be used to replace the placeholder on the creation of an argument script.
+      additionalProperties: false
+      description: PlaceholderValue object represents a single value for a placeholder in template script.
     PlaceholderValueList:
       required:
-      - values
+        - values
       type: object
       properties:
         values:
           type: array
           items:
-            "$ref": "#/components/schemas/PlaceholderValue"
+            $ref: '#/components/schemas/PlaceholderValue'
           description: List of script placeholder values.
-      description: PlaceholderValueList object represents list of argument script
-        placeholder values.
+      additionalProperties: false
+      description: PlaceholderValueList object represents list of argument script placeholder values.
     ArgumentScript:
       required:
-      - template_id
-      - template_placeholder_value_list
+        - template_id
+        - template_placeholder_value_list
       type: object
       properties:
         template_id:
@@ -701,27 +771,21 @@ components:
         template_placeholder_value_list:
           type: array
           items:
-            "$ref": "#/components/schemas/PlaceholderValueList"
-          description: |-
-            Placeholder value list which are used to create script from script template.
-
-            Single template_placeholder_value_list produces script by the given template replacing placeholder with the given values.
-            Multiple items for template_placeholder_value_list produce a script of scripts which can produce an array of objects. Each template_placeholder_value_list item is used to produce script from template. Scripts are then combined in a multi-line script where each line produces result object.
+            $ref: '#/components/schemas/PlaceholderValueList'
+          description: "Placeholder value list which are used to create script from script template.\r\n\r\nSingle template_placeholder_value_list produces script by the given template replacing placeholder with the given values.\r\nMultiple items for template_placeholder_value_list produce a script of scripts which can produce an array of objects. Each template_placeholder_value_list item is used to produce script from template. Scripts are then combined in a multi-line script where each line produces result object."
         script:
           type: string
-          description: Script result produced by the service based on given template_id
-            and template_placeholder_parameters
+          description: Script result produced by the service based on given template_id and template_placeholder_parameters
           nullable: true
           readOnly: true
-      description: ArgumentScript object represents a script produced from a given
-        script template and placeholder values.
+      additionalProperties: false
+      description: ArgumentScript object represents a script produced from a given script template and placeholder values.
     ErrorDetails:
       type: object
       properties:
         code:
           type: integer
-          description: Code of the internal service error. It is useful when error
-            is reported to service maintainers.
+          description: Code of the internal service error. It is useful when error is reported to service maintainers.
           format: int32
         error_message:
           type: string
@@ -731,14 +795,15 @@ components:
           type: string
           description: Details of the error.
           nullable: true
+      additionalProperties: false
       description: ErrorDetails object gives information for an API error.
       readOnly: true
     RunspaceState:
       enum:
-      - ready
-      - active
-      - creating
-      - error
+        - ready
+        - active
+        - creating
+        - error
       type: string
       description: RunspaceState defines possible runspace states.
       readOnly: true
@@ -747,9 +812,7 @@ components:
       properties:
         name:
           type: string
-          description: Name of the runspace. It is optional to give a name of the
-            runspace on create request. If name was not specified on runspace creation
-            the field has null value.
+          description: Name of the runspace. It is optional to give a name of the runspace on create request. If name was not specified on runspace creation the field has null value.
           nullable: true
         id:
           type: string
@@ -757,47 +820,31 @@ components:
           nullable: true
           readOnly: true
         state:
-          "$ref": "#/components/schemas/RunspaceState"
+          $ref: '#/components/schemas/RunspaceState'
         error_details:
-          "$ref": "#/components/schemas/ErrorDetails"
+          $ref: '#/components/schemas/ErrorDetails'
         run_vc_connection_script:
           type: boolean
-          description: |-
-            Boolean that indicates whether PowerCLI connection has to be initialized when a Runspace creation is requested.
-
-            It is optional to request VCenter Servers connection to be initialized on create request.
-            If true is specified PowerCLI Connect-VIServer cmdlet will be called in the create PowerShell instance.
-            Connect-VIServer uses the authorized user's SSO SAML token to connect to the vCenter Servers.
-            Connection to all linked vCetner Servers will be established. When requested the runspace creation will be slower
-            with the time needed for PowerCLI modules loading and Connect-VIServer execution time. _vc_connection_script_state
-            field will hold state of the script completion. In case errors have occured during connect script execution
-            _vc_connection_script_error_records will be populated.
-
-            Default value is false.
+          description: "Boolean that indicates whether PowerCLI connection has to be initialized when a Runspace creation is requested.\r\n\r\nIt is optional to request VCenter Servers connection to be initialized on create request.\r\nIf true is specified PowerCLI Connect-VIServer cmdlet will be called in the create PowerShell instance.\r\nConnect-VIServer uses the authorized user's SSO SAML token to connect to the vCenter Servers.\r\nConnection to all linked vCetner Servers will be established. When requested the runspace creation will be slower\r\nwith the time needed for PowerCLI modules loading and Connect-VIServer execution time. _vc_connection_script_state\r\nfield will hold state of the script completion. In case errors have occured during connect script execution\r\n_vc_connection_script_error_records will be populated.\r\n\r\nDefault value is false."
         vc_connection_script_id:
           type: string
-          description: |-
-            Id of the vc connection script if it was requested on the runspace create request.
-            You can use this id to retrieve all the details of the script execution.
-            The script could fail and the details about the script failure would be available in the scriptexecutions API.
+          description: "Id of the vc connection script if it was requested on the runspace create request.\r\nYou can use this id to retrieve all the details of the script execution.\r\nThe script could fail and the details about the script failure would be available in the scriptexecutions API."
           nullable: true
           readOnly: true
         creation_time:
           type: string
-          description: The time at which the object was created. String representing
-            time in format ISO 8601.
+          description: The time at which the object was created. String representing time in format ISO 8601.
           format: date-time
           readOnly: true
-      description: |-
-        Runspace object allows you to create and delete isolated PowerShell instance for your script executions.
-        The API allows you to create, read, and delete runspaces.
+      additionalProperties: false
+      description: "Runspace object allows you to create and delete isolated PowerShell instance for your script executions.\r\nThe API allows you to create, read, and delete runspaces."
     StreamType:
       enum:
-      - information
-      - error
-      - warning
-      - debug
-      - verbose
+        - information
+        - error
+        - warning
+        - debug
+        - verbose
       type: string
       description: StreamType defines script execution data stream types.
     StreamRecord:
@@ -809,28 +856,28 @@ components:
           nullable: true
         time:
           type: string
-          description: Time the message was received by the script execution engine.
-            String representing time in format ISO 8601.
+          description: Time the message was received by the script execution engine. String representing time in format ISO 8601.
           format: date-time
+      additionalProperties: false
       description: StreamRecord object represents a single record of script stream.
     OutputObjectsFormat:
       enum:
-      - text
-      - json
+        - text
+        - json
       type: string
     ScriptExecutionState:
       enum:
-      - success
-      - error
-      - running
-      - canceled
+        - success
+        - error
+        - running
+        - canceled
       type: string
       description: ScriptExecutionState defines possible script execution states.
       readOnly: true
     ScriptExecution:
       required:
-      - runspace_id
-      - script
+        - runspace_id
+        - script
       type: object
       properties:
         id:
@@ -840,13 +887,10 @@ components:
           readOnly: true
         runspace_id:
           type: string
-          description: Unique identifier of the runspace where script execution is
-            performed.
+          description: Unique identifier of the runspace where script execution is performed.
         name:
           type: string
-          description: Name of the script execution. It is optional to give a name
-            of the script execution on create request. If name was not specified on
-            the script execution creation, the field has null value.
+          description: 'Name of the script execution. It is optional to give a name of the script execution on create request. If name was not specified on the script execution creation, the field has null value.'
           nullable: true
         script:
           type: string
@@ -855,263 +899,192 @@ components:
           type: array
           items:
             anyOf:
-            - "$ref": "#/components/schemas/BooleanArrayScriptParameter"
-            - "$ref": "#/components/schemas/BooleanScriptParameter"
-            - "$ref": "#/components/schemas/IntegerArrayScriptParameter"
-            - "$ref": "#/components/schemas/IntegerScriptParameter"
-            - "$ref": "#/components/schemas/NumberArrayScriptParameter"
-            - "$ref": "#/components/schemas/NumberScriptParameter"
-            - "$ref": "#/components/schemas/StringArrayScriptParameter"
-            - "$ref": "#/components/schemas/StringScriptParameter"
-          description: |-
-            List of arguments that will be passed to the script.
-            If script content defines parameters argument can be provided.
-            The parameter names defined in the script content should match the names specified in this list.
+              - $ref: '#/components/schemas/BooleanArrayScriptParameter'
+              - $ref: '#/components/schemas/BooleanScriptParameter'
+              - $ref: '#/components/schemas/IntegerArrayScriptParameter'
+              - $ref: '#/components/schemas/IntegerScriptParameter'
+              - $ref: '#/components/schemas/NumberArrayScriptParameter'
+              - $ref: '#/components/schemas/NumberScriptParameter'
+              - $ref: '#/components/schemas/StringArrayScriptParameter'
+              - $ref: '#/components/schemas/StringScriptParameter'
+          description: "List of arguments that will be passed to the script.\r\nIf script content defines parameters argument can be provided.\r\nThe parameter names defined in the script content should match the names specified in this list."
           nullable: true
         output_objects_format:
-          "$ref": "#/components/schemas/OutputObjectsFormat"
+          $ref: '#/components/schemas/OutputObjectsFormat'
         state:
-          "$ref": "#/components/schemas/ScriptExecutionState"
+          $ref: '#/components/schemas/ScriptExecutionState'
         reason:
           type: string
-          description: |-
-            Reason for the current script execution state. In most of the cases reason field will be empty. In case
-            of an error or cancellation reason will contain information about the reason that caused script execution to
-            become in this state.
+          description: "Reason for the current script execution state. In most of the cases reason field will be empty. In case\r\nof an error or cancellation reason will contain information about the reason that caused script execution to\r\nbecome in this state."
           nullable: true
           readOnly: true
         start_time:
           type: string
-          description: Time at which the script execution was started. String representing
-            time in format ISO 8601.
+          description: Time at which the script execution was started. String representing time in format ISO 8601.
           format: date-time
           nullable: true
           readOnly: true
         end_time:
           type: string
-          description: Time at which the script execution was finished. String representing
-            time in format ISO 8601.
+          description: Time at which the script execution was finished. String representing time in format ISO 8601.
           format: date-time
           nullable: true
           readOnly: true
-      description: |-
-        Script Execution resource allows you to run a script in a runspace.
-        The API allows you to create, cancel, and retrieve script executions.
+      additionalProperties: false
+      description: "Script Execution resource allows you to run a script in a runspace.\r\nThe API allows you to create, cancel, and retrieve script executions."
+    WebConsoleState:
+      enum:
+        - available
+        - error
+      type: string
+      description: WebConsoleState defines possible web console states.
+      readOnly: true
+    WebConsole:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the object.
+          nullable: true
+          readOnly: true
+        state:
+          $ref: '#/components/schemas/WebConsoleState'
+        error_details:
+          $ref: '#/components/schemas/ErrorDetails'
+        creation_time:
+          type: string
+          description: The time at which the object was created. String representing time in format ISO 8601.
+          format: date-time
+          readOnly: true
+      additionalProperties: false
+      description: "WebConsole resource allowscreation and removal of accessible through browser PowerShell consoles.\r\nThe API allows you to create, read, and delete web consoles."
     BooleanArrayScriptParameter:
       required:
-      - name
+        - name
       properties:
         value:
           type: object
-          description: |-
-            Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an
-            argument. If only value is provided without script the object is passed to the script's parameter as is.
+          additionalProperties: false
+          description: "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is."
           nullable: true
         name:
           type: string
-          description: |-
-            Name of the parameter. When a parameter is specified on a script execution create the name should match
-            the name of the parameter that is defined in the script.
+          description: "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
         script:
           type: string
-          description: |-
-            Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.
-
-            In case a script is specified as an argument for a script parameter the service runs the script of the
-            parameter before running the requested script. The value that is produced as an output is used
-            as an argument for the script parameter.
-            If both script and value are specified for a script parameter the script is executed with single argument
-            with value specified in the value field. The object that is produced as an output is used as an argument
-            for the script parameter.
+          description: "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter."
           nullable: true
     BooleanScriptParameter:
       required:
-      - name
+        - name
       properties:
         value:
           type: object
-          description: |-
-            Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an
-            argument. If only value is provided without script the object is passed to the script's parameter as is.
+          additionalProperties: false
+          description: "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is."
           nullable: true
         name:
           type: string
-          description: |-
-            Name of the parameter. When a parameter is specified on a script execution create the name should match
-            the name of the parameter that is defined in the script.
+          description: "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
         script:
           type: string
-          description: |-
-            Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.
-
-            In case a script is specified as an argument for a script parameter the service runs the script of the
-            parameter before running the requested script. The value that is produced as an output is used
-            as an argument for the script parameter.
-            If both script and value are specified for a script parameter the script is executed with single argument
-            with value specified in the value field. The object that is produced as an output is used as an argument
-            for the script parameter.
+          description: "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter."
           nullable: true
     IntegerArrayScriptParameter:
       required:
-      - name
+        - name
       properties:
         value:
           type: object
-          description: |-
-            Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an
-            argument. If only value is provided without script the object is passed to the script's parameter as is.
+          additionalProperties: false
+          description: "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is."
           nullable: true
         name:
           type: string
-          description: |-
-            Name of the parameter. When a parameter is specified on a script execution create the name should match
-            the name of the parameter that is defined in the script.
+          description: "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
         script:
           type: string
-          description: |-
-            Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.
-
-            In case a script is specified as an argument for a script parameter the service runs the script of the
-            parameter before running the requested script. The value that is produced as an output is used
-            as an argument for the script parameter.
-            If both script and value are specified for a script parameter the script is executed with single argument
-            with value specified in the value field. The object that is produced as an output is used as an argument
-            for the script parameter.
+          description: "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter."
           nullable: true
     IntegerScriptParameter:
       required:
-      - name
+        - name
       properties:
         value:
           type: object
-          description: |-
-            Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an
-            argument. If only value is provided without script the object is passed to the script's parameter as is.
+          additionalProperties: false
+          description: "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is."
           nullable: true
         name:
           type: string
-          description: |-
-            Name of the parameter. When a parameter is specified on a script execution create the name should match
-            the name of the parameter that is defined in the script.
+          description: "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
         script:
           type: string
-          description: |-
-            Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.
-
-            In case a script is specified as an argument for a script parameter the service runs the script of the
-            parameter before running the requested script. The value that is produced as an output is used
-            as an argument for the script parameter.
-            If both script and value are specified for a script parameter the script is executed with single argument
-            with value specified in the value field. The object that is produced as an output is used as an argument
-            for the script parameter.
+          description: "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter."
           nullable: true
     NumberArrayScriptParameter:
       required:
-      - name
+        - name
       properties:
         value:
           type: object
-          description: |-
-            Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an
-            argument. If only value is provided without script the object is passed to the script's parameter as is.
+          additionalProperties: false
+          description: "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is."
           nullable: true
         name:
           type: string
-          description: |-
-            Name of the parameter. When a parameter is specified on a script execution create the name should match
-            the name of the parameter that is defined in the script.
+          description: "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
         script:
           type: string
-          description: |-
-            Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.
-
-            In case a script is specified as an argument for a script parameter the service runs the script of the
-            parameter before running the requested script. The value that is produced as an output is used
-            as an argument for the script parameter.
-            If both script and value are specified for a script parameter the script is executed with single argument
-            with value specified in the value field. The object that is produced as an output is used as an argument
-            for the script parameter.
+          description: "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter."
           nullable: true
     NumberScriptParameter:
       required:
-      - name
+        - name
       properties:
         value:
           type: object
-          description: |-
-            Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an
-            argument. If only value is provided without script the object is passed to the script's parameter as is.
+          additionalProperties: false
+          description: "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is."
           nullable: true
         name:
           type: string
-          description: |-
-            Name of the parameter. When a parameter is specified on a script execution create the name should match
-            the name of the parameter that is defined in the script.
+          description: "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
         script:
           type: string
-          description: |-
-            Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.
-
-            In case a script is specified as an argument for a script parameter the service runs the script of the
-            parameter before running the requested script. The value that is produced as an output is used
-            as an argument for the script parameter.
-            If both script and value are specified for a script parameter the script is executed with single argument
-            with value specified in the value field. The object that is produced as an output is used as an argument
-            for the script parameter.
+          description: "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter."
           nullable: true
     StringArrayScriptParameter:
       required:
-      - name
+        - name
       properties:
         value:
           type: object
-          description: |-
-            Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an
-            argument. If only value is provided without script the object is passed to the script's parameter as is.
+          additionalProperties: false
+          description: "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is."
           nullable: true
         name:
           type: string
-          description: |-
-            Name of the parameter. When a parameter is specified on a script execution create the name should match
-            the name of the parameter that is defined in the script.
+          description: "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
         script:
           type: string
-          description: |-
-            Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.
-
-            In case a script is specified as an argument for a script parameter the service runs the script of the
-            parameter before running the requested script. The value that is produced as an output is used
-            as an argument for the script parameter.
-            If both script and value are specified for a script parameter the script is executed with single argument
-            with value specified in the value field. The object that is produced as an output is used as an argument
-            for the script parameter.
+          description: "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter."
           nullable: true
     StringScriptParameter:
       required:
-      - name
+        - name
       properties:
         value:
           type: object
-          description: |-
-            Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an
-            argument. If only value is provided without script the object is passed to the script's parameter as is.
+          additionalProperties: false
+          description: "Object that will be passed as an argument to a given parameter. Value, script, or both can be provided as an\r\nargument. If only value is provided without script the object is passed to the script's parameter as is."
           nullable: true
         name:
           type: string
-          description: |-
-            Name of the parameter. When a parameter is specified on a script execution create the name should match
-            the name of the parameter that is defined in the script.
+          description: "Name of the parameter. When a parameter is specified on a script execution create the name should match\r\nthe name of the parameter that is defined in the script."
         script:
           type: string
-          description: |-
-            Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.
-
-            In case a script is specified as an argument for a script parameter the service runs the script of the
-            parameter before running the requested script. The value that is produced as an output is used
-            as an argument for the script parameter.
-            If both script and value are specified for a script parameter the script is executed with single argument
-            with value specified in the value field. The object that is produced as an output is used as an argument
-            for the script parameter.
+          description: "Script to be executed for this parameter. Value produced by the script will be the argument for the parameter.\r\n\r\nIn case a script is specified as an argument for a script parameter the service runs the script of the\r\nparameter before running the requested script. The value that is produced as an output is used\r\nas an argument for the script parameter.\r\nIf both script and value are specified for a script parameter the script is executed with single argument\r\nwith value specified in the value field. The object that is produced as an output is used as an argument\r\nfor the script parameter."
           nullable: true
   securitySchemes:
     apiKeyAuth:
@@ -1125,45 +1098,17 @@ components:
       type: http
       scheme: SIGN
 security:
-- apiKeyAuth: []
-- basicAuth: []
-- signAuth: []
+  - apiKeyAuth: [ ]
+  - basicAuth: [ ]
+  - signAuth: [ ]
 tags:
-- name: about
-  description: About information for the product
-- name: authentication
-  description: SRS uses vCenter Server SSO it is registered to as Identity and Authentication
-    Server. SRS does not apply any role-based access control to its features. Any
-    vSphere user that can authenticate in vCenter Server SSO can access the SRS feature.
-    SRS establishes PowerCLI connections to vCenter Servers on behalf of the authenticated
-    user. PowerCLI scripts run on behalf of the authenticated user.
-- name: argument_scripts
-  description: SRS has a number of script templates to help users pass PowerCLI objects
-    as arguments to scripts with PowerCLI type parameters. Argument transformation
-    scripts are scripts given on the Parameter structure that produce value which
-    is used as an argument to specific parameter of a requested script execution.
-- name: runspaces
-  description: Runspace is a PowerShell instance running in a dedicated container
-    as a Kubernetes pod on the Kubernetes cluster. Runspace hosts the script running
-    engine. Runspaces run in containers to isolate different users scripts and to
-    isolate the script runtime from the hosting infrastructure. Multiple users can
-    access SRS and run scripts. Different users are isolated in their own PowerShell
-    runtime without access to other users script runtime and the underlying infrastructure.
-    A user can create more than one runspace. So single user can run scripts simultaneously
-    in isolated runspace. User can use one runspace to run multiple scripts sequentially.<br/>
-    <br/> SRS presents Runspace as an API Resource with unique Id, name optionally
-    given by the user, and state. The state of a Runspace switches during the Runspace
-    life cycle. When Runspace creation is requested, a Runspace resource is returned
-    in creating state. Once a runspace is prepared for running its state is switch
-    to ready. A Runspace is in active state when it is busy running a script. Active
-    runpsaces do not accept script execution requests.
-- name: script_executions
-  description: To run a script in SRS, users request Script Execution. Script Execution
-    is an SRS resource that represents a script that user requests to run in a Runspace.
-    SRS assigns unique Id for a script execution and lets the user track the script
-    progress and outcomes. When a script execution completes, SRS keeps a script execution
-    record with the produced outputs. Script outputs consist of objects that script
-    returns and messages that are raised in PowerShell run-time streams. PowerShell
-    has six output streams Output, Error, Warning, Information, Debug, and Verbose.
-    Everything produced by command return or Write-Output is recorded in the Output
-    stream.
+  - name: about
+    description: About information for the product
+  - name: authentication
+    description: SRS uses vCenter Server SSO it is registered to as Identity and Authentication Server. SRS does not apply any role-based access control to its features. Any vSphere user that can authenticate in vCenter Server SSO can access the SRS feature. SRS establishes PowerCLI connections to vCenter Servers on behalf of the authenticated user. PowerCLI scripts run on behalf of the authenticated user.
+  - name: argument_scripts
+    description: SRS has a number of script templates to help users pass PowerCLI objects as arguments to scripts with PowerCLI type parameters. Argument transformation scripts are scripts given on the Parameter structure that produce value which is used as an argument to specific parameter of a requested script execution.
+  - name: runspaces
+    description: 'Runspace is a PowerShell instance running in a dedicated container as a Kubernetes pod on the Kubernetes cluster. Runspace hosts the script running engine. Runspaces run in containers to isolate different users scripts and to isolate the script runtime from the hosting infrastructure. Multiple users can access SRS and run scripts. Different users are isolated in their own PowerShell runtime without access to other users script runtime and the underlying infrastructure. A user can create more than one runspace. So single user can run scripts simultaneously in isolated runspace. User can use one runspace to run multiple scripts sequentially.<br/> <br/> SRS presents Runspace as an API Resource with unique Id, name optionally given by the user, and state. The state of a Runspace switches during the Runspace life cycle. When Runspace creation is requested, a Runspace resource is returned in creating state. Once a runspace is prepared for running its state is switch to ready. A Runspace is in active state when it is busy running a script. Active runpsaces do not accept script execution requests.'
+  - name: script_executions
+    description: 'To run a script in SRS, users request Script Execution. Script Execution is an SRS resource that represents a script that user requests to run in a Runspace. SRS assigns unique Id for a script execution and lets the user track the script progress and outcomes. When a script execution completes, SRS keeps a script execution record with the produced outputs. Script outputs consist of objects that script returns and messages that are raised in PowerShell run-time streams. PowerShell has six output streams Output, Error, Warning, Information, Debug, and Verbose. Everything produced by command return or Write-Output is recorded in the Output stream.'
