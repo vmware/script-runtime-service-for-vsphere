@@ -34,7 +34,7 @@ spec:
       {{ end  }}
       {{ if and .Values.vc .Values.vc.clean }}
       - name: TARGET_VC_CLEAN
-        value: {{ .Values.vc.clean  }}
+        value: "{{ .Values.vc.clean  }}"
       {{ end  }}
       - name: SERVICE_HOSTNAME
         value: {{ required "Specify SRS service hostname" .Values.srs.service.hostname  }}
