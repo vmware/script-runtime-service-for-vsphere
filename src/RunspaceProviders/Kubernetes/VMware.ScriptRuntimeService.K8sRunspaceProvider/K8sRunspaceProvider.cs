@@ -615,6 +615,20 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          return result;
       }
 
+      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo) {
+         var runspaceResult = WaitCreateCompletion(new K8sRunspaceInfo() {
+            Id = webConsoleInfo.Id,
+            CreationState = webConsoleInfo.CreationState,
+            CreationError = webConsoleInfo.CreationError
+         });
+
+         return new K8sWebConsoleInfo() {
+            Id = runspaceResult.Id,
+            CreationState = runspaceResult.CreationState,
+            CreationError = runspaceResult.CreationError
+         };
+      }
+
       /// Returns true if container creation error is identified in PodStatus, otherwise false
       private bool HasErrrorInContainerStatus(V1PodStatus status, out string errorMessage) {
          var result = false;
