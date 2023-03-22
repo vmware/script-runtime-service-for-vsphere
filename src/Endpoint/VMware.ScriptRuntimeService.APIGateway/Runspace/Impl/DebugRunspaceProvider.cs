@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -26,7 +26,11 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl {
       }
 
       public IRunspaceInfo WaitCreateCompletion(IRunspaceInfo runspaceInfo) {
-         return runspaceInfo;         
+         return runspaceInfo;
+      }
+
+      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webconsole) {
+         return webconsole;
       }
 
       public IRunspaceInfo Get(string id) {

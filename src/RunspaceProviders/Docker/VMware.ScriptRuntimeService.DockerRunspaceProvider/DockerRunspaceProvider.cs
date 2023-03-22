@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -165,6 +165,10 @@ namespace VMware.ScriptRuntimeService.DockerRunspaceProvider
 
       public IRunspaceInfo WaitCreateCompletion(IRunspaceInfo runspace) {
          return runspace;
+      }
+
+      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webconsole) {
+         return webconsole;
       }
 
       public IRunspaceInfo Get(string id) {
