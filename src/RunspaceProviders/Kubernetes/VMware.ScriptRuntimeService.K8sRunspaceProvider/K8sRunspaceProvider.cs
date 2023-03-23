@@ -413,7 +413,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
             result = new K8sWebConsoleInfo {
                Id = webConsoleId,
-               CreationState = RunspaceCreationState.Ready
+               CreationState = RunspaceCreationState.Creating
             };
             _logger.LogDebug($"RunspaceInfo.Id: {result.Id}");
          } catch (Exception e) {
@@ -616,11 +616,103 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo) {
+         // Wait for the console pod to get ready
+         IWebConsoleInfo result = null;
          var runspaceResult = WaitCreateCompletion(new K8sRunspaceInfo() {
             Id = webConsoleInfo.Id,
             CreationState = webConsoleInfo.CreationState,
             CreationError = webConsoleInfo.CreationError
          });
+
+         //if (runspaceResult != null && runspaceResult.CreationState == RunspaceCreationState.Ready) {
+         //   // The pod is up and running we not wait for the Endpoint
+         //   _logger.LogDebug($"Waiting k8s Endpoints for pod '{runspaceResult.Id}' to become available");
+         //   V1Endpoints endpoints = null;
+         //   try {
+         //      _logger.LogDebug($"K8s API Call ReadNamespacedEndpoints: {runspaceResult.Id}");
+         //      endpoints = _client.CoreV1.ReadNamespacedEndpoints(runspaceResult.Id, _namespace);
+         //   } catch (Exception exc) {
+         //      LogException(exc);
+         //      result = new K8sWebConsoleInfo {
+         //         Id = result.Id,
+         //         CreationState = RunspaceCreationState.Error,
+         //         CreationError = new RunspaceProviderException(
+         //            string.Format(
+         //               Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, result.Id),
+         //            exc)
+         //      };
+         //   }
+
+         //   // Set 10 minutes timeout for container creation.
+         //   // Worst case would be image pulling from server.
+         //   int maxRetryCount = 6000;
+         //   int retryIntervalMs = 100;
+         //   int retryCount = 1;
+
+         //   // Wait Pod to become running and obtain IP Address
+         //   _logger.LogDebug($"Start wating K8s Endpoints to become availabe: {endpoints.Metadata.Name}");
+
+         //   while (
+         //      endpoints == null &&
+         //      retryCount < maxRetryCount) {
+
+         //      Thread.Sleep(retryIntervalMs);
+         //      try {
+         //         _logger.LogDebug($"K8s API Call ReadNamespacedEndpoints: {runspaceResult.Id}");
+         //         endpoints = _client.CoreV1.ReadNamespacedEndpoints(runspaceResult.Id, _namespace);
+         //      } catch (Exception exc) {
+         //         LogException(exc);
+         //         result = new K8sWebConsoleInfo {
+         //            Id = result.Id,
+         //            CreationState = RunspaceCreationState.Error,
+         //            CreationError = new RunspaceProviderException(
+         //               string.Format(
+         //                  Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, result.Id),
+         //               exc)
+         //         };
+         //      }
+         //      retryCount++;
+         //   }
+
+         //   if (retryCount >= maxRetryCount) {
+         //      // Timeout
+         //      result = new K8sWebConsoleInfo {
+         //         Id = result.Id,
+         //         CreationState = RunspaceCreationState.Error,
+         //         CreationError = new RunspaceProviderException(Resources.K8sRunspaceProvider_WaitCreateComplition_TimeOut)
+         //      };
+         //   } else {
+         //      // Success, everything should be in place
+         //      result = new K8sWebConsoleInfo {
+         //         Id = result.Id,
+         //         CreationState = RunspaceCreationState.Ready
+         //      };
+         //   }
+
+         //   if (result.CreationState == RunspaceCreationState.Ready && _verifyRunspaceApiIsAccessibleOnCreate) {
+         //      try {
+         //         _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start");
+         //         // Ensure Container is accessible over the network after creation
+         //         EnsureRunspaceEndpointIsAccessible(result);
+         //         _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
+         //      } catch (RunspaceProviderException exc) {
+         //         LogException(exc);
+         //         // Kill the container that is not accessible, otherwise it will leak
+         //         try {
+         //            Kill(result.Id);
+         //         } catch (RunspaceProviderException rexc) {
+         //            LogException(rexc);
+         //         }
+
+         //         result = new K8sWebConsoleInfo {
+         //            Id = result.Id,
+         //            CreationState = RunspaceCreationState.Error,
+         //            CreationError = exc
+         //         };
+         //      }
+         //   }
+         //}
+         //return result;
 
          return new K8sWebConsoleInfo() {
             Id = runspaceResult.Id,
