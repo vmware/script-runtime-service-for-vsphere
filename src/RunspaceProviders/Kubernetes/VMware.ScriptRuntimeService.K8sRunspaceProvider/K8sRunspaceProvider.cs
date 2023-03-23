@@ -653,7 +653,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      Resources.K8sRunspaceProvider_WaitCreateComplation_ManyPodFound, result.Id))
             };
          } else {
-            
+
             var runspaceResult = WaitCreateCompletion(new K8sRunspaceInfo() {
                Id = podList.Items[0].Name(),
                CreationState = webConsoleInfo.CreationState
@@ -748,16 +748,15 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                //}
 
                result = new K8sWebConsoleInfo() {
-               Id = runspaceResult.Id,
-               CreationState = runspaceResult.CreationState,
-               CreationError = runspaceResult.CreationError
-            };
+                  Id = runspaceResult.Id,
+                  CreationState = runspaceResult.CreationState,
+                  CreationError = runspaceResult.CreationError
+               };
+            }
          }
 
          return result;
-
       }
-
       /// Returns true if container creation error is identified in PodStatus, otherwise false
       private bool HasErrrorInContainerStatus(V1PodStatus status, out string errorMessage) {
          var result = false;
