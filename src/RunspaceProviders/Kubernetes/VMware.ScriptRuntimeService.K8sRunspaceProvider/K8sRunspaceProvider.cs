@@ -13,6 +13,7 @@ using System.Net.Sockets;
 using System.Threading;
 using k8s;
 using k8s.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
@@ -563,6 +564,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo) {
          // Wait for the console pod to get ready
          IWebConsoleInfo result = webConsoleInfo;
+         DateTime creationTime = DateTime.Now;
 
          V1PodList podList = null;
          try {
@@ -614,23 +616,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             }
 
             if (result.CreationState == RunspaceCreationState.Ready) {
-               // The pod is up and running we not wait for the Endpoint
-               _logger.LogDebug($"Waiting k8s Endpoints for pod '{result.Id}' to become available");
-               V1Endpoints endpoints = null;
-               try {
-                  _logger.LogDebug($"K8s API Call ReadNamespacedEndpoints: {result.Id}");
-                  endpoints = _client.CoreV1.ReadNamespacedEndpoints(result.Id, _namespace);
-               } catch (Exception exc) {
-                  LogException(exc);
-                  result = new K8sWebConsoleInfo {
-                     Id = result.Id,
-                     CreationState = RunspaceCreationState.Error,
-                     CreationError = new RunspaceProviderException(
-                        string.Format(
-                           Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, result.Id),
-                        exc)
-                  };
-               }
+               // The pod is up and running we not wait for UPDATE event from the ingress controller
+               Corev1EventList eventList = null;
 
                // Set 10 minutes timeout for container creation.
                // Worst case would be image pulling from server.
@@ -639,16 +626,15 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                int retryCount = 1;
 
                // Wait Pod to become running and obtain IP Address
-               _logger.LogDebug($"Start wating K8s Endpoints to become availabe: {endpoints.Metadata.Name}");
+               _logger.LogDebug($"Start waiting k8s for nginx ingress controller to update after the rule change");
 
-               while (
-                  endpoints == null &&
-                  retryCount < maxRetryCount) {
+               do {
 
-                  Thread.Sleep(retryIntervalMs);
                   try {
                      _logger.LogDebug($"K8s API Call ReadNamespacedEndpoints: {result.Id}");
-                     endpoints = _client.CoreV1.ReadNamespacedEndpoints(result.Id, _namespace);
+                     eventList = _client.CoreV1.ListNamespacedEvent(
+                        "ingress-nginx",
+                        labelSelector: "app.kubernetes.io/name=ingress-nginx");
                   } catch (Exception exc) {
                      LogException(exc);
                      result = new K8sWebConsoleInfo {
@@ -660,8 +646,17 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                            exc)
                      };
                   }
+
+                  if (eventList?.Items.Any(i => IsNginxReloadEventAfter(i, creationTime)) ?? false) {
+                     var reloadEvent = eventList.Items.First(i => IsNginxReloadEventAfter(i, creationTime));
+                     _logger.LogDebug($"NGINX reload event found {reloadEvent}");
+                     break;
+                  }
+
+                  Thread.Sleep(retryIntervalMs);
+
                   retryCount++;
-               }
+               } while (retryCount < maxRetryCount);
 
                if (retryCount >= maxRetryCount) {
                   // Timeout
@@ -681,6 +676,12 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          }
 
          return result;
+      }
+
+      private static bool IsNginxReloadEventAfter(Corev1Event e, DateTime since) {
+         return e.EventTime?.CompareTo(since) > 0 &&
+               e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
+               e.Message.Equals("NGINX reload triggered due to a change in configuration");
       }
 
       private V1Pod WaitForPodCreation(string name) {
