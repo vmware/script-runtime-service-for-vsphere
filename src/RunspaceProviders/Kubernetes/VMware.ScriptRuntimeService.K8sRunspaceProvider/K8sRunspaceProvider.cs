@@ -259,6 +259,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       public void AddSrsIngressWebConsolePath(string id) {
+         _logger.LogInformation($"Adding ingress rule: /{id}");
          V1Ingress ingress = _client.NetworkingV1.ReadNamespacedIngress("srs-ingress", _namespace);
 
          // Path to add
@@ -307,6 +308,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       public void RemoveSrsIngressWebConsolePath(string id) {
+         _logger.LogInformation($"Removing ingress rule: {id}");
          V1Ingress ingress = _client.NetworkingV1.ReadNamespacedIngress("srs-ingress", _namespace);
 
          // Patch Json Spec
@@ -316,10 +318,13 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          dynamic ingressSpecRule = new ExpandoObject();
          ingressSpecRulesHttp.paths = new List<dynamic>();
 
+         bool ruleFound = false;
          // Existing paths
          foreach (var path in ingress.Spec.Rules[0].Http.Paths) {
             // Exclude the path to remove
-            if (path.Path == $"/{id}") {
+            if (path.Path == $"/({id}/?)") {
+               ruleFound = true;
+               _logger.LogDebug($"Rule matching path /{id} found");
                continue;
             }
 
@@ -333,6 +338,10 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             dBackend.service.port.number = path.Backend.Service.Port.Number;
             dPath.backend = dBackend;
             ingressSpecRulesHttp.paths.Add(dPath);
+         }
+
+         if (!ruleFound) {
+            _logger.LogDebug($"Rule matching path /{id} NOT found!");
          }
 
          ingressSpecRule.http = ingressSpecRulesHttp;
@@ -484,7 +493,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   service = _client.CoreV1.ReadNamespacedService(id, _namespace);
                   Thread.Sleep(100);
                } catch (Exception ex) {
-                  LogException(ex);
+                  LogExpectedException(ex);
                }
                retryCount++;
             } while (deployment != null && service != null && retryCount < maxRetry);
@@ -673,7 +682,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
          return result;
       }
-      
+
       private V1Pod WaitForPodCreation(string name) {
          V1Pod pod = null;
          try {
@@ -804,7 +813,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   pod = _client.CoreV1.ReadNamespacedPod(id, _namespace);
                   Thread.Sleep(100);
                } catch (Exception ex) {
-                  LogException(ex);
+                  LogExpectedException(ex);
                }
                retryCount++;
             } while (pod != null && pod.Status?.Phase == "Running" && retryCount < maxRetry);
@@ -869,6 +878,11 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       private void LogException(Exception ex) {
          _logger.LogError(ex.ToString());
          _logger.LogTrace(ex, ex.ToString());
+      }
+
+      private void LogExpectedException(Exception ex) {
+         _logger.LogDebug("[EXPECTED EXCEPTION] " + ex.ToString());
+         _logger.LogTrace(ex, "[EXPECTED EXCEPTION] " + ex.ToString());
       }
    }
 }
