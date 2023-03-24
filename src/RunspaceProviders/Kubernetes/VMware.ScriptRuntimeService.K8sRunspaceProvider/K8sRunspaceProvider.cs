@@ -498,10 +498,10 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
       public IRunspaceInfo WaitCreateCompletion(IRunspaceInfo runspaceInfo) {
          var result = runspaceInfo;
-
+         V1Pod pod = null;
          if (result != null) {
             try {
-               WaitForPodCreation(runspaceInfo.Id);
+               pod = WaitForPodCreation(runspaceInfo.Id);
                result = new K8sRunspaceInfo {
                   Id = result.Id,
                   CreationState = RunspaceCreationState.Ready
@@ -513,27 +513,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   CreationError = ex
                };
             }
-         }
 
-         if (result != null && result.CreationState == RunspaceCreationState.Ready) {
-            V1Pod pod = null;
-            try {
-               _logger.LogDebug($"Waiting k8s Pod '{runspaceInfo.Id}' to become ready");
-               _logger.LogDebug($"K8s API Call ReadNamespacedPod: {runspaceInfo.Id}");
-               pod = _client.CoreV1.ReadNamespacedPod(runspaceInfo.Id, _namespace);
-            } catch (Exception exc) {
-               LogException(exc);
-               result = new K8sRunspaceInfo {
-                  Id = result.Id,
-                  CreationState = RunspaceCreationState.Error,
-                  CreationError = new RunspaceProviderException(
-                     string.Format(
-                        Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, result.Id),
-                     exc)
-               };
-            }
-
-            if (pod != null) {
+            if (pod != null && result.CreationState == RunspaceCreationState.Ready) {
                result = new K8sRunspaceInfo {
                   Id = result.Id,
                   Endpoint =
@@ -693,7 +674,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          return result;
       }
       
-      private void WaitForPodCreation(string name) {
+      private V1Pod WaitForPodCreation(string name) {
          V1Pod pod = null;
          try {
             _logger.LogDebug($"Waiting k8s Pod '{name}' to become ready");
@@ -763,6 +744,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                // Success, everything should be in place
             }
          }
+
+         return pod;
       }
 
       /// Returns true if container creation error is identified in PodStatus, otherwise false
