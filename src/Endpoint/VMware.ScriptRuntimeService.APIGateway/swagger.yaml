@@ -548,6 +548,12 @@ paths:
       summary: Creates a PowerShell console accessible as web page
       description: Web console is accessble on the SRS Url/web-console-Id
       operationId: create-webconsole
+      parameters:
+        - name: wait
+          in: query
+          schema:
+            type: boolean
+            nullable: true
       responses:
         '200':
           description: Success

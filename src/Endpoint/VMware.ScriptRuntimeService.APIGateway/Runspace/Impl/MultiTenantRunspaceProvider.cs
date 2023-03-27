@@ -443,6 +443,15 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          ISessionToken sessionToken,
          ISolutionStsClient stsClient,
          string vcEndpoint) {
+         return CreateWebConsole(userId, sessionToken, stsClient, vcEndpoint, false);
+      }
+
+      public IWebConsoleData CreateWebConsole(
+         string userId,
+         ISessionToken sessionToken,
+         ISolutionStsClient stsClient,
+         string vcEndpoint,
+         bool wait) {
 
          IWebConsoleData result = null;
 
@@ -479,15 +488,18 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             _runspacesStatsMonitor.RegisterWebConsole(result, sessionToken.SessionId);
             _userWebConsoles.Add(userId, result.Id, result);
 
-            _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
-            var waitResult = _runspaceProvider.WaitCreateCompletion(result);
-            _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
-            if (waitResult.CreationState == RunspaceCreationState.Error) {
-               ((WebConsoleData) result).ErrorDetails = new DataTypes.ErrorDetails(waitResult.CreationError);
-               ((WebConsoleData) result).State = DataTypes.WebConsoleState.Error;
-            } else {
-               if (waitResult.CreationState == RunspaceCreationState.Ready) {
-                  ((WebConsoleData) result).State = DataTypes.WebConsoleState.Available;
+            if (wait) {
+               _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
+               var waitResult = _runspaceProvider.WaitCreateCompletion(result);
+               _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
+
+               if (waitResult.CreationState == RunspaceCreationState.Error) {
+                  ((WebConsoleData) result).ErrorDetails = new DataTypes.ErrorDetails(waitResult.CreationError);
+                  ((WebConsoleData) result).State = DataTypes.WebConsoleState.Error;
+               } else {
+                  if (waitResult.CreationState == RunspaceCreationState.Ready) {
+                     ((WebConsoleData) result).State = DataTypes.WebConsoleState.Available;
+                  }
                }
             }
          } catch (RunspaceProviderException runspaceProviderException) {
