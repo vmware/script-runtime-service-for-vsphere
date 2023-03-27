@@ -632,8 +632,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
                   try {
                      _logger.LogDebug($"K8s API Call ListNamespacedEvent: \"ingress-nginx\"");
-                     eventList = _client.CoreV1.ListEventForAllNamespaces(
-                        labelSelector: "app.kubernetes.io/name=ingress-nginx");
+                     eventList = _client.CoreV1.ListEventForAllNamespaces();
                   } catch (Exception exc) {
                      LogException(exc);
                      result = new K8sWebConsoleInfo {
