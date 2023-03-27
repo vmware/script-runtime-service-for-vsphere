@@ -646,6 +646,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      };
                   }
 
+                  _logger.LogDebug($"Events found {eventList?.Items}");
                   if (eventList?.Items.Any(i => IsNginxReloadEventAfter(i, creationTime)) ?? false) {
                      var reloadEvent = eventList.Items.First(i => IsNginxReloadEventAfter(i, creationTime));
                      _logger.LogDebug($"NGINX reload event found {reloadEvent}");
