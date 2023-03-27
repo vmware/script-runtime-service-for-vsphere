@@ -647,20 +647,22 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
                   if (eventList?.Items.Count > 0) {
                      _logger.LogDebug($"{eventList?.Items.Count} events found");
-                     foreach(var ev in eventList.Items) {
+                     foreach(var ev in eventList.Items.Where(i => IsNginxReloadEventAfter(i, creationTime))) {
 
                         _logger.LogDebug($"   {ev.Name()}");
                         _logger.LogDebug($"   {ev.Namespace()}");
                         _logger.LogDebug($"   {ev.Reason}");
                         _logger.LogDebug($"   {ev.Message}");
                         _logger.LogDebug($"   {ev.Action}");
+                        _logger.LogDebug($"   {ev.CreationTimestamp()}");
+                        _logger.LogDebug($"   {ev.DeletionTimestamp()}");
+                        _logger.LogDebug($"   {ev.LastTimestamp}");
                         _logger.LogDebug($"   {ev.EventTime}");
                         _logger.LogDebug($"   {ev.InvolvedObject}");
                         _logger.LogDebug($"   {ev.Kind}");
                         _logger.LogDebug($"   {ev.ReportingComponent}");
                         _logger.LogDebug($"   {ev.ReportingInstance}");
                         _logger.LogDebug($"   {ev.Type}");
-                        _logger.LogDebug($"   {ev}");
                      }
                   }
 
@@ -704,7 +706,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          //      e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
          //      e.Message.Equals("NGINX reload triggered due to a change in configuration");
 
-         return e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
+         return e.Type.Equals("Normal", StringComparison.InvariantCultureIgnoreCase) &&
+               e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
                e.Message.Equals("NGINX reload triggered due to a change in configuration");
       }
 
