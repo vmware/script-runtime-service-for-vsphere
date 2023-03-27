@@ -646,7 +646,25 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      };
                   }
 
-                  _logger.LogDebug($"Events found {eventList?.Items}");
+                  if (eventList?.Items.Count > 0) {
+                     _logger.LogDebug($"{eventList?.Items.Count} events found");
+                     foreach(var ev in eventList.Items) {
+
+                        _logger.LogDebug($"   {ev.Name()}");
+                        _logger.LogDebug($"   {ev.Namespace()}");
+                        _logger.LogDebug($"   {ev.Reason}");
+                        _logger.LogDebug($"   {ev.Message}");
+                        _logger.LogDebug($"   {ev.Action}");
+                        _logger.LogDebug($"   {ev.EventTime}");
+                        _logger.LogDebug($"   {ev.InvolvedObject}");
+                        _logger.LogDebug($"   {ev.Kind}");
+                        _logger.LogDebug($"   {ev.ReportingComponent}");
+                        _logger.LogDebug($"   {ev.ReportingInstance}");
+                        _logger.LogDebug($"   {ev.Type}");
+                        _logger.LogDebug($"   {ev}");
+                     }
+                  }
+
                   if (eventList?.Items.Any(i => IsNginxReloadEventAfter(i, creationTime)) ?? false) {
                      var reloadEvent = eventList.Items.First(i => IsNginxReloadEventAfter(i, creationTime));
                      _logger.LogDebug($"NGINX reload event found {reloadEvent}");
