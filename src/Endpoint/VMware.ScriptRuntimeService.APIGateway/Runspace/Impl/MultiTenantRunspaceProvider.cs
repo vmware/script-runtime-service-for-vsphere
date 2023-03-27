@@ -483,11 +483,11 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             var waitResult = _runspaceProvider.WaitCreateCompletion(result);
             _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
             if (waitResult.CreationState == RunspaceCreationState.Error) {
-               ((RunspaceData) result).ErrorDetails = new DataTypes.ErrorDetails(waitResult.CreationError);
-               ((RunspaceData) result).State = DataTypes.RunspaceState.Error;
+               ((WebConsoleData) result).ErrorDetails = new DataTypes.ErrorDetails(waitResult.CreationError);
+               ((WebConsoleData) result).State = DataTypes.WebConsoleState.Error;
             } else {
                if (waitResult.CreationState == RunspaceCreationState.Ready) {
-                  ((RunspaceData) result).State = DataTypes.RunspaceState.Ready;
+                  ((WebConsoleData) result).State = DataTypes.WebConsoleState.Available;
                }
             }
          } catch (RunspaceProviderException runspaceProviderException) {

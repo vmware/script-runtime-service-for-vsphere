@@ -640,30 +640,9 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                         CreationState = RunspaceCreationState.Error,
                         CreationError = new RunspaceProviderException(
                            string.Format(
-                              Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, result.Id),
+                              Resources.K8sRunspaceProvider_WaitCreateComplation_ListEvents, result.Id),
                            exc)
                      };
-                  }
-
-                  if (eventList?.Items.Count > 0) {
-                     _logger.LogDebug($"{eventList?.Items.Count} events found");
-                     foreach (var ev in eventList.Items) {
-
-                        _logger.LogDebug($"   {ev.Name()}");
-                        _logger.LogDebug($"   {ev.Namespace()}");
-                        _logger.LogDebug($"   {ev.Reason}");
-                        _logger.LogDebug($"   {ev.Message}");
-                        _logger.LogDebug($"   {ev.Action}");
-                        _logger.LogDebug($"   {ev.CreationTimestamp()}");
-                        _logger.LogDebug($"   {ev.DeletionTimestamp()}");
-                        _logger.LogDebug($"   {ev.LastTimestamp}");
-                        _logger.LogDebug($"   {ev.EventTime}");
-                        _logger.LogDebug($"   {ev.InvolvedObject}");
-                        _logger.LogDebug($"   {ev.Kind}");
-                        _logger.LogDebug($"   {ev.ReportingComponent}");
-                        _logger.LogDebug($"   {ev.ReportingInstance}");
-                        _logger.LogDebug($"   {ev.Type}");
-                     }
                   }
 
                   if (eventList?.Items.Any(i => IsNginxReloadEventAfter(i, creationTime)) ?? false) {

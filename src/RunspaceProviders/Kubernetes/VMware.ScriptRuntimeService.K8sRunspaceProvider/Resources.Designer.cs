@@ -106,6 +106,15 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Waiting runspace container creation failed to get ingress events.
+        /// </summary>
+        internal static string K8sRunspaceProvider_WaitCreateComplation_ListEvents {
+            get {
+                return ResourceManager.GetString("K8sRunspaceProvider_WaitCreateComplation_ListEvents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Many K8s Pods with ID {0} found..
         /// </summary>
         internal static string K8sRunspaceProvider_WaitCreateComplation_ManyPodFound {
