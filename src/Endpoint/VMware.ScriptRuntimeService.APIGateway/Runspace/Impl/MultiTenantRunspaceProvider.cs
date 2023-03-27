@@ -479,19 +479,17 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             _runspacesStatsMonitor.RegisterWebConsole(result, sessionToken.SessionId);
             _userWebConsoles.Add(userId, result.Id, result);
 
-            // Task.Run(() => {
-               _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
-               var waitResult = _runspaceProvider.WaitCreateCompletion(result);
-               _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
-               if (waitResult.CreationState == RunspaceCreationState.Error) {
-                  ((RunspaceData) result).ErrorDetails = new DataTypes.ErrorDetails(waitResult.CreationError);
-                  ((RunspaceData) result).State = DataTypes.RunspaceState.Error;
-               } else {
-                  if (waitResult.CreationState == RunspaceCreationState.Ready) {
-                     ((RunspaceData) result).State = DataTypes.RunspaceState.Ready;
-                  }
+            _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
+            var waitResult = _runspaceProvider.WaitCreateCompletion(result);
+            _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
+            if (waitResult.CreationState == RunspaceCreationState.Error) {
+               ((RunspaceData) result).ErrorDetails = new DataTypes.ErrorDetails(waitResult.CreationError);
+               ((RunspaceData) result).State = DataTypes.RunspaceState.Error;
+            } else {
+               if (waitResult.CreationState == RunspaceCreationState.Ready) {
+                  ((RunspaceData) result).State = DataTypes.RunspaceState.Ready;
                }
-            // });
+            }
          } catch (RunspaceProviderException runspaceProviderException) {
             _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown");
             throw;
