@@ -632,7 +632,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
                   try {
                      _logger.LogDebug($"K8s API Call ListNamespacedEvent: \"ingress-nginx\"");
-                     eventList = _client.CoreV1.ListEventForAllNamespaces();
+                     eventList = _client.CoreV1.ListNamespacedEvent("ingress-nginx");
                   } catch (Exception exc) {
                      LogException(exc);
                      result = new K8sWebConsoleInfo {
@@ -647,7 +647,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
                   if (eventList?.Items.Count > 0) {
                      _logger.LogDebug($"{eventList?.Items.Count} events found");
-                     foreach(var ev in eventList.Items.Where(i => IsNginxReloadEventAfter(i, creationTime))) {
+                     foreach (var ev in eventList.Items) {
 
                         _logger.LogDebug($"   {ev.Name()}");
                         _logger.LogDebug($"   {ev.Namespace()}");
@@ -698,17 +698,10 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       private static bool IsNginxReloadEventAfter(Corev1Event e, DateTime since) {
-         //NAMESPACE       LAST SEEN   TYPE      REASON                   OBJECT                                          MESSAGE
-
-         //ingress-nginx   7m16s       Normal    RELOAD                   pod/ingress-nginx-controller-75b68dd698-r86zn   NGINX reload triggered due to a change in configuration
-
-         //return e.EventTime?.CompareTo(since) > 0 &&
-         //      e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
-         //      e.Message.Equals("NGINX reload triggered due to a change in configuration");
-
-         return e.Type.Equals("Normal", StringComparison.InvariantCultureIgnoreCase) &&
-               e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
-               e.Message.Equals("NGINX reload triggered due to a change in configuration");
+         return e.LastTimestamp?.CompareTo(since) > 0 &&
+            e.Type.Equals("Normal", StringComparison.InvariantCultureIgnoreCase) &&
+            e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
+            e.Message.Equals("NGINX reload triggered due to a change in configuration");
       }
 
       private V1Pod WaitForPodCreation(string name) {
