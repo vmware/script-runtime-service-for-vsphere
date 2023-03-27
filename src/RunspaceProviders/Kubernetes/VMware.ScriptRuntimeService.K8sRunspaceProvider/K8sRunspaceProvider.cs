@@ -678,8 +678,15 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       private static bool IsNginxReloadEventAfter(Corev1Event e, DateTime since) {
-         return e.EventTime?.CompareTo(since) > 0 &&
-               e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
+         //NAMESPACE       LAST SEEN   TYPE      REASON                   OBJECT                                          MESSAGE
+
+         //ingress-nginx   7m16s       Normal    RELOAD                   pod/ingress-nginx-controller-75b68dd698-r86zn   NGINX reload triggered due to a change in configuration
+
+         //return e.EventTime?.CompareTo(since) > 0 &&
+         //      e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
+         //      e.Message.Equals("NGINX reload triggered due to a change in configuration");
+
+         return e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
                e.Message.Equals("NGINX reload triggered due to a change in configuration");
       }
 
