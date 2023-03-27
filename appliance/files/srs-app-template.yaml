@@ -129,6 +129,15 @@ rules:
   verbs: ["get", "list", "watch", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: read-events
+rules:
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["list", "get", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: manage-pods_srs-runspace-provider
@@ -137,6 +146,23 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: manage-pods
+subjects:
+- kind: ServiceAccount
+  name: srs-runspace-provider
+  namespace: script-runtime-service
+- kind: ServiceAccount
+  name: srs-admin
+  namespace: script-runtime-service
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-events_srs-runspace-provider
+  namespace: script-runtime-service
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: read-events
 subjects:
 - kind: ServiceAccount
   name: srs-runspace-provider
