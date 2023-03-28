@@ -507,63 +507,71 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       public IRunspaceInfo WaitCreateCompletion(IRunspaceInfo runspaceInfo) {
-         var result = runspaceInfo;
          V1Pod pod = null;
-         if (result != null) {
+         if (runspaceInfo == null) {
+            return runspaceInfo;
+         }
+         if (runspaceInfo != null) {
             try {
                pod = WaitForPodCreation(runspaceInfo.Id);
-               result = new K8sRunspaceInfo {
-                  Id = result.Id,
-                  CreationState = RunspaceCreationState.Ready
-               };
             } catch (RunspaceProviderException ex) {
-               result = new K8sRunspaceInfo {
-                  Id = result.Id,
+               return new K8sRunspaceInfo {
+                  Id = runspaceInfo.Id,
                   CreationState = RunspaceCreationState.Error,
                   CreationError = ex
                };
             }
 
-            if (pod != null && result.CreationState == RunspaceCreationState.Ready) {
-               result = new K8sRunspaceInfo {
-                  Id = result.Id,
-                  Endpoint =
-                        new IPEndPoint(
-                           IPAddress.Parse(pod.Status.PodIP),
-                           _runspaceApiPort),
-                  CreationState = RunspaceCreationState.Ready
+            if (pod == null) {
+               return new K8sRunspaceInfo {
+                  Id = runspaceInfo.Id,
+                  CreationState = RunspaceCreationState.Error,
+                  CreationError = new RunspaceProviderException(
+                     string.Format(
+                        Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, runspaceInfo.Id))
                };
+            }
 
-               if (result.CreationState == RunspaceCreationState.Ready && _verifyRunspaceApiIsAccessibleOnCreate) {
+            var result = new K8sRunspaceInfo {
+               Id = runspaceInfo.Id,
+               Endpoint =
+                     new IPEndPoint(
+                        IPAddress.Parse(pod.Status.PodIP),
+                        _runspaceApiPort),
+               CreationState = RunspaceCreationState.Ready
+            };
+
+            if (_verifyRunspaceApiIsAccessibleOnCreate) {
+               try {
+                  _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start");
+                  // Ensure Container is accessible over the network after creation
+                  EnsureRunspaceEndpointIsAccessible(result);
+                  _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
+
+                  return result;
+               } catch (RunspaceProviderException exc) {
+                  LogException(exc);
+                  // Kill the container that is not accessible, otherwise it will leak
                   try {
-                     _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start");
-                     // Ensure Container is accessible over the network after creation
-                     EnsureRunspaceEndpointIsAccessible(result);
-                     _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
-                  } catch (RunspaceProviderException exc) {
-                     LogException(exc);
-                     // Kill the container that is not accessible, otherwise it will leak
-                     try {
-                        Kill(result.Id);
-                     } catch (RunspaceProviderException rexc) {
-                        LogException(rexc);
-                     }
-
-                     result = new K8sRunspaceInfo {
-                        Id = result.Id,
-                        CreationState = RunspaceCreationState.Error,
-                        CreationError = exc
-                     };
+                     Kill(result.Id);
+                  } catch (RunspaceProviderException rexc) {
+                     LogException(rexc);
                   }
+
+                  return new K8sRunspaceInfo {
+                     Id = result.Id,
+                     CreationState = RunspaceCreationState.Error,
+                     CreationError = exc
+                  };
                }
+            } else {
+               return result;
             }
          }
-         return result;
       }
 
       public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo) {
          // Wait for the console pod to get ready
-         IWebConsoleInfo result = webConsoleInfo;
          DateTime creationTime = DateTime.Now;
 
          V1PodList podList = null;
@@ -573,49 +581,50 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             podList = _client.CoreV1.ListNamespacedPod(_namespace, labelSelector: $"app={webConsoleInfo.Id}");
          } catch (Exception exc) {
             LogException(exc);
-            result = new K8sWebConsoleInfo {
-               Id = result.Id,
+            return new K8sWebConsoleInfo {
+               Id = webConsoleInfo.Id,
                CreationState = RunspaceCreationState.Error,
                CreationError = new RunspaceProviderException(
                   string.Format(
-                     Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, result.Id),
+                     Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, webConsoleInfo.Id),
                   exc)
             };
          }
 
          if (null == podList || podList.Items.Count == 0) {
-            result = new K8sWebConsoleInfo {
-               Id = result.Id,
+            return new K8sWebConsoleInfo {
+               Id = webConsoleInfo.Id,
                CreationState = RunspaceCreationState.Error,
                CreationError = new RunspaceProviderException(
                   string.Format(
-                     Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, result.Id))
+                     Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, webConsoleInfo.Id))
             };
          } else if (podList.Items.Count > 1) {
-            result = new K8sWebConsoleInfo {
-               Id = result.Id,
+            return new K8sWebConsoleInfo {
+               Id = webConsoleInfo.Id,
                CreationState = RunspaceCreationState.Error,
                CreationError = new RunspaceProviderException(
                   string.Format(
-                     Resources.K8sRunspaceProvider_WaitCreateComplation_ManyPodFound, result.Id))
+                     Resources.K8sRunspaceProvider_WaitCreateComplation_ManyPodFound, webConsoleInfo.Id))
             };
          } else {
 
+            IWebConsoleInfo podWaitResult = null;
             try {
                WaitForPodCreation(podList.Items[0].Name());
-               result = new K8sWebConsoleInfo {
-                  Id = result.Id,
+               podWaitResult = new K8sWebConsoleInfo {
+                  Id = webConsoleInfo.Id,
                   CreationState = RunspaceCreationState.Ready
                };
             } catch (RunspaceProviderException ex) {
-               result = new K8sWebConsoleInfo {
-                  Id = result.Id,
+               return new K8sWebConsoleInfo {
+                  Id = webConsoleInfo.Id,
                   CreationState = RunspaceCreationState.Error,
                   CreationError = ex
                };
             }
 
-            if (result.CreationState == RunspaceCreationState.Ready) {
+            if (podWaitResult?.CreationState == RunspaceCreationState.Ready) {
                // The pod is up and running we not wait for UPDATE event from the ingress controller
                Corev1EventList eventList = null;
 
@@ -635,12 +644,12 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      eventList = _client.CoreV1.ListNamespacedEvent("ingress-nginx");
                   } catch (Exception exc) {
                      LogException(exc);
-                     result = new K8sWebConsoleInfo {
-                        Id = result.Id,
+                     return new K8sWebConsoleInfo {
+                        Id = webConsoleInfo.Id,
                         CreationState = RunspaceCreationState.Error,
                         CreationError = new RunspaceProviderException(
                            string.Format(
-                              Resources.K8sRunspaceProvider_WaitCreateComplation_ListEvents, result.Id),
+                              Resources.K8sRunspaceProvider_WaitCreateComplation_ListEvents, webConsoleInfo.Id),
                            exc)
                      };
                   }
@@ -658,22 +667,22 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
                if (retryCount >= maxRetryCount) {
                   // Timeout
-                  result = new K8sWebConsoleInfo {
-                     Id = result.Id,
+                  return new K8sWebConsoleInfo {
+                     Id = webConsoleInfo.Id,
                      CreationState = RunspaceCreationState.Error,
                      CreationError = new RunspaceProviderException(Resources.K8sRunspaceProvider_WaitCreateComplition_TimeOut)
                   };
                } else {
                   // Success, everything should be in place
-                  result = new K8sWebConsoleInfo {
-                     Id = result.Id,
+                  return new K8sWebConsoleInfo {
+                     Id = webConsoleInfo.Id,
                      CreationState = RunspaceCreationState.Ready
                   };
                }
+            } else {
+               return podWaitResult;
             }
          }
-
-         return result;
       }
 
       private static bool IsNginxReloadEventAfter(Corev1Event e, DateTime since) {
@@ -697,61 +706,65 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   exc);
          }
 
-         if (pod != null) {
-            // Set 10 minutes timeout for container creation.
-            // Worst case would be image pulling from server.
-            int maxRetryCount = 6000;
-            int retryIntervalMs = 100;
-            int retryCount = 1;
+         if (pod == null) {
+            throw new RunspaceProviderException(
+                  string.Format(
+                     Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, name));
+         }
 
-            // Wait Pod to become running and obtain IP Address
-            _logger.LogDebug($"Start wating K8s Pod to become running: {pod.Metadata.Name}");
-            // There are three possible phases of a POD
-            // Pending - awaiting containers to start
-            // Running - Pod is initialized and all containers in the Pod are running or completed successfully
-            // Terminating - Pod is terminating
+         // Set 10 minutes timeout for container creation.
+         // Worst case would be image pulling from server.
+         int maxRetryCount = 6000;
+         int retryIntervalMs = 100;
+         int retryCount = 1;
 
-            // The Pending phase could last forever when container image pull error occurred or some other error
-            // in the container initialization happens. In order to stop waiting below we first monitor for Pod status to
-            // phase to switch from pending to running. While Pod is pending phase we monitor the container
-            // creation for errors and if such occur we break the waiting with error.
-            //
-            // The Container creation errors that are related to image pulling failura are stored in the
-            // pod.Status.ContainerStatuses[0].State.Waiting propery is not null which is instance of V1ContainerStateWaiting
-            // The errors are returned as strings in Reason property of the V1ContainerStateWaiting
-            // The strings that represent errors are:
-            //
-            // ImagePullBackOff - Container image pull failed, kubelet is backing off image pull
-            // ImageInspectError - Unable to inspect image
-            // ErrImagePull - General image pull error
-            // ErrImageNeverPull - Required Image is absent on host and PullPolicy is NeverPullImage
-            // RegistryUnavailable - Get http error when pulling image from registry
-            // InvalidImageName - Unable to parse the image name.
+         // Wait Pod to become running and obtain IP Address
+         _logger.LogDebug($"Start wating K8s Pod to become running: {pod.Metadata.Name}");
+         // There are three possible phases of a POD
+         // Pending - awaiting containers to start
+         // Running - Pod is initialized and all containers in the Pod are running or completed successfully
+         // Terminating - Pod is terminating
 
-            while (
-               pod != null &&
-               string.IsNullOrEmpty(pod.Status?.PodIP) &&
-               (pod.Status?.Phase != "Running" ||
-               (pod.Status?.Phase == "Pending" &&
-                  !HasErrrorInContainerStatus(pod.Status, out var _))) &&
-               retryCount < maxRetryCount) {
+         // The Pending phase could last forever when container image pull error occurred or some other error
+         // in the container initialization happens. In order to stop waiting below we first monitor for Pod status to
+         // phase to switch from pending to running. While Pod is pending phase we monitor the container
+         // creation for errors and if such occur we break the waiting with error.
+         //
+         // The Container creation errors that are related to image pulling failura are stored in the
+         // pod.Status.ContainerStatuses[0].State.Waiting propery is not null which is instance of V1ContainerStateWaiting
+         // The errors are returned as strings in Reason property of the V1ContainerStateWaiting
+         // The strings that represent errors are:
+         //
+         // ImagePullBackOff - Container image pull failed, kubelet is backing off image pull
+         // ImageInspectError - Unable to inspect image
+         // ErrImagePull - General image pull error
+         // ErrImageNeverPull - Required Image is absent on host and PullPolicy is NeverPullImage
+         // RegistryUnavailable - Get http error when pulling image from registry
+         // InvalidImageName - Unable to parse the image name.
 
-               Thread.Sleep(retryIntervalMs);
-               _logger.LogDebug($"K8s API Call ReadNamespacedPod: {pod.Metadata.Name}");
-               pod = _client.CoreV1.ReadNamespacedPod(pod.Metadata.Name, _namespace);
-               retryCount++;
-            }
+         while (
+            pod != null &&
+            string.IsNullOrEmpty(pod.Status?.PodIP) &&
+            (pod.Status?.Phase != "Running" ||
+            (pod.Status?.Phase == "Pending" &&
+               !HasErrrorInContainerStatus(pod.Status, out var _))) &&
+            retryCount < maxRetryCount) {
 
-            if (retryCount >= maxRetryCount) {
-               // Timeout
-               throw new RunspaceProviderException(Resources.K8sRunspaceProvider_WaitCreateComplition_TimeOut);
-            } else
-            if (HasErrrorInContainerStatus(pod.Status, out var errorMessage)) {
-               // Container Creation Error
-               throw new RunspaceProviderException(errorMessage);
-            } else {
-               // Success, everything should be in place
-            }
+            Thread.Sleep(retryIntervalMs);
+            _logger.LogDebug($"K8s API Call ReadNamespacedPod: {pod.Metadata.Name}");
+            pod = _client.CoreV1.ReadNamespacedPod(pod.Metadata.Name, _namespace);
+            retryCount++;
+         }
+
+         if (retryCount >= maxRetryCount) {
+            // Timeout
+            throw new RunspaceProviderException(Resources.K8sRunspaceProvider_WaitCreateComplition_TimeOut);
+         } else
+         if (HasErrrorInContainerStatus(pod.Status, out var errorMessage)) {
+            // Container Creation Error
+            throw new RunspaceProviderException(errorMessage);
+         } else {
+            // Success, everything should be in place
          }
 
          return pod;
