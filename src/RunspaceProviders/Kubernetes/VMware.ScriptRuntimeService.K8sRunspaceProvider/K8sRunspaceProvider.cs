@@ -507,66 +507,66 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       public IRunspaceInfo WaitCreateCompletion(IRunspaceInfo runspaceInfo) {
-         V1Pod pod = null;
+
          if (runspaceInfo == null) {
             return runspaceInfo;
          }
-         if (runspaceInfo != null) {
-            try {
-               pod = WaitForPodCreation(runspaceInfo.Id);
-            } catch (RunspaceProviderException ex) {
-               return new K8sRunspaceInfo {
-                  Id = runspaceInfo.Id,
-                  CreationState = RunspaceCreationState.Error,
-                  CreationError = ex
-               };
-            }
 
-            if (pod == null) {
-               return new K8sRunspaceInfo {
-                  Id = runspaceInfo.Id,
-                  CreationState = RunspaceCreationState.Error,
-                  CreationError = new RunspaceProviderException(
-                     string.Format(
-                        Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, runspaceInfo.Id))
-               };
-            }
-
-            var result = new K8sRunspaceInfo {
+         V1Pod pod = null;
+         try {
+            pod = WaitForPodCreation(runspaceInfo.Id);
+         } catch (RunspaceProviderException ex) {
+            return new K8sRunspaceInfo {
                Id = runspaceInfo.Id,
-               Endpoint =
-                     new IPEndPoint(
-                        IPAddress.Parse(pod.Status.PodIP),
-                        _runspaceApiPort),
-               CreationState = RunspaceCreationState.Ready
+               CreationState = RunspaceCreationState.Error,
+               CreationError = ex
             };
+         }
 
-            if (_verifyRunspaceApiIsAccessibleOnCreate) {
-               try {
-                  _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start");
-                  // Ensure Container is accessible over the network after creation
-                  EnsureRunspaceEndpointIsAccessible(result);
-                  _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
+         if (pod == null) {
+            return new K8sRunspaceInfo {
+               Id = runspaceInfo.Id,
+               CreationState = RunspaceCreationState.Error,
+               CreationError = new RunspaceProviderException(
+                  string.Format(
+                     Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, runspaceInfo.Id))
+            };
+         }
 
-                  return result;
-               } catch (RunspaceProviderException exc) {
-                  LogException(exc);
-                  // Kill the container that is not accessible, otherwise it will leak
-                  try {
-                     Kill(result.Id);
-                  } catch (RunspaceProviderException rexc) {
-                     LogException(rexc);
-                  }
+         var result = new K8sRunspaceInfo {
+            Id = runspaceInfo.Id,
+            Endpoint =
+                  new IPEndPoint(
+                     IPAddress.Parse(pod.Status.PodIP),
+                     _runspaceApiPort),
+            CreationState = RunspaceCreationState.Ready
+         };
 
-                  return new K8sRunspaceInfo {
-                     Id = result.Id,
-                     CreationState = RunspaceCreationState.Error,
-                     CreationError = exc
-                  };
-               }
-            } else {
+         if (_verifyRunspaceApiIsAccessibleOnCreate) {
+            try {
+               _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start");
+               // Ensure Container is accessible over the network after creation
+               EnsureRunspaceEndpointIsAccessible(result);
+               _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
+
                return result;
+            } catch (RunspaceProviderException exc) {
+               LogException(exc);
+               // Kill the container that is not accessible, otherwise it will leak
+               try {
+                  Kill(result.Id);
+               } catch (RunspaceProviderException rexc) {
+                  LogException(rexc);
+               }
+
+               return new K8sRunspaceInfo {
+                  Id = result.Id,
+                  CreationState = RunspaceCreationState.Error,
+                  CreationError = exc
+               };
             }
+         } else {
+            return result;
          }
       }
 
@@ -745,9 +745,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          while (
             pod != null &&
             string.IsNullOrEmpty(pod.Status?.PodIP) &&
-            (pod.Status?.Phase != "Running" ||
-            (pod.Status?.Phase == "Pending" &&
-               !HasErrrorInContainerStatus(pod.Status, out var _))) &&
+            (pod.Status?.Phase != "Running" || (pod.Status?.Phase == "Pending" && !HasErrrorInContainerStatus(pod.Status, out var _))) &&
             retryCount < maxRetryCount) {
 
             Thread.Sleep(retryIntervalMs);
