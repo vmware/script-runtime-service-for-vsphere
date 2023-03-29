@@ -132,6 +132,12 @@
   <data name="K8sRunspaceProvider_List_K8sRunspaceListFail" xml:space="preserve">
     <value>List K8s Runspace Pods failed.</value>
   </data>
+  <data name="K8sRunspaceProvider_WaitCreateComplation_ListEvents" xml:space="preserve">
+    <value>Waiting runspace container creation failed to get ingress events</value>
+  </data>
+  <data name="K8sRunspaceProvider_WaitCreateComplation_ManyPodFound" xml:space="preserve">
+    <value>Many K8s Pods with ID {0} found.</value>
+  </data>
   <data name="K8sRunspaceProvider_WaitCreateComplation_PodNotFound" xml:space="preserve">
     <value>K8s Pod with ID {0} not found.</value>
   </data>

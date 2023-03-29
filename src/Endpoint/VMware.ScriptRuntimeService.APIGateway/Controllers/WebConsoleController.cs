@@ -41,38 +41,39 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       /// <summary>
       /// Creates a PowerShell console accessible as web page
       /// </summary>
-      /// <remarks>      
+      /// <remarks>
       /// Web console is accessble on the SRS Url/web-console-Id
-      /// </remarks>      
+      /// </remarks>
       /// <returns>A Web Csonole resource.</returns>
       [HttpPost(Name = "create-webconsole")]
       [Authorize(AuthenticationSchemes = SrsAuthenticationScheme.SessionAuthenticationScheme)]
       [ProducesResponseType(typeof(WebConsole), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<WebConsole> Post() {
+      public ActionResult<WebConsole> Post([FromQuery] bool? wait) {
          ActionResult<WebConsole> result = null;
          try {
             var authzToken = SessionToken.FromHeaders(Request.Headers);
 
             if (RunspaceProviderSingleton.Instance.RunspaceProvider.CanCreateNewWebConsole()) {
                var webConsoleData = RunspaceProviderSingleton.Instance.RunspaceProvider.CreateWebConsole(
-                     authzToken.UserName, 
-                     authzToken,                      
+                     authzToken.UserName,
+                     authzToken,
                      new SolutionStsClient(_loggerFactory, _stsSettings),
                      // Assumes VC Address is same as STS Address
-                     new Uri(_stsSettings.StsServiceEndpoint).Host);
+                     new Uri(_stsSettings.StsServiceEndpoint).Host,
+                     wait ?? false);
 
                result = StatusCode(200, new WebConsole(webConsoleData));
             } else {
                _logger.LogInformation($"Runspace provider can't create new web console: {APIGatewayResources.RunspaceController_Post_MaxnumberOfRunspacesReached}");
                result = StatusCode(
-                  500, 
+                  500,
                   new ErrorDetails(
                      ApiErrorCodes.GetErrorCode(nameof(APIGatewayResources.WebConsoleController_Post_MaxNumberOfWebConsolesReached)),
                      APIGatewayResources.WebConsoleController_Post_MaxNumberOfWebConsolesReached));
             }
-            
+
 
          } catch (Exception e) {
             _logger.LogError(e, "Creating web console operation failed.");
@@ -193,7 +194,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
          } catch (Exception exc) {
             _logger.LogError(exc, "Delete runspace operation failed.");
             result = StatusCode(
-               500, 
+               500,
                new ErrorDetails(
                   ApiErrorCodes.GetErrorCode(
                      nameof(APIGatewayResources.WebConsoleController_Kill_RunspaceProviderKillWebConsoleFailed)),

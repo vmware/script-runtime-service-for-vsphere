@@ -28,12 +28,12 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
       private readonly UserToIdentifiableData<IWebConsoleData> _userWebConsoles = new UserToIdentifiableData<IWebConsoleData>();
       private readonly Timer _runspacesCleanupTimer;
 
-      public MultiTenantRunspaceProvider(ILoggerFactory loggerFactory, IRunspaceProvider runspaceProvider) : 
+      public MultiTenantRunspaceProvider(ILoggerFactory loggerFactory, IRunspaceProvider runspaceProvider) :
          this(loggerFactory, runspaceProvider, Int32.MaxValue, 24 * 60, 24 * 60) {}
 
       public MultiTenantRunspaceProvider(
          ILoggerFactory loggerFactory,
-         IRunspaceProvider runspaceProvider, 
+         IRunspaceProvider runspaceProvider,
          int maxNumberOfRunspaces,
          int maxRunspaceIdleTimeMinutes,
          int maxRunspaceActiveTimeMinutes,
@@ -58,9 +58,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          }
 
          _runspacesCleanupTimer = new Timer(
-            CleanupTimerCallback, 
-            null, 
-            30 * 1000, 
+            CleanupTimerCallback,
+            null,
+            30 * 1000,
             60 * 1000);
       }
 
@@ -113,7 +113,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
       }
 
 
-      private void CleanupWebConsoles() {         
+      private void CleanupWebConsoles() {
          var webConsoleIdsToRemove = _runspacesStatsMonitor.EvaluateRunspacesToRemove(IRunspacesStatsMonitor.RunspaceType.WebConsole);
 
          foreach (var webConsoleId in webConsoleIdsToRemove) {
@@ -134,8 +134,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          // Clean up user to web console data
          var userIds = _userWebConsoles.ListUsers();
          foreach (var userId in userIds ?? Enumerable.Empty<string>()) {
-            var userWebConosles = _userWebConsoles.List(userId);
-            foreach (var webConsoleData in userWebConosles ?? Enumerable.Empty<IWebConsoleData>()) {
+            var userWebConsoles = _userWebConsoles.List(userId);
+            foreach (var webConsoleData in userWebConsoles ?? Enumerable.Empty<IWebConsoleData>()) {
                if (!runningWebConsoles.Contains(webConsoleData.Id)) {
                   _userWebConsoles.RemoveData(userId, webConsoleData.Id);
                }
@@ -157,8 +157,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 
       public IRunspaceData StartCreate(
          string userId,
-         ISessionToken sessionToken, 
-         string name, 
+         ISessionToken sessionToken,
+         string name,
          bool runVcConnectionScript,
          ISolutionStsClient stsClient,
          string vcEndpoint) {
@@ -180,7 +180,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 
             _userRunspaces.Add(userId, result.Id, result);
             _runspacesStatsMonitor.Register(result, sessionToken.SessionId);
-            
+
             Task.Run(() => {
                _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
                var waitResult = _runspaceProvider.WaitCreateCompletion(result);
@@ -195,15 +195,15 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 
                if (waitResult.CreationState == RunspaceCreationState.Ready &&
                      !runVcConnectionScript) {
-                  ((RunspaceData)result).State = DataTypes.RunspaceState.Ready;                              
+                  ((RunspaceData)result).State = DataTypes.RunspaceState.Ready;
                }
 
-               _logger.LogDebug($"Connect VC requested: {runVcConnectionScript}");               
+               _logger.LogDebug($"Connect VC requested: {runVcConnectionScript}");
                if (runVcConnectionScript && waitResult.CreationState == RunspaceCreationState.Ready) {
                   string bearerSamlToken = null;
 
                   try {
-                     _logger.LogDebug($"HoK Saml Token availble: {sessionToken.HoKSamlToken != null}");
+                     _logger.LogDebug($"HoK Saml Token available: {sessionToken.HoKSamlToken != null}");
                      if (sessionToken.HoKSamlToken == null) {
                         throw new Exception(APIGatewayResources.PowerCLIVCloginController_NoRefreshTokenAvailable_For_Session);
                      }
@@ -258,11 +258,11 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                            }
                            Thread.Sleep(200);
                         }
-                     } catch (RunspaceEndpointException runspaceEndointException) {
-                        _logger.LogError(runspaceEndointException, "Runspace endpoint exception while waiting connect VC script");
-                        result.ErrorDetails = new DataTypes.ErrorDetails(runspaceEndointException);
+                     } catch (RunspaceEndpointException runspaceEndpointException) {
+                        _logger.LogError(runspaceEndpointException, "Runspace endpoint exception while waiting connect VC script");
+                        result.ErrorDetails = new DataTypes.ErrorDetails(runspaceEndpointException);
                         result.State = DataTypes.RunspaceState.Error;
-                     } catch (Exception exc) { 
+                     } catch (Exception exc) {
                         _logger.LogError(exc, "Wait Connect VC script failed");
                         result.ErrorDetails = new DataTypes.ErrorDetails(exc);
                         result.State = DataTypes.RunspaceState.Error;
@@ -272,8 +272,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                   if (result.State != DataTypes.RunspaceState.Error) {
                      result.State = DataTypes.RunspaceState.Ready;
                   }
-               }               
-            });            
+               }
+            });
          } catch (RunspaceProviderException runspaceProviderException) {
             _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown");
             throw;
@@ -282,14 +282,14 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             throw new RunspaceProviderException(
                string.Format(
                   APIGatewayResources.MultiTenantRunspaceProvider_CreateFailed,
-                  userId, 
-                  ex.Message), 
+                  userId,
+                  ex.Message),
                ex);
          }
 
          return result;
       }
-      
+
       public IRunspaceData Get(string userId, string runspaceId) {
          _logger.LogInformation($"Get runspace with id: {runspaceId}");
          IRunspaceData result = null;
@@ -308,7 +308,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 
             var runspaceInfo = _runspaceProvider.Get(runspaceId);
             var runspaceData = _userRunspaces.GetData(userId, runspaceId);
-            if (runspaceInfo == null && runspaceData != null) {               
+            if (runspaceInfo == null && runspaceData != null) {
                _userRunspaces.RemoveData(userId, runspaceId);
             } else {
                result = runspaceData;
@@ -365,15 +365,15 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             if (!_userRunspaces.Contains(userId)) {
                throw new RunspaceProviderException(
                   string.Format(
-                     APIGatewayResources.MultiTenantRunspaceProvider_UserHasNoRunspaces, 
+                     APIGatewayResources.MultiTenantRunspaceProvider_UserHasNoRunspaces,
                      userId));
             }
 
             if (!_userRunspaces.Contains(userId, runspaceId)) {
                throw new RunspaceProviderException(
                   string.Format(
-                     APIGatewayResources.MultiTenantRunspaceProvider_UserHasNoRunspaceWithId, 
-                     userId, 
+                     APIGatewayResources.MultiTenantRunspaceProvider_UserHasNoRunspaceWithId,
+                     userId,
                      runspaceId));
             }
 
@@ -396,7 +396,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                      var scriptResult = ScriptExecutionMediatorSingleton.
                         Instance.
                         ScriptExecutionMediator.
-                        StartScriptExecution(userId, runspaceInfo, scriptExecutionRequest, true).Result;                     
+                        StartScriptExecution(userId, runspaceInfo, scriptExecutionRequest, true).Result;
 
                      _logger.LogDebug($"Wait Disconnect All Servers script to complete");
                      while (scriptResult.State == ScriptState.Running) {
@@ -408,10 +408,10 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                         }
                         Thread.Sleep(100);
                      }
-                  } catch (RunspaceEndpointException runspaceEndointException) {
-                     _logger.LogError(runspaceEndointException, "Runspace endpoint exception while waiting connect VC script");                     
+                  } catch (RunspaceEndpointException runspaceEndpointException) {
+                     _logger.LogError(runspaceEndpointException, "Runspace endpoint exception while waiting connect VC script");
                   } catch (Exception exc) {
-                     _logger.LogError(exc, "Wait Disconnect All Servers script failed");                     
+                     _logger.LogError(exc, "Wait Disconnect All Servers script failed");
                   }
 
                   _runspaceProvider.Kill(runspaceId);
@@ -443,6 +443,15 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          ISessionToken sessionToken,
          ISolutionStsClient stsClient,
          string vcEndpoint) {
+         return CreateWebConsole(userId, sessionToken, stsClient, vcEndpoint, false);
+      }
+
+      public IWebConsoleData CreateWebConsole(
+         string userId,
+         ISessionToken sessionToken,
+         ISolutionStsClient stsClient,
+         string vcEndpoint,
+         bool wait) {
 
          IWebConsoleData result = null;
 
@@ -454,7 +463,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 
             string bearerSamlToken = "";
             try {
-               _logger.LogDebug($"HoK Saml Token availble: {sessionToken.HoKSamlToken != null}");
+               _logger.LogDebug($"HoK Saml Token available: {sessionToken.HoKSamlToken != null}");
                if (sessionToken.HoKSamlToken == null) {
                   throw new Exception(APIGatewayResources.PowerCLIVCloginController_NoRefreshTokenAvailable_For_Session);
                }
@@ -479,6 +488,20 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             _runspacesStatsMonitor.RegisterWebConsole(result, sessionToken.SessionId);
             _userWebConsoles.Add(userId, result.Id, result);
 
+            if (wait) {
+               _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
+               var waitResult = _runspaceProvider.WaitCreateCompletion(result);
+               _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
+
+               if (waitResult.CreationState == RunspaceCreationState.Error) {
+                  ((WebConsoleData) result).ErrorDetails = new DataTypes.ErrorDetails(waitResult.CreationError);
+                  ((WebConsoleData) result).State = DataTypes.WebConsoleState.Error;
+               } else {
+                  if (waitResult.CreationState == RunspaceCreationState.Ready) {
+                     ((WebConsoleData) result).State = DataTypes.WebConsoleState.Available;
+                  }
+               }
+            }
          } catch (RunspaceProviderException runspaceProviderException) {
             _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown");
             throw;
@@ -504,7 +527,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             }
 
             _runspacesStatsMonitor.Unregister(webConsoleId);
-            _runspaceProvider.KillWebConsole(webConsoleId);            
+            _runspaceProvider.KillWebConsole(webConsoleId);
 
             if (_userWebConsoles.List(userId) == null) {
                _userWebConsoles.RemoveUser(userId);
@@ -606,7 +629,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                   runspaceProviderSettings.MaxRunspaceIdleTimeMinutes,
                   runspaceProviderSettings.MaxRunspaceActiveTimeMinutes);
             }
-         }         
+         }
       }
 
       public void Cleanup() {

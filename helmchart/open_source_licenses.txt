@@ -120,7 +120,7 @@ SECTION 1: Apache License, V2.0
 
 SECTION 2: BSD-STYLE, MIT-STYLE, OR SIMILAR STYLE LICENSES
 
-   >>> JsonSubTypes-1.2.0
+   >>> JsonSubTypes-1.8.0
    >>> Microsoft .NET Core-3.1.9
    >>> Microsoft.PowerShell.Commands.Diagnostics-6.2.4
    >>> Microsoft.PowerShell.SDK-6.2.4
@@ -709,7 +709,7 @@ If you have any questions regarding this Licence and Support Agreement or if you
 BSD-STYLE, MIT-STYLE, OR SIMILAR STYLE LICENSES are applicable to the following component(s).
 
 
->>> JsonSubTypes-1.2.0
+>>> JsonSubTypes-1.8.0
 
 
 
