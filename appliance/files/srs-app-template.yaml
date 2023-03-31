@@ -357,6 +357,37 @@ spec:
   sessionAffinity: None
   type: ClusterIP
 ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: srs-network-policy
+  namespace: script-runtime-service
+spec:
+  policyTypes:
+    - Ingress
+  podSelector:
+    matchLabels:
+      type: worker
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: script-runtime-service
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+        - podSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx-admission-patch
+        - podSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: srs-apigateway
+      ports:
+        - protocol: TCP
+          port: 5550
+        - protocol: TCP
+          port: 8086
+---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
