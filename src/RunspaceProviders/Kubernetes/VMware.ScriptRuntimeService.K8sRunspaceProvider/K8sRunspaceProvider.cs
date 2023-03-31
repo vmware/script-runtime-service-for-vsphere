@@ -204,8 +204,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             new V1ObjectMeta(
                labels: new Dictionary<string, string> {
                   { "app", appName },
-                  { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE },
-                  { TYPE_LABEL_KEY, TYPE_WORKER_LABEL_VALUE } },
+                  { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE } },
                name: appName),
             new V1DeploymentSpec(
                replicas:1,
@@ -214,7 +213,10 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   ),
                template: new V1PodTemplateSpec(
                   metadata: new V1ObjectMeta(
-                     labels: new Dictionary<string, string> { { "app", appName } }
+                     labels: new Dictionary<string, string> {
+                        { "app", appName },
+                        { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE },
+                        { TYPE_LABEL_KEY, TYPE_WORKER_LABEL_VALUE } }
                      ),
                   spec: new V1PodSpec(
                      new List<V1Container> {
