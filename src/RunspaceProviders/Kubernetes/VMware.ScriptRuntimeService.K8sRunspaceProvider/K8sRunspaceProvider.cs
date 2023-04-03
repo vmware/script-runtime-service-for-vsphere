@@ -33,6 +33,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       private const string RUNSPACE_TYPE = "pcli";
       private const string WEB_CONSOLE_LABEL_KEY = "webconsole";
       private const string WEB_CONSOLE_LABEL_VALUE = "webconsole";
+      private const string TYPE_LABEL_KEY = "type";
+      private const string TYPE_WORKER_LABEL_VALUE = "worker";
       public K8sRunspaceProvider(
          ILoggerFactory loggerFactory,
          string k8sClusterEndpoint,
@@ -157,7 +159,10 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             "Pod",
             new V1ObjectMeta(
                name: podName,
-               labels: new Dictionary<string, string> { { LABEL_KEY, RUNSPACE_TYPE } }),
+               labels: new Dictionary<string, string> {
+                  { LABEL_KEY, RUNSPACE_TYPE },
+                  { TYPE_LABEL_KEY, TYPE_WORKER_LABEL_VALUE }
+               }),
             new V1PodSpec(
                new List<V1Container> {
                   {
@@ -197,7 +202,9 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             "apps/v1",
             "Deployment",
             new V1ObjectMeta(
-               labels: new Dictionary<string, string> { { "app", appName }, { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE } },
+               labels: new Dictionary<string, string> {
+                  { "app", appName },
+                  { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE } },
                name: appName),
             new V1DeploymentSpec(
                replicas:1,
@@ -206,7 +213,10 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   ),
                template: new V1PodTemplateSpec(
                   metadata: new V1ObjectMeta(
-                     labels: new Dictionary<string, string> { { "app", appName } }
+                     labels: new Dictionary<string, string> {
+                        { "app", appName },
+                        { WEB_CONSOLE_LABEL_KEY, WEB_CONSOLE_LABEL_VALUE },
+                        { TYPE_LABEL_KEY, TYPE_WORKER_LABEL_VALUE } }
                      ),
                   spec: new V1PodSpec(
                      new List<V1Container> {
@@ -413,7 +423,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       }
 
       public IWebConsoleInfo CreateWebConsole(string vc, string token, bool allLinked) {
-         _logger.LogInformation("Create Runspace");
+         _logger.LogInformation("Create Web Console Runspace");
          K8sWebConsoleInfo result = null;
          try {
             _logger.LogDebug("GenerateWebconsoleId");
