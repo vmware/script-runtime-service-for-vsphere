@@ -118,6 +118,9 @@ __CUSTOMIZE_PHOTON__
     cat <<EOF | kind create cluster --config=-
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  disableDefaultCNI: true # disable kindnet
+  podSubnet: 10.244.0.0/24
 nodes:
 - role: control-plane
   kubeadmConfigPatches:
@@ -137,6 +140,21 @@ nodes:
   - hostPath: /var/log/power-actions
     containerPath: /var/log/power-actions
 EOF
+
+     echo "Pull calico docker images"                                            # needed to enable network policies
+     if [ "$(docker images "docker.io/calico/node:v3.19.1" -q)" = "" ]; then
+         docker pull docker.io/calico/node:v3.19.1
+     fi
+     if [ "$(docker images "docker.io/calico/pod2daemon-flexvol:v3.19.1" -q)" = "" ]; then
+         docker pull docker.io/calico/pod2daemon-flexvol:v3.19.1
+     fi
+     if [ "$(docker images "docker.io/calico/kube-controllers:v3.19.1" -q)" = "" ]; then
+         docker pull docker.io/calico/kube-controllers:v3.19.1
+     fi
+     if [ "$(docker images "docker.io/calico/cni:v3.19.1" -q)" = "" ]; then
+         docker pull docker.io/calico/cni:v3.19.1
+     fi
+
      echo "Pull nginx docker images"
      if [ "$(docker images "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343" -q)" = "" ]; then
          docker pull registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343
@@ -145,9 +163,18 @@ EOF
          docker pull us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v1.6.4
      fi
 
+     echo "Load calico docker image to kind node"
+     kind load docker-image docker.io/calico/node:v3.19.1
+     kind load docker-image docker.io/calico/pod2daemon-flexvol:v3.19.1
+     kind load docker-image docker.io/calico/kube-controllers:v3.19.1
+     kind load docker-image docker.io/calico/cni:v3.19.1
+
      echo "Load nginx docker image to kind node"
      kind load docker-image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343
      kind load docker-image us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v1.6.4
+
+     echo "Deploy network policies for SRS worker pods on K8s Cluster" > /dev/console
+     kubectl apply -f /root/network-policies.yaml
 
      echo "Deploy ingress controller for SRS on K8s Cluster" > /dev/console
      kubectl apply -f /root/ingress-controller.yaml
