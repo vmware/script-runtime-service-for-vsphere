@@ -114,6 +114,28 @@ __CUSTOMIZE_PHOTON__
     echo -e "\e[92mLoad supplied docker images" > /dev/console
     cat /root/*.tar | docker load # issue the load command to try and load all images at once
 
+    echo "Pull calico docker images"                                            # needed to enable network policies
+    if [ "$(docker images "calico/node:v3.19.1" -q)" = "" ]; then
+       docker pull docker.io/calico/node:v3.19.1
+    fi
+    if [ "$(docker images "calico/pod2daemon-flexvol:v3.19.1" -q)" = "" ]; then
+       docker pull docker.io/calico/pod2daemon-flexvol:v3.19.1
+    fi
+    if [ "$(docker images "calico/kube-controllers:v3.19.1" -q)" = "" ]; then
+        docker pull docker.io/calico/kube-controllers:v3.19.1
+    fi
+    if [ "$(docker images "calico/cni:v3.19.1" -q)" = "" ]; then
+       docker pull docker.io/calico/cni:v3.19.1
+    fi
+
+    echo "Pull nginx docker images"
+    if [ "$(docker images "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343" -q)" = "" ]; then
+        docker pull registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343
+     fi
+    if [ "$(docker images "us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v1.6.4" -q)" = "" ]; then
+         docker pull us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v1.6.4
+    fi
+
     echo "Create Cluster with ingress ready. Configures host port forwarding to ingress" > /dev/console
     cat <<EOF | kind create cluster --config=-
 kind: Cluster
@@ -140,28 +162,6 @@ nodes:
   - hostPath: /var/log/power-actions
     containerPath: /var/log/power-actions
 EOF
-
-     echo "Pull calico docker images"                                            # needed to enable network policies
-     if [ "$(docker images "docker.io/calico/node:v3.19.1" -q)" = "" ]; then
-         docker pull docker.io/calico/node:v3.19.1
-     fi
-     if [ "$(docker images "docker.io/calico/pod2daemon-flexvol:v3.19.1" -q)" = "" ]; then
-         docker pull docker.io/calico/pod2daemon-flexvol:v3.19.1
-     fi
-     if [ "$(docker images "docker.io/calico/kube-controllers:v3.19.1" -q)" = "" ]; then
-         docker pull docker.io/calico/kube-controllers:v3.19.1
-     fi
-     if [ "$(docker images "docker.io/calico/cni:v3.19.1" -q)" = "" ]; then
-         docker pull docker.io/calico/cni:v3.19.1
-     fi
-
-     echo "Pull nginx docker images"
-     if [ "$(docker images "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343" -q)" = "" ]; then
-         docker pull registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343
-     fi
-     if [ "$(docker images "us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v1.6.4" -q)" = "" ]; then
-         docker pull us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v1.6.4
-     fi
 
      echo "Load calico docker image to kind node"
      kind load docker-image docker.io/calico/node:v3.19.1
