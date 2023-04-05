@@ -361,6 +361,7 @@ metadata:
   name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: ingress-nginx
@@ -369,7 +370,8 @@ spec:
   revisionHistoryLimit: 10
   strategy:
     rollingUpdate:
-      maxUnavailable: 1
+      maxSurge: 1
+      maxUnavailable: 0
     type: RollingUpdate
   minReadySeconds: 0
   template:
@@ -387,8 +389,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command:
-                  - /wait-shutdown
+                command: ["/bin/sh", "-c", "sleep 5; /usr/local/openresty/nginx/sbin/nginx -c /etc/nginx/nginx.conf -s quit; while pgrep -x nginx; do sleep 1; done"]
           args:
             - /nginx-ingress-controller
             - --election-id=ingress-controller-leader
@@ -462,7 +463,7 @@ spec:
           key: node-role.kubernetes.io/master
           operator: Equal
       serviceAccountName: ingress-nginx
-      terminationGracePeriodSeconds: 0
+      terminationGracePeriodSeconds: 15
       volumes:
         - name: webhook-cert
           secret:
