@@ -27,7 +27,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ScriptExecutions {
          uint? numberOfScriptsPerUser,
          uint? noOlderThanDays) {
 
-         dynamic data = GetPolicy();
+         dynamic data = _configReader.ReadSettings<dynamic>("service-settings", "settings.json");
 
          if (numberOfScriptsPerUser.HasValue) {
             data.ScriptExecutionStorageSettings.NumberOfScriptsPerUser = numberOfScriptsPerUser.Value;

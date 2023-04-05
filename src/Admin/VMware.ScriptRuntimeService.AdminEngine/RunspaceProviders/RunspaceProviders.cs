@@ -30,7 +30,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.RunspaceProviders {
          uint? runspaceIdleTimeMinutes,
          uint? runspaceActiveTimeMinutes) {
 
-         dynamic data = GetSettings();
+         dynamic data = _configReader.ReadSettings<dynamic>("service-settings", "settings.json");
 
          if (numberOfRunspaces.HasValue) {
             data.RunspaceProviderSettings.MaxNumberOfRunspaces = numberOfRunspaces.Value;
