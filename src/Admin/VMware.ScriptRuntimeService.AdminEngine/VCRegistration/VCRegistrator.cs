@@ -54,6 +54,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          bool force,
          string stsSettingsPath,
          string tlsCertificatePath) {
+
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+         }
+
          X509CertificateValidator certificateValidator = GetCertificateValidator(thumbprint, force);
 
          var lookupServiceClient = GetLookupServiceClient(
@@ -87,6 +92,10 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          string thumbprint,
          bool force) {
 
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+         }
+
          var trustedCertificatesCollector = GetTrustedCertificatesCollector(psc, username, password, thumbprint, force);
 
          StoreVCCACertificates(trustedCertificatesCollector);
@@ -104,6 +113,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          _logger.LogDebug($"VC User: {username}");
          _logger.LogDebug($"VC Thumbprint: {thumbprint}");
          _logger.LogDebug($"Force Specified: {force}");
+
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+            _logger.LogDebug($"VC Thumbprint (reformatted): {thumbprint}");
+         }
 
          // === VC Unregister Actions ===
          X509CertificateValidator certificateValidator = null;
@@ -204,6 +218,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          string solutionServiceId,
          string solutionOwnerId) {
 
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+            _logger.LogDebug($"VC Thumbprint (reformatted): {thumbprint}");
+         }
+
          // === VC Unregister Actions ===
          X509CertificateValidator certificateValidator = null;
          if (force) {
@@ -291,6 +310,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          _logger.LogDebug($"VC Thumbprint: {thumbprint}");
          _logger.LogDebug($"Force Specified: {force}");
          _logger.LogDebug($"Clean before registring: {cleanPriorToRegistring}");
+
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+            _logger.LogDebug($"VC Thumbprint (reformatted): {thumbprint}");
+         }
 
          if (cleanPriorToRegistring) {
             Clean(psc, username, password, thumbprint, force);
