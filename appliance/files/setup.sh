@@ -159,8 +159,8 @@ nodes:
     hostPort: 6443
     protocol: TCP
   extraMounts:
-  - hostPath: /var/log/power-actions
-    containerPath: /var/log/power-actions
+  - hostPath: /var/log/script-runtime-service
+    containerPath: /var/log/script-runtime-service
 EOF
 
      echo "Load calico docker image to kind node"
