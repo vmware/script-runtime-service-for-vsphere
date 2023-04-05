@@ -17,17 +17,17 @@ using VMware.ScriptRuntimeService.AdminEngine.VCRegistration;
 namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
    [Authorize]
    [ApiController]
-   [Route("admin/runspace-providers/settings")]
+   [Route("admin/script-executions/retention-policy")]
    [Produces("application/json")]
    [Consumes("application/json")]
-   public class RunspaceProvidersSettingsController : ControllerBase {
+   public class ScriptExecutionRetentionPolicyController : ControllerBase {
       private readonly ILoggerFactory _loggerFactory;
       private readonly IK8sController _k8sController;
       private readonly ILogger _logger;
       private readonly IConfiguration _configuration;
       private readonly K8sSettings _k8sSettings;
 
-      public RunspaceProvidersSettingsController(IConfiguration Configuration, ILoggerFactory loggerFactory, IK8sController k8sController) {
+      public ScriptExecutionRetentionPolicyController(IConfiguration Configuration, ILoggerFactory loggerFactory, IK8sController k8sController) {
          _configuration = Configuration;
          _k8sSettings = _configuration.
                GetSection("K8sSettings").
@@ -39,28 +39,26 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       }
 
       [HttpPatch]
-      [ProducesResponseType(typeof(RunspaceProviderSettings), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(ScriptExecutionRetentionPolicy), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<RunspaceProviderSettings> Patch([FromBody] RunspaceProviderSettings settings) {
-         ActionResult<RunspaceProviderSettings> result = null;
+      public ActionResult<ScriptExecutionRetentionPolicy> Patch([FromBody] ScriptExecutionRetentionPolicy settings) {
+         ActionResult<ScriptExecutionRetentionPolicy> result = null;
 
          try {
             var configProxy = new K8sConfigRepository(_loggerFactory, _k8sSettings);
-            var providers = new AdminEngine.RunspaceProviders.RunspaceProviders(_loggerFactory, configProxy, configProxy);
+            var providers = new AdminEngine.ScriptExecutions.ScriptExecutionRetentionPolicy(_loggerFactory, configProxy, configProxy);
 
-            var updatedSettings = providers.UpdateSettings(
-               settings.MaxNumberOfRunspaces,
-               settings.MaxRunspaceIdleTimeMinutes,
-               settings.MaxRunspaceActiveTimeMinutes);
+            var updatedSettings = providers.UpdatePolicy(
+               settings.MaxNumberOfScriptsPerUser,
+               settings.NoOlderThanDays);
 
             // --- Restart SRS API Gateway ---
             _k8sController.WithUpdateK8sSettings(_k8sSettings).RestartSrsService();
             // --- Restart SRS API Gateway ---
 
-            result = Ok(new RunspaceProviderSettings() {
-               MaxNumberOfRunspaces = updatedSettings.MaxNumberOfRunspaces,
-               MaxRunspaceActiveTimeMinutes = updatedSettings.MaxRunspaceActiveTimeMinutes,
-               MaxRunspaceIdleTimeMinutes = updatedSettings.MaxRunspaceIdleTimeMinutes
+            result = Ok(new ScriptExecutionRetentionPolicy() {
+               MaxNumberOfScriptsPerUser = updatedSettings.MaxNumberOfScriptsPerUser,
+               NoOlderThanDays = updatedSettings.NoOlderThanDays
             });
          } catch (Exception ex) {
             result = StatusCode(500, new ErrorDetails(ex));
@@ -70,20 +68,19 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       }
 
       [HttpGet]
-      [ProducesResponseType(typeof(RunspaceProviderSettings), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(ScriptExecutionRetentionPolicy), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<RunspaceProviderSettings> Get() {
-         ActionResult<RunspaceProviderSettings> result;
+      public ActionResult<ScriptExecutionRetentionPolicy> Get() {
+         ActionResult<ScriptExecutionRetentionPolicy> result;
          try {
             var configProxy = new K8sConfigRepository(_loggerFactory, _k8sSettings);
-            var providers = new AdminEngine.RunspaceProviders.RunspaceProviders(_loggerFactory, configProxy, configProxy);
+            var providers = new AdminEngine.ScriptExecutions.ScriptExecutionRetentionPolicy(_loggerFactory, configProxy, configProxy);
 
-            var updatedSettings = providers.GetSettings();
+            var updatedSettings = providers.GetPolicy();
 
-            result = Ok(new RunspaceProviderSettings() {
-               MaxNumberOfRunspaces = updatedSettings.MaxNumberOfRunspaces,
-               MaxRunspaceActiveTimeMinutes = updatedSettings.MaxRunspaceActiveTimeMinutes,
-               MaxRunspaceIdleTimeMinutes = updatedSettings.MaxRunspaceIdleTimeMinutes
+            result = Ok(new ScriptExecutionRetentionPolicy() {
+               MaxNumberOfScriptsPerUser = updatedSettings.MaxNumberOfScriptsPerUser,
+               NoOlderThanDays = updatedSettings.NoOlderThanDays
             });
          } catch (SrsNotRegisteredException ex) {
             result = StatusCode(404, new ErrorDetails(ex) { Code = 404 });
