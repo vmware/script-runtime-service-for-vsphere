@@ -89,7 +89,7 @@ spec:
       - image: "srs-setup:1.0"
         name: srs-setup
         imagePullPolicy: IfNotPresent
-        command: ["/app/service/setup"]
+        command: ["/bin/bash", "-c", "if [ -z ${SERVICE_LOG} ]; then /app/service/setup; exit $?; else /app/service/setup 2>&1 | tee -a \"${SERVICE_LOG}\"; exit ${PIPESTATUS[0]}; fi"]
         env:
           - name: TARGET_VC_SERVER
             value: "${VC_SERVER}"
@@ -98,13 +98,24 @@ spec:
           - name: TARGET_VC_PASSWORD
             value: "${VC_PASSWORD}"
           - name: TARGET_VC_THUMBPRINT
-            value: ${VC_THUMBPRINT}
+            value: "${VC_THUMBPRINT}"
           - name: TARGET_VC_CLEAN
             value: "${VC_CLEAN}"
           - name: SERVICE_HOSTNAME
             value: "${SRSA_HOSTNAME}"
+          - name: SERVICE_LOG
+            value: /app/service/logs/srs-setup.log
+        volumeMounts:
+        - name: logs-volume
+          mountPath: /app/service/logs
+          readOnly: false
+      volumes:
+      - name: logs-volume
+        hostPath:
+          path: /var/log/script-runtime-service
+          type: DirectoryOrCreate
       restartPolicy: Never
-  backoffLimit: 1
+  backoffLimit: 0
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -204,6 +215,7 @@ spec:
         - image: "srs-adminapi:1.0"
           imagePullPolicy: IfNotPresent
           name: srs-adminapi
+          command: ["/bin/bash", "-c", "if [ -z ${SERVICE_LOG} ]; then /app/service/VMware.ScriptRuntimeService.AdminApi; exit $?; else /app/service/VMware.ScriptRuntimeService.AdminApi 2>&1 | tee -a \"${SERVICE_LOG}\"; exit ${PIPESTATUS[0]}; fi"]
           volumeMounts:
             - name: service-settings
               mountPath: "/app/service/settings/settings"
@@ -220,6 +232,9 @@ spec:
             - name: tls-certificate
               mountPath: "/app/service/settings/tls-certs"
               readOnly: false
+            - name: logs-volume
+              mountPath: /app/service/logs
+              readOnly: false
           ports:
             - containerPort: 5555
               protocol: TCP
@@ -232,6 +247,8 @@ spec:
               value: "/app/service/settings/tls-certs/tls.crt"
             - name: SERVICE_HOSTNAME
               value: "${SRSA_HOSTNAME}"
+            - name: SERVICE_LOG
+              value: /app/service/logs/srs-admin.log
           envFrom:
             - secretRef:
                 name: srs-adminapi-credentials
@@ -263,6 +280,10 @@ spec:
             items:
             - key: sts-settings.json
               path: sts-settings.json
+        - name: logs-volume
+          hostPath:
+            path: /var/log/script-runtime-service
+            type: DirectoryOrCreate
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -286,6 +307,7 @@ spec:
         - image: "srs-apigateway:1.0"
           imagePullPolicy: IfNotPresent
           name: srs-apigateway
+          command: ["/bin/bash", "-c", "if [ -z ${SERVICE_LOG} ]; then /app/service/VMware.ScriptRuntimeService.APIGateway; exit $?; else /app/service/VMware.ScriptRuntimeService.APIGateway 2>&1 | tee -a \"${SERVICE_LOG}\"; exit ${PIPESTATUS[0]}; fi"]
           volumeMounts:
             - name: service-settings
               mountPath: "/app/service/settings/settings"
@@ -299,6 +321,9 @@ spec:
             - name: sign-certificate
               mountPath: "/app/service/settings/certs"
               readOnly: true
+            - name: logs-volume
+              mountPath: /app/service/logs
+              readOnly: false
           ports:
             - containerPort: 5050
               protocol: TCP
@@ -307,6 +332,8 @@ spec:
               value: "/app/service/settings/settings/settings.json"
             - name: SERVICE_STS_SETTINGS_LOCATION
               value: "/app/service/settings/sts-settings/sts-settings.json"
+            - name: SERVICE_LOG
+              value: /app/service/logs/srs-apigateway.log
       volumes:
         - name: sign-certificate
           secret:
@@ -326,6 +353,10 @@ spec:
             items:
             - key: sts-settings.json
               path: sts-settings.json
+        - name: logs-volume
+          hostPath:
+            path: /var/log/script-runtime-service
+            type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: Service
@@ -391,7 +422,7 @@ spec:
   egress:
   - {}
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -410,30 +441,44 @@ spec:
       - path: /(swagger/admin.*)
         pathType: Prefix
         backend:
-          serviceName: srs-adminapi
-          servicePort: 5555
+          service:
+            name: srs-adminapi
+            port:
+              number: 5555
       - path: /admin/(swagger.*)
         pathType: Prefix
         backend:
-          serviceName: srs-adminapi
-          servicePort: 5555
+          service:
+            name: srs-adminapi
+            port:
+              number: 5555
       - path: /(admin/.*)
         pathType: Prefix
         backend:
-          serviceName: srs-adminapi
-          servicePort: 5555
+          service:
+            name: srs-adminapi
+            port:
+              number: 5555
       - path: /(swagger/srs.*)
         pathType: Prefix
         backend:
-          serviceName: srs-apigateway
-          servicePort: 5050
+          service:
+            name: srs-apigateway
+            port:
+              number: 5050
       - path: /api/(swagger.*)
         pathType: Prefix
         backend:
-          serviceName: srs-apigateway
-          servicePort: 5050
+          service:
+            name: srs-apigateway
+            port:
+              number: 5050
       - path: /(api/.*)
         pathType: Prefix
         backend:
-          serviceName: srs-apigateway
-          servicePort: 5050
+          service:
+            name: srs-apigateway
+            port:
+              number: 5050
+  ingressClassName: nginx
+---
