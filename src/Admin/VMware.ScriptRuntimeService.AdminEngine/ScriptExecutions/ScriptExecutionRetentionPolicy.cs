@@ -29,11 +29,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ScriptExecutions {
 
          dynamic data = _configReader.ReadSettings<dynamic>("service-settings", "settings.json");
 
-         if (numberOfScriptsPerUser.HasValue) {
+         if (numberOfScriptsPerUser.HasValue && numberOfScriptsPerUser.Value > 0) {
             data.ScriptExecutionStorageSettings.NumberOfScriptsPerUser = numberOfScriptsPerUser.Value;
          }
 
-         if (noOlderThanDays.HasValue) {
+         if (noOlderThanDays.HasValue && noOlderThanDays.Value > 0) {
             data.ScriptExecutionStorageSettings.NoOlderThanDays = noOlderThanDays.Value;
          }
 
