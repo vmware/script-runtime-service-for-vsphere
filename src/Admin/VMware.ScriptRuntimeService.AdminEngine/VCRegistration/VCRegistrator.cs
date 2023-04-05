@@ -6,8 +6,11 @@
 using System;
 using System.IdentityModel.Selectors;
 using System.IO;
+using System.Linq;
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters;
 using VMware.ScriptRuntimeService.AdminEngine.SelfSignedCertificates;
@@ -51,6 +54,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          bool force,
          string stsSettingsPath,
          string tlsCertificatePath) {
+
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+         }
+
          X509CertificateValidator certificateValidator = GetCertificateValidator(thumbprint, force);
 
          var lookupServiceClient = GetLookupServiceClient(
@@ -84,6 +92,10 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          string thumbprint,
          bool force) {
 
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+         }
+
          var trustedCertificatesCollector = GetTrustedCertificatesCollector(psc, username, password, thumbprint, force);
 
          StoreVCCACertificates(trustedCertificatesCollector);
@@ -101,6 +113,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          _logger.LogDebug($"VC User: {username}");
          _logger.LogDebug($"VC Thumbprint: {thumbprint}");
          _logger.LogDebug($"Force Specified: {force}");
+
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+            _logger.LogDebug($"VC Thumbprint (reformatted): {thumbprint}");
+         }
 
          // === VC Unregister Actions ===
          X509CertificateValidator certificateValidator = null;
@@ -201,6 +218,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          string solutionServiceId,
          string solutionOwnerId) {
 
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+            _logger.LogDebug($"VC Thumbprint (reformatted): {thumbprint}");
+         }
+
          // === VC Unregister Actions ===
          X509CertificateValidator certificateValidator = null;
          if (force) {
@@ -259,14 +281,14 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          string thumbprint,
          bool force) {
          Register(
-            hostname, 
-            signingCertificatePath, 
-            tlsCertificatePath, 
-            psc, 
-            username, 
-            password, 
-            thumbprint, 
-            force, 
+            hostname,
+            signingCertificatePath,
+            tlsCertificatePath,
+            psc,
+            username,
+            password,
+            thumbprint,
+            force,
             false);
       }
 
@@ -288,6 +310,11 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
          _logger.LogDebug($"VC Thumbprint: {thumbprint}");
          _logger.LogDebug($"Force Specified: {force}");
          _logger.LogDebug($"Clean before registring: {cleanPriorToRegistring}");
+
+         if (!string.IsNullOrEmpty(thumbprint)) {
+            thumbprint = FormatThumbprint(thumbprint);
+            _logger.LogDebug($"VC Thumbprint (reformatted): {thumbprint}");
+         }
 
          if (cleanPriorToRegistring) {
             Clean(psc, username, password, thumbprint, force);
@@ -469,6 +496,41 @@ namespace VMware.ScriptRuntimeService.AdminEngine.VCRegistration {
                      trustedCertificatesCollector,
                      _configWriter);
          trustedCertificatesStore.SaveVcenterCACertificates();
+      }
+
+      internal static string FormatThumbprint(string thumbprint) {
+         if (thumbprint is null) {
+            throw new ArgumentNullException(nameof(thumbprint));
+         }
+         if (string.IsNullOrEmpty(thumbprint)) {
+            throw new ArgumentException(nameof(thumbprint));
+         }
+
+         thumbprint = thumbprint.Trim().Replace(":", "").Replace(" ", "").ToUpperInvariant();
+
+         // SHA1 - 40 symbols, SHA256 - 64
+         if (thumbprint.Length != 40 && thumbprint.Length != 64) {
+            throw new FormatException("Invalid length. The thumbprint should contain 40 not-separator symbols for SHA1 or 64 non-separator symbols for SHA256.");
+         }
+
+         var matches = Regex.Matches(thumbprint, "[^0-9A-F]", RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.Singleline);
+
+         if (matches.Count > 0) {
+            var invalidCharacters = matches.Select(m => m.Value).ToArray();
+            throw new FormatException($"Thumbprint contains invalid characters '{string.Join("','", invalidCharacters)}'");
+         }
+
+         StringBuilder sb = new StringBuilder();
+
+         for (int i = 0; i < thumbprint.Length; i++) {
+            if (i % 2 == 0) {
+               sb.Append(':');
+            }
+            sb.Append(thumbprint[i]);
+         }
+
+
+         return sb.ToString().Trim(':');
       }
    }
 }
