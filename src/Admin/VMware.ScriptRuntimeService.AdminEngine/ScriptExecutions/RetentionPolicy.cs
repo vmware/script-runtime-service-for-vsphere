@@ -3,7 +3,7 @@
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
-namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
+namespace VMware.ScriptRuntimeService.AdminEngine.ScriptExecutions {
    public class RetentionPolicy {
       public uint MaxNumberOfScriptsPerUser { get; set; }
       public uint NoOlderThanDays { get; set; }
