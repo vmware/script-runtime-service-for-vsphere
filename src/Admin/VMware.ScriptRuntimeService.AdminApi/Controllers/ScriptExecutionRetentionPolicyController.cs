@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using VMware.ScriptRuntimeService.AdminApi.DataTypes;
+using VMware.ScriptRuntimeService.AdminApi.DataTypes.ScriptExecutions;
 using VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters;
 using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
 using VMware.ScriptRuntimeService.AdminEngine.VCRegistration;
@@ -39,10 +40,10 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       }
 
       [HttpPatch]
-      [ProducesResponseType(typeof(ScriptExecutionRetentionPolicy), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(RetentionPolicy), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<ScriptExecutionRetentionPolicy> Patch([FromBody] ScriptExecutionRetentionPolicy settings) {
-         ActionResult<ScriptExecutionRetentionPolicy> result = null;
+      public ActionResult<RetentionPolicy> Patch([FromBody] RetentionPolicy settings) {
+         ActionResult<RetentionPolicy> result = null;
 
          try {
             var configProxy = new K8sConfigRepository(_loggerFactory, _k8sSettings);
@@ -56,7 +57,7 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
             _k8sController.WithUpdateK8sSettings(_k8sSettings).RestartSrsService();
             // --- Restart SRS API Gateway ---
 
-            result = Ok(new ScriptExecutionRetentionPolicy() {
+            result = Ok(new RetentionPolicy() {
                MaxNumberOfScriptsPerUser = updatedSettings.MaxNumberOfScriptsPerUser,
                NoOlderThanDays = updatedSettings.NoOlderThanDays
             });
@@ -68,22 +69,20 @@ namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
       }
 
       [HttpGet]
-      [ProducesResponseType(typeof(ScriptExecutionRetentionPolicy), StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(RetentionPolicy), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<ScriptExecutionRetentionPolicy> Get() {
-         ActionResult<ScriptExecutionRetentionPolicy> result;
+      public ActionResult<RetentionPolicy> Get() {
+         ActionResult<RetentionPolicy> result;
          try {
             var configProxy = new K8sConfigRepository(_loggerFactory, _k8sSettings);
             var providers = new AdminEngine.ScriptExecutions.ScriptExecutionRetentionPolicy(_loggerFactory, configProxy, configProxy);
 
             var updatedSettings = providers.GetPolicy();
 
-            result = Ok(new ScriptExecutionRetentionPolicy() {
+            result = Ok(new RetentionPolicy() {
                MaxNumberOfScriptsPerUser = updatedSettings.MaxNumberOfScriptsPerUser,
                NoOlderThanDays = updatedSettings.NoOlderThanDays
             });
-         } catch (SrsNotRegisteredException ex) {
-            result = StatusCode(404, new ErrorDetails(ex) { Code = 404 });
          } catch (Exception ex) {
             result = StatusCode(500, new ErrorDetails(ex));
          }

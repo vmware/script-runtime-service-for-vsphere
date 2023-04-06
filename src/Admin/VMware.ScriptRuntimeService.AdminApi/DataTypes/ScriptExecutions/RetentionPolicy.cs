@@ -5,9 +5,9 @@
 
 using System.Runtime.Serialization;
 
-namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
-   [DataContract(Name = "script_execution_storage_settings")]
-   public class ScriptExecutionRetentionPolicy {
+namespace VMware.ScriptRuntimeService.AdminApi.DataTypes.ScriptExecutions {
+   [DataContract(Name = "script_executions_storage_settings")]
+   public class RetentionPolicy {
       [DataMember(Name = "max_number_of_scripts_per_user")]
       public uint? MaxNumberOfScriptsPerUser { get; set; }
       [DataMember(Name = "no_older_than_days")]

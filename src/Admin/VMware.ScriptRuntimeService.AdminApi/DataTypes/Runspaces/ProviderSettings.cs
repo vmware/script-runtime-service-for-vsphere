@@ -5,9 +5,9 @@
 
 using System.Runtime.Serialization;
 
-namespace VMware.ScriptRuntimeService.AdminApi.DataTypes {
-   [DataContract(Name = "runspace_provider_settings")]
-   public class RunspaceProviderSettings {
+namespace VMware.ScriptRuntimeService.AdminApi.DataTypes.Runspaces {
+   [DataContract(Name = "runspaces_provider_settings")]
+   public class ProviderSettings {
       [DataMember(Name = "max_number_of_runspaces")]
       public uint? MaxNumberOfRunspaces { get; set; }
       [DataMember(Name = "max_runspace_idle_time_minutes")]
