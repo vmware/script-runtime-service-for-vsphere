@@ -6,6 +6,7 @@
 namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
    public interface IConfigReader {
       T ReadSettings<T>(string settingsName);
+      T ReadSettings<T>(string settingsName, string settingsDataKeyName);
       StsSettings ReadServiceStsSettings();
    }
 }

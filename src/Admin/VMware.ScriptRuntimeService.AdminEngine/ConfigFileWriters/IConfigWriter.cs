@@ -14,6 +14,7 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
       void WriteSetupSettings(SetupServiceSettings setupServiceSettings);
       void WriteServiceStsSettings(StsSettings stsSettings);
       void WriteSettings(string settingsName, object settingsObject);
+      void WriteSettings(string settingsName, object settingsObject, string settingsDataKeyName);
       void DeleteSettings(string settingsName);
    }
 }

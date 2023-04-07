@@ -614,7 +614,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          _logger.LogInformation($"UpdateConfiguration");
          if (runspaceProviderSettings != null) {
             if (_runspaceProvider is K8sRunspaceProvider.K8sRunspaceProvider) {
-               var newSettings = new K8sRunspaceProviderSettings {
+               K8sRunspaceProviderSettings newSettings = new K8sRunspaceProviderSettings {
                   ImagePullSecret = runspaceProviderSettings.K8sImagePullSecret,
                   RunspaceImageName = runspaceProviderSettings.K8sRunspaceImageName,
                   RunspacePort = runspaceProviderSettings.K8sRunspacePort,

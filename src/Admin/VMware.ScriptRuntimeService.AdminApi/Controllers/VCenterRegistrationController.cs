@@ -3,6 +3,7 @@
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,7 @@ using VMware.ScriptRuntimeService.AdminEngine.K8sClient;
 using VMware.ScriptRuntimeService.AdminEngine.VCRegistration;
 
 namespace VMware.ScriptRuntimeService.AdminApi.Controllers {
+   [Authorize]
    [ApiController]
    [Route("admin/vc-registration")]
    [Produces("application/json")]

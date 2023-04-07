@@ -92,13 +92,17 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
       }
 
       public void WriteSettings(string settingsName, object settingsObject) {
+         WriteSettings(settingsName, settingsObject, $"{settingsName}.json");
+      }
+
+      public void WriteSettings(string settingsName, object settingsObject, string settingsDataKeyName) {
 
          if (string.IsNullOrEmpty(settingsName)) {
             throw new ArgumentNullException(nameof(settingsName));
          }
 
          var configMapName = settingsName;
-         var configMapDataKey = $"{settingsName}.json";
+         var configMapDataKey = settingsDataKeyName;
 
          _logger.LogInformation($"Writing k8s config map with settingsName settings");
          var settingsEditor = new SettingsEditor();
@@ -110,13 +114,20 @@ namespace VMware.ScriptRuntimeService.AdminEngine.ConfigFileWriters {
       }
 
       public T ReadSettings<T>(string settingsName) {
+         return ReadSettings<T>(settingsName, $"{settingsName}.json");
+      }
 
+      public T ReadSettings<T>(string settingsName, string settingsDataKeyName) {
          if (string.IsNullOrEmpty(settingsName)) {
             throw new ArgumentNullException(nameof(settingsName));
          }
 
+         if (string.IsNullOrEmpty(settingsDataKeyName)) {
+            throw new ArgumentNullException(nameof(settingsDataKeyName));
+         }
+
          var configMapName = settingsName;
-         var configMapDataKey = $"{settingsName}.json";
+         var configMapDataKey = settingsDataKeyName;
 
          try {
             _logger.LogInformation($"Reading k8s config map with settingsName settings");
