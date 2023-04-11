@@ -50,7 +50,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
       [ProducesResponseType(typeof(WebConsole), StatusCodes.Status200OK)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status401Unauthorized)]
       [ProducesResponseType(typeof(ErrorDetails), StatusCodes.Status500InternalServerError)]
-      public ActionResult<WebConsole> Post() {
+      public ActionResult<WebConsole> Post([FromQuery] bool? wait) {
          ActionResult<WebConsole> result = null;
          try {
             var authzToken = SessionToken.FromHeaders(Request.Headers);
@@ -61,7 +61,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Controllers
                      authzToken,
                      new SolutionStsClient(_loggerFactory, _stsSettings),
                      // Assumes VC Address is same as STS Address
-                     new Uri(_stsSettings.StsServiceEndpoint).Host);
+                     new Uri(_stsSettings.StsServiceEndpoint).Host,
+                     wait ?? false);
 
                result = StatusCode(200, new WebConsole(webConsoleData));
             } else {

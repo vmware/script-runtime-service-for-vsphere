@@ -167,7 +167,7 @@ namespace VMware.ScriptRuntimeService.DockerRunspaceProvider
          return runspace;
       }
 
-      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webconsole, DateTime creationTime) {
+      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webconsole) {
          return webconsole;
       }
 

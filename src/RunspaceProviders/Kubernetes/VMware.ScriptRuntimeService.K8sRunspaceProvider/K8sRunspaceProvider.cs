@@ -580,7 +580,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          }
       }
 
-      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo, DateTime creationTime) {
+      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo) {
          V1PodList podList = null;
          try {
             _logger.LogDebug($"Waiting k8s Pod 'app:{webConsoleInfo.Id}' to become ready");
@@ -648,29 +648,6 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                // _logger.LogDebug($"Start waiting k8s for nginx ingress controller to update after the rule change on {creationTime}");
 
                do {
-                  //try {
-                  //   _logger.LogTrace($"K8s API Call ListNamespacedEvent: \"ingress-nginx\"");
-                  //   eventList = _client.CoreV1.ListNamespacedEvent("ingress-nginx");
-                  //} catch (Exception exc) {
-                  //   LogException(exc);
-                  //   return new K8sWebConsoleInfo {
-                  //      Id = webConsoleInfo.Id,
-                  //      CreationState = RunspaceCreationState.Error,
-                  //      CreationError = new RunspaceProviderException(
-                  //         string.Format(
-                  //            Resources.K8sRunspaceProvider_WaitCreateComplation_ListEvents, webConsoleInfo.Id),
-                  //         exc)
-                  //   };
-                  //}
-
-                  //if (eventList?.Items.Any(i => IsNginxReloadEventAfter(i, creationTime)) ?? false) {
-                  //   var reloadEvent = eventList.Items.First(i => IsNginxReloadEventAfter(i, creationTime));
-                  //   _logger.LogDebug($"NGINX reload event found {reloadEvent} from {reloadEvent.LastTimestamp}");
-                  //   break;
-                  //} else {
-                  //   var last = eventList?.Items.OrderByDescending(e => e.LastTimestamp).FirstOrDefault();
-                  //   _logger.LogDebug($"NGINX reload event NOT found last event is from {last?.LastTimestamp}");
-                  //}
                   try {
                      _logger.LogTrace($"K8s API Call ReadNamespacedIngress: \"srs-ingress\"");
                      ingress = _client.NetworkingV1.ReadNamespacedIngress("srs-ingress", _namespace);
@@ -704,6 +681,11 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      CreationError = new RunspaceProviderException(Resources.K8sRunspaceProvider_WaitCreateComplition_TimeOut)
                   };
                } else {
+                  // HACK: Inject additional timeout
+                  if (int.TryParse(Environment.GetEnvironmentVariable("SRS_WEB_CONSOLE_CREATION_TIMEOUT_MS"), out int timeout)) {
+                     _logger.LogDebug($"Web console creation additional timeout {timeout}ms.");
+                     Thread.Sleep(timeout);
+                  }
                   // Success, everything should be in place
                   return new K8sWebConsoleInfo {
                      Id = webConsoleInfo.Id,

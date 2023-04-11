@@ -85,6 +85,22 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace {
          string vcEndpoint);
 
       /// <summary>
+      /// Creates a web console
+      /// </summary>
+      /// <param name="userId">User identifier</param>
+      /// <param name="sessionToken">Authorized session Roken with which create new runspace is requested</param>
+      /// <param name="stsClient">StsClient needed to acquire SAML tokens for connect vc operation, if vc connection script is requested</param>
+      /// <param name="vcEndpoint">Vc endpoint to connect to, if vc connection script is requested</param>
+      /// <param name="wait">Waits till the operation completes</param>
+      /// <returns></returns>
+      IWebConsoleData CreateWebConsole(
+         string userId,
+         ISessionToken sessionToken,
+         ISolutionStsClient stsClient,
+         string vcEndpoint,
+         bool wait);
+
+      /// <summary>
       /// Removes a web console
       /// </summary>
       /// <param name="userId">User identifier</param>
