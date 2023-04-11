@@ -336,6 +336,8 @@ spec:
               value: "/app/service/settings/sts-settings/sts-settings.json"
             - name: SERVICE_LOG
               value: /app/service/logs/srs-apigateway.log
+            - name: SRS_WEB_CONSOLE_CREATION_TIMEOUT_MS
+              value: "500"
       volumes:
         - name: sign-certificate
           secret:
