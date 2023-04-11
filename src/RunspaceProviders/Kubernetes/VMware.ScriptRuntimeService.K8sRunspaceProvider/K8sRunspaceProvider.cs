@@ -599,6 +599,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          }
 
          if (null == podList || podList.Items.Count == 0) {
+            _logger.LogError($"Web console pod {webConsoleInfo.Id} not found.");
             return new K8sWebConsoleInfo {
                Id = webConsoleInfo.Id,
                CreationState = RunspaceCreationState.Error,
@@ -607,6 +608,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      Resources.K8sRunspaceProvider_WaitCreateComplation_PodNotFound, webConsoleInfo.Id))
             };
          } else if (podList.Items.Count > 1) {
+            _logger.LogError($"Too many web console pods for {webConsoleInfo.Id} found.");
             return new K8sWebConsoleInfo {
                Id = webConsoleInfo.Id,
                CreationState = RunspaceCreationState.Error,
@@ -615,7 +617,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      Resources.K8sRunspaceProvider_WaitCreateComplation_ManyPodFound, webConsoleInfo.Id))
             };
          } else {
-
+            _logger.LogDebug($"Web console pod for {webConsoleInfo.Id} found.");
             IWebConsoleInfo podWaitResult = null;
             try {
                WaitForPodCreation(podList.Items[0].Name());
@@ -642,12 +644,11 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                int retryCount = 1;
 
                // Wait Pod to become running and obtain IP Address
-               _logger.LogDebug($"Start waiting k8s for nginx ingress controller to update after the rule change");
+               _logger.LogDebug($"Start waiting k8s for nginx ingress controller to update after the rule change on {creationTime}");
 
                do {
-
                   try {
-                     _logger.LogDebug($"K8s API Call ListNamespacedEvent: \"ingress-nginx\"");
+                     _logger.LogTrace($"K8s API Call ListNamespacedEvent: \"ingress-nginx\"");
                      eventList = _client.CoreV1.ListNamespacedEvent("ingress-nginx");
                   } catch (Exception exc) {
                      LogException(exc);
@@ -663,8 +664,11 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
                   if (eventList?.Items.Any(i => IsNginxReloadEventAfter(i, creationTime)) ?? false) {
                      var reloadEvent = eventList.Items.First(i => IsNginxReloadEventAfter(i, creationTime));
-                     _logger.LogDebug($"NGINX reload event found {reloadEvent}");
+                     _logger.LogDebug($"NGINX reload event found {reloadEvent} from {reloadEvent.LastTimestamp}");
                      break;
+                  } else {
+                     var last = eventList?.Items.OrderByDescending(e => e.LastTimestamp).FirstOrDefault();
+                     _logger.LogDebug($"NGINX reload event NOT found last event is from {last?.LastTimestamp}");
                   }
 
                   Thread.Sleep(retryIntervalMs);

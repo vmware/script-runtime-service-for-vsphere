@@ -470,6 +470,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             }
 
             var token = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(bearerSamlToken));
+            DateTime dateTime = DateTime.Now;
             var webConsoleInfo = _runspaceProvider.CreateWebConsole(vcEndpoint, token, true);
             _logger.LogDebug($"Runspace provider result: {webConsoleInfo.Id}, {webConsoleInfo.CreationState}, {webConsoleInfo.CreationError}");
             result = new WebConsoleData(webConsoleInfo);
@@ -481,7 +482,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 
             Task.Run(() => {
                _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
-               var waitResult = _runspaceProvider.WaitCreateCompletion(result, result.CreationTime);
+               var waitResult = _runspaceProvider.WaitCreateCompletion(result, dateTime);
                _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
 
                if (waitResult.CreationState == RunspaceCreationState.Error) {
