@@ -576,8 +576,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
          var result = new K8sRunspaceInfo {
             Id = runspaceInfo.Id,
-            Endpoint =
-                  new IPEndPoint(
+            Endpoint = new IPEndPoint(
                      IPAddress.Parse(pod.Status.PodIP),
                      _runspaceApiPort),
             CreationState = RunspaceCreationState.Ready
@@ -721,7 +720,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   }
 
                   try {
-                     _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start IP:{webConsoleInfo.Endpoint?.Address}, Port:{webConsoleInfo.Endpoint?.Port}");
+                     _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start IP:{podWaitResult.Endpoint?.Address}, Port:{podWaitResult.Endpoint?.Port}");
                      // Ensure Container is accessible over the network after creation
                      EnsureRunspaceEndpointIsAccessible(webConsoleInfo.Endpoint);
                      _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
@@ -730,7 +729,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      return new K8sWebConsoleInfo {
                         Id = webConsoleInfo.Id,
                         CreationState = RunspaceCreationState.Ready,
-                        Endpoint = webConsoleInfo.Endpoint
+                        Endpoint = podWaitResult.Endpoint
                      };
                   } catch (RunspaceProviderException exc) {
                      LogException(exc);
