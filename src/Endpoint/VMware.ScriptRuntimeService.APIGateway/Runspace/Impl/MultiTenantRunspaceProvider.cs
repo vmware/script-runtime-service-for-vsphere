@@ -479,31 +479,23 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             }
 
             var token = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(bearerSamlToken));
+
             var webConsoleInfo = _runspaceProvider.CreateWebConsole(vcEndpoint, token, true);
             _logger.LogDebug($"Runspace provider result: {webConsoleInfo.Id}, {webConsoleInfo.CreationState}, {webConsoleInfo.CreationError}");
             result = new WebConsoleData(webConsoleInfo);
             result.CreationTime = DateTime.Now;
-            result.State = DataTypes.WebConsoleState.Available;
+            result.State = DataTypes.WebConsoleState.Creating;
 
             _runspacesStatsMonitor.RegisterWebConsole(result, sessionToken.SessionId);
             _userWebConsoles.Add(userId, result.Id, result);
 
             if (wait) {
-               _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
-               var waitResult = _runspaceProvider.WaitCreateCompletion(result);
-               _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
-
-               if (waitResult.CreationState == RunspaceCreationState.Error) {
-                  ((WebConsoleData) result).ErrorDetails = new DataTypes.ErrorDetails(waitResult.CreationError);
-                  ((WebConsoleData) result).State = DataTypes.WebConsoleState.Error;
-               } else {
-                  if (waitResult.CreationState == RunspaceCreationState.Ready) {
-                     ((WebConsoleData) result).State = DataTypes.WebConsoleState.Available;
-                  }
-               }
+               WaitWebConsoleCreateCompletion(result);
+            } else {
+               Task.Run(() => { WaitWebConsoleCreateCompletion(result); });
             }
          } catch (RunspaceProviderException runspaceProviderException) {
-            _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown");
+            _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown while creating web console");
             throw;
          } catch (Exception ex) {
             throw new RunspaceProviderException(
@@ -515,6 +507,21 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          }
 
          return result;
+      }
+
+      private void WaitWebConsoleCreateCompletion(IWebConsoleInfo result) {
+         _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
+         var waitResult = _runspaceProvider.WaitCreateCompletion(result);
+         _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
+
+         if (waitResult.CreationState == RunspaceCreationState.Error) {
+            ((WebConsoleData) result).ErrorDetails = new DataTypes.ErrorDetails(waitResult.CreationError);
+            ((WebConsoleData) result).State = DataTypes.WebConsoleState.Error;
+         } else {
+            if (waitResult.CreationState == RunspaceCreationState.Ready) {
+               ((WebConsoleData) result).State = DataTypes.WebConsoleState.Available;
+            }
+         }
       }
 
       public void KillWebConsole(string userId, string webConsoleId) {
