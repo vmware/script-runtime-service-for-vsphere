@@ -722,7 +722,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                   try {
                      _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start IP:{podWaitResult.Endpoint?.Address}, Port:{podWaitResult.Endpoint?.Port}");
                      // Ensure Container is accessible over the network after creation
-                     EnsureRunspaceEndpointIsAccessible(webConsoleInfo.Endpoint);
+                     EnsureRunspaceEndpointIsAccessible(podWaitResult.Endpoint);
                      _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
 
                      // Success, everything should be in place
