@@ -1,10 +1,7 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
-
-using System;
-using System.Collections.Generic;
 
 namespace VMware.ScriptRuntimeService.APIGateway.Runspace
 {
@@ -21,7 +18,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace
       private int _maxRunspaceActiveTimeMinutes = MaxRunspaceActiveTimeMinutesDefault;
 
       public bool IsDefault() {
-         return            
+         return
             RunspaceContainerMemoryLimitMB == RunspaceContainerMemoryLimitMBDefault &&
             MaxNumberOfRunspaces == MaxNumberOfRunspacesDefault &&
             MaxRunspaceIdleTimeMinutes == MaxRunspaceIdleTimeMinutesDefault &&
@@ -43,6 +40,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace
       public string K8sClusterAccessToken { get; set; }
       public string K8sRunspaceImageName { get; set; }
       public int K8sRunspacePort { get; set; }
+      public int K8sWebConsolePort { get; set; }
+      public int K8sWebConsoleCreationTimeoutMs { get; set; }
       public string K8sNamespace { get; set; }
       public string K8sImagePullSecret { get; set; }
       public bool K8sVerifyRunspaceApiIsAccessibleOnCreate{ get; set; }

@@ -11,9 +11,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using IdentityModel.OidcClient;
 using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
@@ -29,12 +31,15 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       private string[] _trustedCertsFileNames;
       private readonly IKubernetes _client;
       private int _runspaceApiPort;
+      private int _webConsoleApiPort;
+      private int _webConsoleCreationTimeoutMs;
       private const string LABEL_KEY = "runspace";
       private const string RUNSPACE_TYPE = "pcli";
       private const string WEB_CONSOLE_LABEL_KEY = "webconsole";
       private const string WEB_CONSOLE_LABEL_VALUE = "webconsole";
       private const string TYPE_LABEL_KEY = "type";
       private const string TYPE_WORKER_LABEL_VALUE = "worker";
+
       public K8sRunspaceProvider(
          ILoggerFactory loggerFactory,
          string k8sClusterEndpoint,
@@ -42,6 +47,30 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          string @namespace,
          string imageName,
          int runspaceApiPort,
+         string imagePullSecret,
+         bool verifyRunspaceApiIsAccessibleOnCreate,
+         string runspaceTrustedCertsConfigMapName) : this(
+               loggerFactory,
+               k8sClusterEndpoint,
+               accessToken,
+               @namespace,
+               imageName,
+               runspaceApiPort,
+               8086,
+               0,
+               imagePullSecret,
+               verifyRunspaceApiIsAccessibleOnCreate,
+               runspaceTrustedCertsConfigMapName) { }
+
+      public K8sRunspaceProvider(
+         ILoggerFactory loggerFactory,
+         string k8sClusterEndpoint,
+         string accessToken,
+         string @namespace,
+         string imageName,
+         int runspaceApiPort,
+         int webConsoleApiPort,
+         int webConsoleCreationTimeoutMs,
          string imagePullSecret,
          bool verifyRunspaceApiIsAccessibleOnCreate,
          string runspaceTrustedCertsConfigMapName) {
@@ -63,6 +92,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
          _imageName = imageName;
          _runspaceApiPort = runspaceApiPort;
+         _webConsoleApiPort = webConsoleApiPort;
+         _webConsoleCreationTimeoutMs = webConsoleCreationTimeoutMs;
          _imagePullSecret = imagePullSecret;
          _namespace = @namespace;
          if (string.IsNullOrEmpty(_namespace)) {
@@ -365,7 +396,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             ), "srs-ingress", _namespace);
       }
 
-      private static void EnsureRunspaceEndpointIsAccessible(IRunspaceInfo runspaceInfo) {
+      private static void EnsureRunspaceEndpointIsAccessible(IPEndPoint endPoint) {
          bool ready = false;
          var retryNum = 0;
          var maxRetryCount = 40; // 10 seconds max
@@ -373,7 +404,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          while (retryNum < maxRetryCount) {
             using (TcpClient tcpClient = new TcpClient()) {
                try {
-                  tcpClient.Connect(runspaceInfo.Endpoint.Address, runspaceInfo.Endpoint.Port);
+                  tcpClient.Connect(endPoint.Address, endPoint.Port);
                   ready = true;
                   break;
                } catch {
@@ -545,8 +576,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
 
          var result = new K8sRunspaceInfo {
             Id = runspaceInfo.Id,
-            Endpoint =
-                  new IPEndPoint(
+            Endpoint = new IPEndPoint(
                      IPAddress.Parse(pod.Status.PodIP),
                      _runspaceApiPort),
             CreationState = RunspaceCreationState.Ready
@@ -556,7 +586,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             try {
                _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start");
                // Ensure Container is accessible over the network after creation
-               EnsureRunspaceEndpointIsAccessible(result);
+               EnsureRunspaceEndpointIsAccessible(result.Endpoint);
                _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
 
                return result;
@@ -620,10 +650,13 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             _logger.LogDebug($"Web console pod for {webConsoleInfo.Id} found.");
             IWebConsoleInfo podWaitResult = null;
             try {
-               WaitForPodCreation(podList.Items[0].Name());
+               var pod = WaitForPodCreation(podList.Items[0].Name());
                podWaitResult = new K8sWebConsoleInfo {
                   Id = webConsoleInfo.Id,
-                  CreationState = RunspaceCreationState.Ready
+                  CreationState = RunspaceCreationState.Ready,
+                  Endpoint = new IPEndPoint(
+                     IPAddress.Parse(pod.Status.PodIP),
+                     _webConsoleApiPort)
                };
             } catch (RunspaceProviderException ex) {
                return new K8sWebConsoleInfo {
@@ -681,16 +714,38 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      CreationError = new RunspaceProviderException(Resources.K8sRunspaceProvider_WaitCreateComplition_TimeOut)
                   };
                } else {
-                  // HACK: Inject additional timeout
-                  if (int.TryParse(Environment.GetEnvironmentVariable("SRS_WEB_CONSOLE_CREATION_TIMEOUT_MS"), out int timeout)) {
-                     _logger.LogDebug($"Web console creation additional timeout {timeout}ms.");
-                     Thread.Sleep(timeout);
+                  if (_webConsoleCreationTimeoutMs > 0) {
+                     _logger.LogDebug($"Web console creation additional timeout {_webConsoleCreationTimeoutMs}ms.");
+                     Thread.Sleep(_webConsoleCreationTimeoutMs);
                   }
-                  // Success, everything should be in place
-                  return new K8sWebConsoleInfo {
-                     Id = webConsoleInfo.Id,
-                     CreationState = RunspaceCreationState.Ready
-                  };
+
+                  try {
+                     _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start IP:{podWaitResult.Endpoint?.Address}, Port:{podWaitResult.Endpoint?.Port}");
+                     // Ensure Container is accessible over the network after creation
+                     EnsureRunspaceEndpointIsAccessible(podWaitResult.Endpoint);
+                     _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
+
+                     // Success, everything should be in place
+                     return new K8sWebConsoleInfo {
+                        Id = webConsoleInfo.Id,
+                        CreationState = RunspaceCreationState.Ready,
+                        Endpoint = podWaitResult.Endpoint
+                     };
+                  } catch (RunspaceProviderException exc) {
+                     LogException(exc);
+                     // Kill the container that is not accessible, otherwise it will leak
+                     try {
+                        KillWebConsole(webConsoleInfo.Id);
+                     } catch (RunspaceProviderException rexc) {
+                        LogException(rexc);
+                     }
+
+                     return new K8sWebConsoleInfo {
+                        Id = webConsoleInfo.Id,
+                        CreationState = RunspaceCreationState.Error,
+                        CreationError = exc
+                     };
+                  }
                }
             } else {
                return podWaitResult;

@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -9,17 +9,24 @@ using VMware.ScriptRuntimeService.APIGateway.DataTypes;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 
 namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl {
-   public class WebConsoleData : IWebConsoleData
-   {
-      object _threadSafeLock = new object();
+   public class WebConsoleData : IWebConsoleData {
+      private readonly object _threadSafeLock = new object();
+
+      private WebConsoleState _state;
+      private ErrorDetails _errorDetails;
+      private DateTime _creationTime;
+      private string _id;
+      private RunspaceCreationState _creationState;
+      private RunspaceProviderException _creationError;
+      private IPEndPoint _endpoint;
+
       public WebConsoleData(IWebConsoleInfo webConsoleInfo) {
-         Id = webConsoleInfo.Id;         
+         Id = webConsoleInfo.Id;
          CreationState = webConsoleInfo.CreationState;
          CreationError = webConsoleInfo.CreationError;
       }
-      
-      private WebConsoleState _state;
-      public WebConsoleState State { 
+
+      public WebConsoleState State {
          get {
             lock (_threadSafeLock) {
                return _state;
@@ -31,8 +38,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl {
             }
          }
       }
-      
-      private ErrorDetails _errorDetails;
+
+
       public ErrorDetails ErrorDetails {
          get {
             lock (_threadSafeLock) {
@@ -46,13 +53,72 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl {
          }
       }
 
-      public DateTime CreationTime { get; set; }
 
-      public string Id { get; set;  }
 
-      public RunspaceCreationState CreationState { get; set; }
+      public DateTime CreationTime {
+         get {
+            lock (_threadSafeLock) {
+               return _creationTime;
+            }
+         }
+         set {
+            lock (_threadSafeLock) {
+               _creationTime = value;
+            }
+         }
+      }
 
-      public RunspaceProviderException CreationError { get; set; }
+      public string Id {
+         get {
+            lock (_threadSafeLock) {
+               return _id;
+            }
+         }
+         set {
+            lock (_threadSafeLock) {
+               _id = value;
+            }
+         }
+      }
+
+      public RunspaceCreationState CreationState {
+         get {
+            lock (_threadSafeLock) {
+               return _creationState;
+            }
+         }
+         set {
+            lock (_threadSafeLock) {
+               _creationState = value;
+            }
+         }
+      }
+
+      public RunspaceProviderException CreationError {
+         get {
+            lock (_threadSafeLock) {
+               return _creationError;
+            }
+         }
+         set {
+            lock (_threadSafeLock) {
+               _creationError = value;
+            }
+         }
+      }
+
+      public IPEndPoint Endpoint {
+         get {
+            lock (_threadSafeLock) {
+               return _endpoint;
+            }
+         }
+         set {
+            lock (_threadSafeLock) {
+               _endpoint = value;
+            }
+         }
+      }
 
       public override bool Equals(object obj) {
          var result = false;

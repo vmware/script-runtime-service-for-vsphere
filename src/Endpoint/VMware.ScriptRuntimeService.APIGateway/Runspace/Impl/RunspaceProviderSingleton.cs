@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -67,6 +67,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                   runspaceProviderSettings.K8sNamespace,
                   runspaceProviderSettings.K8sRunspaceImageName,
                   runspaceProviderSettings.K8sRunspacePort,
+                  runspaceProviderSettings.K8sWebConsolePort,
+                  runspaceProviderSettings.K8sWebConsoleCreationTimeoutMs,
                   runspaceProviderSettings.K8sImagePullSecret,
                   runspaceProviderSettings.K8sVerifyRunspaceApiIsAccessibleOnCreate,
                   runspaceProviderSettings.RunspaceTrustedCertsConfigMapName

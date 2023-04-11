@@ -24,6 +24,8 @@ data:
       "RunspaceProviderSettings": {
         "K8sRunspaceImageName": "pclirunspace:latest",
         "K8sRunspacePort": 5550,
+        "K8sWebConsolePort": 8086,
+        "K8sWebConsoleCreationTimeoutMs": 5000,
         "K8sVerifyRunspaceApiIsAccessibleOnCreate": true,
         "RunspaceTrustedCertsConfigMapName": "trusted-ca-certs",
         "MaxNumberOfRunspaces": 5,
@@ -334,8 +336,6 @@ spec:
               value: "/app/service/settings/sts-settings/sts-settings.json"
             - name: SERVICE_LOG
               value: /app/service/logs/srs-apigateway.log
-            - name: SRS_WEB_CONSOLE_CREATION_TIMEOUT_MS
-              value: "500"
       volumes:
         - name: sign-certificate
           secret:
