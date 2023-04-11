@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -16,6 +16,11 @@ namespace VMware.ScriptRuntimeService.APIGateway.DataTypes {
    [DataContract(Name = "webconsole_state")]
    [ReadOnly(true)]
    public enum WebConsoleState {
+      /// <summary>
+      /// WebConsole is ready available to be opened.
+      /// </summary>
+      [EnumMember(Value = "creating")]
+      Creating,
       /// <summary>
       /// WebConsole is ready available to be opened.
       /// </summary>

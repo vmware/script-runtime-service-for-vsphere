@@ -443,15 +443,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
          ISessionToken sessionToken,
          ISolutionStsClient stsClient,
          string vcEndpoint) {
-         return CreateWebConsole(userId, sessionToken, stsClient, vcEndpoint, false);
-      }
-
-      public IWebConsoleData CreateWebConsole(
-         string userId,
-         ISessionToken sessionToken,
-         ISolutionStsClient stsClient,
-         string vcEndpoint,
-         bool wait) {
 
          IWebConsoleData result = null;
 
@@ -483,12 +474,12 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
             _logger.LogDebug($"Runspace provider result: {webConsoleInfo.Id}, {webConsoleInfo.CreationState}, {webConsoleInfo.CreationError}");
             result = new WebConsoleData(webConsoleInfo);
             result.CreationTime = DateTime.Now;
-            result.State = DataTypes.WebConsoleState.Available;
+            result.State = DataTypes.WebConsoleState.Creating;
 
             _runspacesStatsMonitor.RegisterWebConsole(result, sessionToken.SessionId);
             _userWebConsoles.Add(userId, result.Id, result);
 
-            if (wait) {
+            Task.Run(() => {
                _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
                var waitResult = _runspaceProvider.WaitCreateCompletion(result, result.CreationTime);
                _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
@@ -501,14 +492,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                      ((WebConsoleData) result).State = DataTypes.WebConsoleState.Available;
                   }
                }
-
-               // HACK: inject timeout period
-               if (int.TryParse(Environment.GetEnvironmentVariable("CREATE_WEB_CONSOLE_TIMEOUT"), out int timeout)) {
-                  Thread.Sleep(timeout);
-               }
-            }
+            });
          } catch (RunspaceProviderException runspaceProviderException) {
-            _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown");
+            _logger.LogError(runspaceProviderException, "Runspace provider exception was thrown while creating web console");
             throw;
          } catch (Exception ex) {
             throw new RunspaceProviderException(
