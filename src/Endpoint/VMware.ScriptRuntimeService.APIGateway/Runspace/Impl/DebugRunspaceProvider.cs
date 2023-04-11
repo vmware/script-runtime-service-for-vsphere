@@ -29,7 +29,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl {
          return runspaceInfo;
       }
 
-      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webconsole) {
+      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webconsole, DateTime creationTime) {
          return webconsole;
       }
 

@@ -490,7 +490,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
 
             if (wait) {
                _logger.LogDebug("RunspaceProvider -> WaitCreateCompletion call");
-               var waitResult = _runspaceProvider.WaitCreateCompletion(result);
+               var waitResult = _runspaceProvider.WaitCreateCompletion(result, result.CreationTime);
                _logger.LogDebug($"Runspace provider WaitCreateCompletion result: {waitResult.Id}, {waitResult.CreationState}, {waitResult.CreationError}");
 
                if (waitResult.CreationState == RunspaceCreationState.Error) {
@@ -500,6 +500,11 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                   if (waitResult.CreationState == RunspaceCreationState.Ready) {
                      ((WebConsoleData) result).State = DataTypes.WebConsoleState.Available;
                   }
+               }
+
+               // HACK: inject timeout period
+               if (int.TryParse(Environment.GetEnvironmentVariable("CREATE_WEB_CONSOLE_TIMEOUT"), out int timeout)) {
+                  Thread.Sleep(timeout);
                }
             }
          } catch (RunspaceProviderException runspaceProviderException) {

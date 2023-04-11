@@ -580,10 +580,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          }
       }
 
-      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo) {
-         // Wait for the console pod to get ready
-         DateTime creationTime = DateTime.Now;
-
+      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo, DateTime creationTime) {
          V1PodList podList = null;
          try {
             _logger.LogDebug($"Waiting k8s Pod 'app:{webConsoleInfo.Id}' to become ready");

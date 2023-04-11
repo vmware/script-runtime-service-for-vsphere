@@ -32,8 +32,9 @@ namespace VMware.ScriptRuntimeService.RunspaceProviders.Types
       /// </summary>
       /// <param name="webConsoleInfo">WebConsoleInfo instance info to wait.
       /// In case creation state is completed the input object hat to return as a result.</param>
+      /// <param name="creationTime">The time at which the asset was created</param>
       /// <returns><see cref="IWebConsoleInfo"/> instance with CreationState different than 'Creating'</returns>
-      IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo);
+      IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webConsoleInfo, DateTime creationTime);
 
       /// <summary>
       /// Get instance of running runspace if available, otherwise null

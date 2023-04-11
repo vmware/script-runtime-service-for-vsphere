@@ -91,7 +91,7 @@ namespace VMware.ScriptRuntimeService.DockerRunspaceProvider
             if (!ready) {
                throw new RunspaceProviderException(Resources.Resources.DockerRunspaceProvider_Create_NewContainerIsNotAccessible, pingExc);
             }
-         }         
+         }
       }
       #endregion
 
@@ -140,25 +140,25 @@ namespace VMware.ScriptRuntimeService.DockerRunspaceProvider
          } catch (ApiException dockerApiException) {
             result = DockerRunspaceInfo.FromRunspaceProviderError(
                new RunspaceProviderException(
-                  Resources.Resources.DockerRunspaceProvider_Create_StartContainerDockerAPIFail, 
+                  Resources.Resources.DockerRunspaceProvider_Create_StartContainerDockerAPIFail,
                   dockerApiException));
-         }             
+         }
 
          try {
             if (_testConnectionToContainerOnCreate) {
                // Ensure Container is accessible over the network after creation
                EnsureRunspaceEndpointIsAccessible(result);
-            }            
+            }
          } catch (RunspaceProviderException exception) {
             // Kill the container that is not accessible, otherwise it will leak
             try {
                if (result.Id != null) {
                   Kill(result.Id);
-               }               
+               }
             } catch(RunspaceProviderException) {}
 
             result = DockerRunspaceInfo.FromRunspaceProviderError(exception);
-         }         
+         }
 
          return result;
       }
@@ -167,7 +167,7 @@ namespace VMware.ScriptRuntimeService.DockerRunspaceProvider
          return runspace;
       }
 
-      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webconsole) {
+      public IWebConsoleInfo WaitCreateCompletion(IWebConsoleInfo webconsole, DateTime creationTime) {
          return webconsole;
       }
 
@@ -198,7 +198,7 @@ namespace VMware.ScriptRuntimeService.DockerRunspaceProvider
             _containerApi.ContainerDelete(id, force:true);
          } catch (ApiException dockerApiException) {
             throw new RunspaceProviderException(
-               Resources.Resources.DockerRunspaceProvider_Kill_KillContainerDockerAPIFail, 
+               Resources.Resources.DockerRunspaceProvider_Kill_KillContainerDockerAPIFail,
                dockerApiException);
          }
       }
