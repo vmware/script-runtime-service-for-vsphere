@@ -7,7 +7,7 @@ using System.Net;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
 
 namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
-   public class K8sRunspaceInfo : IRunspaceInfo, IWebConsoleInfo {
+   public class K8sRunspaceInfo : IRunspaceInfo {
 
       #region IRunspaceInfo
       public string Id { get; set; }

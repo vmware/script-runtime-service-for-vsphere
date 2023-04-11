@@ -740,7 +740,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                         LogException(rexc);
                      }
 
-                     return new K8sRunspaceInfo {
+                     return new K8sWebConsoleInfo {
                         Id = webConsoleInfo.Id,
                         CreationState = RunspaceCreationState.Error,
                         CreationError = exc
