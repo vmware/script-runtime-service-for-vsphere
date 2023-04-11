@@ -11,9 +11,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using IdentityModel.OidcClient;
 using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using VMware.ScriptRuntimeService.RunspaceProviders.Types;
@@ -365,7 +367,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             ), "srs-ingress", _namespace);
       }
 
-      private static void EnsureRunspaceEndpointIsAccessible(IRunspaceInfo runspaceInfo) {
+      private static void EnsureRunspaceEndpointIsAccessible(IPEndPoint endPoint) {
          bool ready = false;
          var retryNum = 0;
          var maxRetryCount = 40; // 10 seconds max
@@ -373,7 +375,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          while (retryNum < maxRetryCount) {
             using (TcpClient tcpClient = new TcpClient()) {
                try {
-                  tcpClient.Connect(runspaceInfo.Endpoint.Address, runspaceInfo.Endpoint.Port);
+                  tcpClient.Connect(endPoint.Address, endPoint.Port);
                   ready = true;
                   break;
                } catch {
@@ -556,7 +558,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             try {
                _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start");
                // Ensure Container is accessible over the network after creation
-               EnsureRunspaceEndpointIsAccessible(result);
+               EnsureRunspaceEndpointIsAccessible(result.Endpoint);
                _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
 
                return result;
@@ -620,10 +622,13 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             _logger.LogDebug($"Web console pod for {webConsoleInfo.Id} found.");
             IWebConsoleInfo podWaitResult = null;
             try {
-               WaitForPodCreation(podList.Items[0].Name());
+               var pod = WaitForPodCreation(podList.Items[0].Name());
                podWaitResult = new K8sWebConsoleInfo {
                   Id = webConsoleInfo.Id,
-                  CreationState = RunspaceCreationState.Ready
+                  CreationState = RunspaceCreationState.Ready,
+                  Endpoint = new IPEndPoint(
+                     IPAddress.Parse(pod.Status.PodIP),
+                     _runspaceApiPort)
                };
             } catch (RunspaceProviderException ex) {
                return new K8sWebConsoleInfo {
@@ -686,11 +691,34 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
                      _logger.LogDebug($"Web console creation additional timeout {timeout}ms.");
                      Thread.Sleep(timeout);
                   }
-                  // Success, everything should be in place
-                  return new K8sWebConsoleInfo {
-                     Id = webConsoleInfo.Id,
-                     CreationState = RunspaceCreationState.Ready
-                  };
+
+                  try {
+                     _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Start");
+                     // Ensure Container is accessible over the network after creation
+                     EnsureRunspaceEndpointIsAccessible(webConsoleInfo.Endpoint);
+                     _logger.LogDebug($"EnsureRunspaceEndpointIsAccessible: Success");
+
+                     // Success, everything should be in place
+                     return new K8sWebConsoleInfo {
+                        Id = webConsoleInfo.Id,
+                        CreationState = RunspaceCreationState.Ready,
+                        Endpoint = webConsoleInfo.Endpoint
+                     };
+                  } catch (RunspaceProviderException exc) {
+                     LogException(exc);
+                     // Kill the container that is not accessible, otherwise it will leak
+                     try {
+                        KillWebConsole(webConsoleInfo.Id);
+                     } catch (RunspaceProviderException rexc) {
+                        LogException(rexc);
+                     }
+
+                     return new K8sRunspaceInfo {
+                        Id = webConsoleInfo.Id,
+                        CreationState = RunspaceCreationState.Error,
+                        CreationError = exc
+                     };
+                  }
                }
             } else {
                return podWaitResult;

@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -14,12 +14,17 @@ namespace VMware.ScriptRuntimeService.RunspaceProviders.Types
       string Id { get; }
 
       /// <summary>
+      /// Runspace Service Endpoint
+      /// </summary>
+      IPEndPoint Endpoint { get; }
+
+      /// <summary>
       /// Tracks state of the WebConsole Runsapce creation
       /// </summary>
       RunspaceCreationState CreationState { get; }
 
       /// <summary>
-      /// When <see cref="CreationState"/> is an Error, the CreationError holds the occurred exception 
+      /// When <see cref="CreationState"/> is an Error, the CreationError holds the occurred exception
       /// </summary>
       RunspaceProviderException CreationError { get; }
    }
