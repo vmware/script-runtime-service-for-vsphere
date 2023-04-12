@@ -625,6 +625,8 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                   ImagePullSecret = runspaceProviderSettings.K8sImagePullSecret,
                   RunspaceImageName = runspaceProviderSettings.K8sRunspaceImageName,
                   RunspacePort = runspaceProviderSettings.K8sRunspacePort,
+                  WebConsolePort = runspaceProviderSettings.K8sWebConsolePort,
+                  WebConsoleCreationTimeoutMs = runspaceProviderSettings.K8sWebConsoleCreationTimeoutMs,
                   VerifyRunspaceApiIsAccessibleOnCreate = runspaceProviderSettings.K8sVerifyRunspaceApiIsAccessibleOnCreate
                };
                _runspaceProvider.UpdateConfiguration(newSettings);

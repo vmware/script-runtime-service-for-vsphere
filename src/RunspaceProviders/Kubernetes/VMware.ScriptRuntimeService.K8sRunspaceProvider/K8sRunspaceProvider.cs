@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using IdentityModel.OidcClient;
 using k8s;
@@ -520,8 +521,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          _logger.LogInformation($"Kill Runspace: {id}");
          try {
             RemoveSrsIngressWebConsolePath(id);
-            _client.AppsV1.DeleteNamespacedDeployment(id, _namespace);
-            _client.CoreV1.DeleteNamespacedService(id, _namespace);
+            TryK8sDelete(() => _client.AppsV1.DeleteNamespacedDeployment(id, _namespace));
+            TryK8sDelete(() => _client.CoreV1.DeleteNamespacedService(id, _namespace));
             // Wait pod to be deleted
             int maxRetry = 20;
             int retryCount = 1;
@@ -753,13 +754,6 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
          }
       }
 
-      private static bool IsNginxReloadEventAfter(Corev1Event e, DateTime since) {
-         return e.LastTimestamp?.CompareTo(since) > 0 &&
-            e.Type.Equals("Normal", StringComparison.InvariantCultureIgnoreCase) &&
-            e.Reason.Equals("RELOAD", StringComparison.InvariantCultureIgnoreCase) &&
-            e.Message.Equals("NGINX reload triggered due to a change in configuration");
-      }
-
       private V1Pod WaitForPodCreation(string name) {
          V1Pod pod = null;
          try {
@@ -881,7 +875,7 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       public void Kill(string id) {
          _logger.LogInformation($"Kill Runspace: {id}");
          try {
-            _client.CoreV1.DeleteNamespacedPod(id, _namespace);
+            TryK8sDelete(() => _client.CoreV1.DeleteNamespacedPod(id, _namespace));
             // Wait pod to be deleted
             int maxRetry = 20;
             int retryCount = 1;
@@ -950,6 +944,8 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
             _imagePullSecret = newConfig.ImagePullSecret;
             _imageName = newConfig.RunspaceImageName;
             _runspaceApiPort = newConfig.RunspacePort;
+            _webConsoleApiPort = newConfig.WebConsolePort;
+            _webConsoleCreationTimeoutMs = newConfig.WebConsoleCreationTimeoutMs;
             _verifyRunspaceApiIsAccessibleOnCreate = newConfig.VerifyRunspaceApiIsAccessibleOnCreate;
          }
       }
@@ -962,6 +958,30 @@ namespace VMware.ScriptRuntimeService.K8sRunspaceProvider {
       private void LogExpectedException(Exception ex) {
          _logger.LogDebug("[EXPECTED EXCEPTION] " + ex.ToString());
          _logger.LogTrace(ex, "[EXPECTED EXCEPTION] " + ex.ToString());
+      }
+
+      private bool TryK8sDelete(Action a) {
+         var result = TryInvokeK8sOperation<k8s.Autorest.HttpOperationException>(
+            a,
+            (e) => {
+               return e.Response.StatusCode == HttpStatusCode.NotFound;
+            });
+
+         return result;
+      }
+
+      private bool TryInvokeK8sOperation<T>(Action a, Func<T, bool> handled) where T : Exception {
+         try {
+            a();
+            return true;
+         } catch (T ex) {
+            if (!handled(ex)) {
+               throw;
+            } else {
+               LogExpectedException(ex);
+            }
+            return false;
+         }
       }
    }
 }
