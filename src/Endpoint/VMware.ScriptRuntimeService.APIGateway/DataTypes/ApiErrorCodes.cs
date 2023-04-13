@@ -1,4 +1,4 @@
-﻿// **************************************************************************
+// **************************************************************************
 //  Copyright 2020 VMware, Inc.
 //  SPDX-License-Identifier: Apache-2.0
 // **************************************************************************
@@ -25,7 +25,7 @@ namespace VMware.ScriptRuntimeService.APIGateway.DataTypes {
          {nameof(APIGatewayResources.RunspaceController_List_RunspaceProviderListFailed), 2035},
          {nameof(APIGatewayResources.RunspaceController_Kill_RunspaceProviderKillFailed), 2040},
          {nameof(APIGatewayResources.WebConsoleController_Post_MaxNumberOfWebConsolesReached), 2060},
-         {nameof(APIGatewayResources.WebConsoleNotFound), 2070},         
+         {nameof(APIGatewayResources.WebConsoleNotFound), 2070},
          {nameof(APIGatewayResources.WebConsoleController_List_RunspaceProviderListWebConsoleFailed), 2075},
          {nameof(APIGatewayResources.WebConsoleController_Kill_RunspaceProviderKillWebConsoleFailed), 2080},
          {nameof(APIGatewayResources.ArgumentScriptsController_ArgumentTransformationScriptNotFound), 4010},
@@ -45,5 +45,6 @@ namespace VMware.ScriptRuntimeService.APIGateway.DataTypes {
       }
 
       public static int Unknown => 500;
+      public static int Unauthenticated => 401;
    }
 }
