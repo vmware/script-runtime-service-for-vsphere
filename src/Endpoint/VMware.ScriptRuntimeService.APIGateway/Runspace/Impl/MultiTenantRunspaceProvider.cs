@@ -215,7 +215,9 @@ namespace VMware.ScriptRuntimeService.APIGateway.Runspace.Impl
                   } catch (Exception exc) {
                      _logger.LogError(exc, "Issue Bearer Token failed");
                      result.State = DataTypes.RunspaceState.Error;
-                     result.ErrorDetails = new DataTypes.ErrorDetails(exc);
+                     result.ErrorDetails = new DataTypes.ErrorDetails(exc) {
+                        Code = DataTypes.ApiErrorCodes.Unauthenticated
+                     };
                   }
 
                   if (bearerSamlToken != null) {
